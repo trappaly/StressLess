@@ -54,11 +54,11 @@ StressLess/
 ## Tech Stack
 
 - Frontend:
--   React Native
--   React Native Framework: Expo
--   Language: TypeScript
++   React Native
++   React Native Framework: Expo
++   Language: TypeScript
 - Backend:
--   Language: TypeScript (maybe)
++   Language: TypeScript (maybe)
 - Database:
 - Authentication:
 - Others:
