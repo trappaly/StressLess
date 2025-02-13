@@ -7,7 +7,7 @@
 ### Alyssa: 
 #### Set up GitHub Repo
        Created a GitHub repository for our project and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on code
-#### Documenting work each team member completed 
+#### Documented work each team member completed 
       Created descriptions of tasks that each team member contributed to
    
 ### Cheyanne: 
