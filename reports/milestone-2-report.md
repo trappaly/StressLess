@@ -8,7 +8,7 @@
 #### Set up GitHub Repo
        Created a GitHub repository for our project and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on code
 #### Documenting work each team member completed 
-      Creating descriptions of tasks that each team member contributed to
+      Created descriptions of tasks that each team member contributed to
    
 ### Cheyanne: 
 #### Wrote 10 issues 
@@ -17,9 +17,9 @@
 
 ### Khanh: 
 #### Wrote README.md about goals our project and which goals it aims to accomplish 
-      Detailed description of what our project is and the different features incorporated in the app. 
+      Wrote a detailed description of what our project is and the different features incorporated in the app. 
 #### Set up TypeScript formatter
-      Set up the formatter for the coding language(TypeScript) that we will be using for the front end programming language and also possibly            the backend programming as well
+      Set up the formatter for the coding language(TypeScript) that we will be using for the front end programming language and also possibly the backend programming as well
  
 ### Madel: 
 #### Wrote up summary of important decisions that certain team members made 
