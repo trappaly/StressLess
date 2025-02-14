@@ -67,9 +67,11 @@ StressLess/
 
 ### Prerequisites
 
--
--
--
+- [Set up Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Set up Expo environment](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build&platform=android&device=simulated&buildEnv=local)
+  - Make sure you have selected "Android Emulator" and "Development Build."
+  - Also, make sure "Build with Expo Application Services (EAS)" is off.
+- Set up TypeScript (TBD)
 
 ### Installation
 
