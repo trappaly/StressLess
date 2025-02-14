@@ -65,13 +65,16 @@ StressLess/
 
 ## Getting Started
 
-### Prerequisites
+### Prerequisites (Set up environment)
 
 - [Set up Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+  - Follow the section "Using a Node version manager to install Node.js and npm"
 - [Set up Expo environment](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build&platform=android&device=simulated&buildEnv=local)
-  - Make sure you have selected "Android Emulator" and "Development Build."
-  - Also, make sure "Build with Expo Application Services (EAS)" is off.
-- Set up TypeScript (TBD)
+  - Create an Expo project with `npx create-expo-app@latest`
+  - Then, follow the linked tutorial
+    - Make sure you have selected "Android Emulator" and "Development Build."
+    - Also, make sure "Build with Expo Application Services (EAS)" is off.
+    - [This answer](https://stackoverflow.com/a/48155800) will help resolve issues with running `npx expo run:android`.
 
 ### Installation
 
