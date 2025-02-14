@@ -5,7 +5,7 @@
 ## Work Each Team Member Completed
 
 ### Alyssa: 
-#### Set up GitHub Repo
+#### Set up GitHub repo
        Created a GitHub repository for our project and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on code
 #### Documented work each team member completed 
       Created descriptions of tasks that each team member contributed to
@@ -26,13 +26,13 @@
       Wrote a detailed report about group decisions that our team decided was best for this project
       
 ### Nifemi:
-#### Set up FrontEnd Project (Expo, TypeScript, React Native)
+#### Set up FrontEnd project (Expo, TypeScript, React Native)
       Set up the technology needed for our project. The technology we’re using is Expo. TypeScript, and React Native. 
       
 ### Tim: 
 #### Created Trello board 
       Created a Trello board and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on tasks to do for our project 
-#### Helped Set Everyone's Environment Up 
+#### Helped set up everyone's environment 
        Provided instructions about how to set up Node.js and npm and how to set up an Expo environment as well. 
       
 
