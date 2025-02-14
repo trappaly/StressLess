@@ -68,9 +68,8 @@ The `reports` directory contains the reports for each milestone or sprint.
 
 ### Prerequisites (Set up environment)
 
-- [Set up Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-  - Follow the section "Using a Node version manager to install Node.js and npm"
-- Set up React development environment (link TBD)
+- [Set up Node.js and pnpm](https://pnpm.io/installation)
+- [Set up React development environment](https://builtin.com/software-engineering-perspectives/create-react-app-typescript)
 
 ### Installation
 
