@@ -12,7 +12,7 @@
    
 ### Cheyanne: 
 #### Wrote 10 issues 
-      Wrote about 10 potential issues we would have with our project
+      Wrote 10 potential issues we would have with our project
 
 
 ### Khanh: 
@@ -26,10 +26,13 @@
       Wrote a detailed report about group decisions that our team decided was best for this project
       
 ### Nifemi:
-
-
+#### Set up FrontEnd Project (Expo, TypeScript, React Native)
+      Set up the technology needed for our project. The technology we’re using is Expo. TypeScript, and React Native. 
+      
 ### Tim: 
 #### Created Trello board 
       Created a Trello board and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on tasks to do for our project 
-#### Set up FrontEnd Project (Expo, TypeScript, React Native)
-      Set up the technology needed for our project. The technology we’re using is Expo. TypeScript, and React Native. 
+#### Helped Set Everyone's Environment Up 
+Provided instructions about how to set up Node.js and npm and how to set up an Expo environment as well. 
+      
+
