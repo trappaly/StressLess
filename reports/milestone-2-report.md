@@ -33,6 +33,6 @@
 #### Created Trello board 
       Created a Trello board and added collaborators (added teammates, Professor Perlmutter, and Mentor Elliot), so we can collaborate on tasks to do for our project 
 #### Helped Set Everyone's Environment Up 
-Provided instructions about how to set up Node.js and npm and how to set up an Expo environment as well. 
+       Provided instructions about how to set up Node.js and npm and how to set up an Expo environment as well. 
       
 
