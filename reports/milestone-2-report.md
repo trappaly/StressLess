@@ -32,4 +32,13 @@
 #### Helped set up everyone's environment 
        Provided instructions about how to set up Node.js and npm. 
       
+## Summary of Important Decisions
 
+### Switching from a mobile app to a web app
+Initially, we planned to create a mobile app as doing so made the most sense for the functionality of our app. However, while planning technologies for our mobile app, we came across many errors. Firstly, because all of our teammates have different brands of phones and laptops, we could not find a platform which would smoothly sync and run all of our project changes. Secondly, there were payments for platforms that we did find suitable, and these payments were not available for funding from Grinnell IT. Therefore, we ultimately decided to switch to a web app as we believe it would be a more smooth syncing, building, and testing experience for us.
+
+### Frontend: React & Typescript
+Our frontend will consist of React as the framework as some of us are already familiar with React, which we believe will be advantageous as we create the project, especially in terms of saving us the time to learn a new technology. We initially thought to use React Native as our framework, which we later realized would be a bit more complex to learn as compared to React. We ultimately decided to stick with React as it is easier to learn. Additonally, we find TypeScript as a wise choice over JavaScript as TypeScript is similar to JavaScript, but includes static typing, which we anticipate to be helpful in organizing and debugging our work.
+
+### Backend: Node.js & Express
+Our backend will consist of Node.js and Express as we find the configuration to be familiar and easy to use.
