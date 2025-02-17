@@ -1,18 +1,36 @@
-# Getting Started with Create React App
+# Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is the frontend for the project. It was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Technology
+- React
+- TypeScript
+- pnpm
+- UI:
+- Testing:
 
-In the project directory, you can run:
+## Prerequisites
+- [Node.js](https://nodejs.org/en/)
+- [pnpm](https://pnpm.io/) (Use `pnpm` instead of `npm` for commands)
 
-### `npm start`
+## Getting Started
 
+1. Install dependencies
+```bash
+pnpm install
+```
+
+2. Start the server in dev mode
+```bash
+pnpm start
+```
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+## Other Scripts (including how to bundle build)
 
 ### `npm test`
 
