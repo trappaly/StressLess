@@ -3,6 +3,7 @@
 This project is the frontend for the project. It was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Technology
+
 - React
 - TypeScript
 - pnpm
@@ -10,20 +11,24 @@ This project is the frontend for the project. It was bootstrapped with [Create R
 - Testing:
 
 ## Prerequisites
+
 - [Node.js](https://nodejs.org/en/)
 - [pnpm](https://pnpm.io/) (Use `pnpm` instead of `npm` for commands)
 
 ## Getting Started
 
 1. Install dependencies
+
 ```bash
 pnpm install
 ```
 
 2. Start the server in dev mode
+
 ```bash
 pnpm start
 ```
+
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

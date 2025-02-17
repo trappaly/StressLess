@@ -49,13 +49,33 @@ https://trello.com/b/qHGNCIJI/stressless
 StressLess/
 ├── backend/
     ├── src/
-    
+        ├── index.ts (entry point)
+    ├── .gitignore, package.json, tsconfig.json
+    ├── README.md (read to set up environment)
 ├── frontend/
+    ├── public/
+        ├── index.html
+        ├── manifest.json
+        ├── .ico, .png
+    ├── src/
+        ├── App.tsx, App.css
+        ├── index.tsx, index.css
+        ├── App.test.tsx
+        ├── setupTests.ts
+    ├── .gitignore, package.json, tsconfig.json
+    ├── README.md (read to set up environment)
 ├── reports/
 ├── README.md
+├── .gitignore
+├── .prettierrc, .prettierignore (code formatter)
 ```
 
-The `reports` directory contains the reports for each milestone or sprint.
+- The `reports` directory contains the reports for each milestone or sprint.
+- Upon updating the project, please update this README with the new directory structure.
+- Add files/folders that should not be committed to git in the `.gitignore` files in the root, `backend`, or `frontend` directories as suitable.
+- NEVER commit `.env` files or any sensitive information to the repository.
+- Always document new technology and how to start things up in the README.
+- Use `pnpm` instead of `npm` for commands.
 
 ## Tech Stack
 
@@ -63,7 +83,9 @@ The `reports` directory contains the reports for each milestone or sprint.
 +   React
 +   TypeScript
 - Backend:
-+   Language: TypeScript (maybe)
++   Node
++   TypeScript
++   Express
 - Database:
 - Authentication:
 - Others:
@@ -84,7 +106,30 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
-2. TBD
+2. Set up Code Formatter ([Prettier](https://prettier.io/)):
+
+```bash
+```
+
+### Development
+You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
+Read each README in the `backend` and `frontend` directories for more information. or follow the steps below:
+
+3. Start the backend:
+
+```bash
+cd backend
+pnpm install
+pnpm start
+```
+
+4. Start the frontend:
+
+```bash
+cd frontend
+pnpm install
+pnpm start
+```
 
 ## Milestones
 
@@ -112,4 +157,4 @@ cd StressLess
 
 ## Acknowledgments
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<a href="#readme-top">back to top</a>
