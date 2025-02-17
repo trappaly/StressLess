@@ -22,7 +22,13 @@ This is the backend for the project. It is built with Node.js and Express.js.
 pnpm install
 ```
 
-2. Start the server locally
+2. Run code formatter
+
+```bash
+pnpm format
+```
+
+3. Start the server locally
 
 ```bash
 pnpm start

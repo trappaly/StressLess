@@ -23,7 +23,13 @@ This project is the frontend for the project. It was bootstrapped with [Create R
 pnpm install
 ```
 
-2. Start the server in dev mode
+2. Run code formatter
+
+```bash
+pnpm format
+```
+
+3. Start the server in dev mode
 
 ```bash
 pnpm start
