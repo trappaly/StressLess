@@ -136,7 +136,7 @@ pnpm start
 ## Milestones
 
 - [x] Milestone 1 - Requirements
-- [ ] Milestone 2 - Git Setup
+- [x] Milestone 2 - Git Setup
 - [ ] Milestone 3 - Paper prototyping
 - [ ] Milestone 4 - Feedback & Iteration
 - [ ] Milestone 5 - Design & Architecture
