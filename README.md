@@ -47,6 +47,10 @@ https://trello.com/b/qHGNCIJI/stressless
 
 ```
 StressLess/
+├── backend/
+    ├── src/
+    
+├── frontend/
 ├── reports/
 ├── README.md
 ```
