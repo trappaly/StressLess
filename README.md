@@ -89,6 +89,7 @@ StressLess/
 - Database:
 - Authentication:
 - Others:
+- Code Formatter: Prettier (so that code format is consistent, make sure this run before you commit and push)
 
 ## Getting Started
 
@@ -108,8 +109,9 @@ cd StressLess
 
 2. Set up Code Formatter ([Prettier](https://prettier.io/)):
 
-```bash
-```
+[Integrate into your IDE](https://prettier.io/docs/editors)
+
+Have `prettier` run on save in your IDE for ease of use. You can also run `pnpm format` in either `backend` or `frontend` folder to format all files.
 
 ### Development
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
