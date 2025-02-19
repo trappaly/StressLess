@@ -15,18 +15,7 @@ Since this is the first sprint, we do not have previous sprint to compare to. We
 
 # Goals
 
-- Contact 3 stakeholders
-- Revise requirements based on feedback
-- Write 6 use cases
-- Create a paper prototypes
-- Test prototype with one stakeholder
-- Revise prototype from feedback
-- Draw a storyboard for the product
-- Conduct paper prototype sessions
-- Revise requirements
-- Getting our GitHub repository set up and functioning so that all members can access and work with it.
-- Decide on the technologies we will be using for the project.
-- Set up the front end and back end of the project with documentation that all members can follow and set up locally.
+The outcomes we plan on completing in this sprint are heavily focused on improving requirements, creating and testing prototypes, and getting feedback from stakeholders. We will be focusing more on the planning and design of the project in this sprint and less on the technical development side. In terms of programming, we will make sure we get the basic technology set up and that everyone can get started on setting up their environment and running the application on development mode locally.
 
 # Task Breakdown
 
@@ -35,15 +24,13 @@ https://trello.com/b/qHGNCIJI/stressless
 
 A summary of task breakdown:
 - **Contact 3 stakeholders**: Contact stakeholders to get feedback on our project.
-- **Revise requirements based on feedback**: Revise requirements based on feedback from stakeholders.
-- **Write 6 use cases**: Write 6 use cases for the project.
-- **Create a paper prototype**: Create a paper prototype for the project.
-- **Test prototype with one stakeholder**: Test the prototype with one stakeholder.
-- **Revise prototype from feedback**: Revise the prototype based on feedback from the stakeholder.
-- **Draw a storyboard for the product**: Draw a storyboard for the product.
-- **Conduct paper prototype sessions**: Conduct paper prototype sessions with stakeholders.
+- **Write 6 use cases**: Each group member write 1 use cases for the app.
+- **Paper prototype**: Create a paper prototype for the project.
+- **Test prototype**: Test the prototype with one stakeholder.
+- **Revise prototype**: Revise the prototype based on feedback from the stakeholder.
+- **Storyboard**: Draw a storyboard for the product.
 - **Revise requirements**: Revise requirements based on feedback from stakeholders.
-- **Set up the GitHub repository for the project**: Getting our GitHub repository set up and functioning so that all members can access and work with it.
+- **GitHub repository**: Getting our GitHub repository set up and functioning so that all members can access and work with it.
 - **Technology**: Decide on the technologies we will be using for the project.
 - **Set up basic technology**: Set up the front end and back end of the project with documentation that all members can follow and set up locally.
 
