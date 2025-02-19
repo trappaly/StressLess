@@ -68,7 +68,10 @@ StressLess/
     ├── agile docs/
         ├── Living Document.md
         ├── milestones report/
-        ├── sprint planning/
+        ├── Sprint [num]/
+            ├── Sprint Journal [num].md
+            ├── Sprint Planning [num].md
+            ├── Sprint Review [num].md
     ├── dev docs/
         ├── solved-issues.md
 ├── README.md
