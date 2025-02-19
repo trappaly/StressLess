@@ -64,9 +64,14 @@ StressLess/
         ├── setupTests.ts
     ├── .gitignore, package.json, tsconfig.json
     ├── README.md (read to set up environment)
-├── reports/
+├── docs/
+    ├── agile docs/
+        ├── Living Document.md
+        ├── milestones report/
+        ├── sprint planning/
+    ├── dev docs/
+        ├── solved-issues.md
 ├── README.md
-├── Living Document.md
 ├── .gitignore
 ├── .prettierrc, .prettierignore (code formatter)
 ```
