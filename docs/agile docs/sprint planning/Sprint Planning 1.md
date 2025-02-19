@@ -4,6 +4,8 @@ StressLess
 
 # Capacity - 2 Weeks Sprint
 
+Since this is the first sprint, we do not have previous sprint to compare to. We will be using the following capacity for this sprint:
+
 - **Tim (10 hours)**: Usually very busy until Wednesday. This Wednesday will be extra busy since I need to do a CA event. My Greek Ethics seminar is also ramping up the reading to about 60 pages per class day (2x a week). Thursdays to Sundays are less busy for me, and I can meet some time outside of class during these times (except 11am-12pm, 2-4pm, and after 7pm on Thursdays).
 - **Alyssa (15 hours):** Slighty busy, but probably have a good amount time to work on this.  Can meet anytime after 6:30 pm M and T, after 4 pm on W,  before 11:30 am or 2:30-4 pm on T and TH, 4-5 on F, and can prob mostly do anytime Sa or Su.  Can also meet in mornings before 11 am M, W, and F.
 - **Nifemi: (10 hours):** Flexible schedule, prefer to meet after 4pm during weekdays and anytime weekends.
@@ -22,12 +24,28 @@ StressLess
 - Draw a storyboard for the product
 - Conduct paper prototype sessions
 - Revise requirements
+- Getting our GitHub repository set up and functioning so that all members can access and work with it.
+- Decide on the technologies we will be using for the project.
+- Set up the front end and back end of the project with documentation that all members can follow and set up locally.
 
 # Task Breakdown
 
+Find more details on our Trello board:
 https://trello.com/b/qHGNCIJI/stressless
 
-See the issue tracker.
+A summary of task breakdown:
+- **Contact 3 stakeholders**: Contact stakeholders to get feedback on our project.
+- **Revise requirements based on feedback**: Revise requirements based on feedback from stakeholders.
+- **Write 6 use cases**: Write 6 use cases for the project.
+- **Create a paper prototype**: Create a paper prototype for the project.
+- **Test prototype with one stakeholder**: Test the prototype with one stakeholder.
+- **Revise prototype from feedback**: Revise the prototype based on feedback from the stakeholder.
+- **Draw a storyboard for the product**: Draw a storyboard for the product.
+- **Conduct paper prototype sessions**: Conduct paper prototype sessions with stakeholders.
+- **Revise requirements**: Revise requirements based on feedback from stakeholders.
+- **Set up the GitHub repository for the project**: Getting our GitHub repository set up and functioning so that all members can access and work with it.
+- **Technology**: Decide on the technologies we will be using for the project.
+- **Set up basic technology**: Set up the front end and back end of the project with documentation that all members can follow and set up locally.
 
 # Assignments
 
@@ -35,4 +53,4 @@ See the issue tracker.
 
 # Issue Tracker
 
-See the link above in “Task Breakdown”
+See "To Do - Sprint 1" on our Trello board.
