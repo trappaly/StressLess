@@ -66,11 +66,13 @@ StressLess/
     ├── README.md (read to set up environment)
 ├── reports/
 ├── README.md
+├── Living Document.md
 ├── .gitignore
 ├── .prettierrc, .prettierignore (code formatter)
 ```
 
 - The `reports` directory contains the reports for each milestone or sprint.
+- The `Living Document` file contains the requirements, user stories, and other relevant information to our project.
 - Upon updating the project, please update this README with the new directory structure.
 - Add files/folders that should not be committed to git in the `.gitignore` files in the root, `backend`, or `frontend` directories as suitable.
 - NEVER commit `.env` files or any sensitive information to the repository.
