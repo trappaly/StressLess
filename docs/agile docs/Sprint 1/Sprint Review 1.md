@@ -1,6 +1,6 @@
 # Sprint Review 1
 
-During this sprint, we accomplished (a quick summary)
+During this sprint, we accomplished tasks that were more on the experimentation, setting up, and prototyping. 
 
 ## Sprint Review Questions
 
