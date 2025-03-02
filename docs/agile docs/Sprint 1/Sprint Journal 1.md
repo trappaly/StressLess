@@ -500,3 +500,7 @@ Visually-impaired people might not be able to properly interact with our app.
 (3) Design: What are your ideas for redesigning your product based on critique?
 
 implementing a setting to change the color would be useful and keeping in mind design decisions that’ll work well with screen reader softwares.
+
+# Changes to Living Document
+We exported the living document from Notion to Markdown, so the living document changes for this sprint can be summarized by a single commit.
+https://github.com/trappaly/StressLess/commit/e90f188032b1d031466baedda3df0eee597025d7
