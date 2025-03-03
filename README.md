@@ -90,16 +90,17 @@ StressLess/
 ## Tech Stack
 
 - Frontend:
-+   React
-+   TypeScript
+  - React
+  - TypeScript
 - Backend:
-+   Node
-+   TypeScript
-+   Express
+  - Node
+  - TypeScript
+  - Express
 - Database:
 - Authentication:
 - Others:
-- Code Formatter: Prettier (so that code format is consistent, make sure this run before you commit and push)
+  - Code Formatter: Prettier (so that code format is consistent, make sure this run before you commit and push)
+  - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html)
 
 ## Getting Started
 
@@ -147,8 +148,8 @@ pnpm start
 
 - [x] Milestone 1 - Requirements
 - [x] Milestone 2 - Git Setup
-- [ ] Milestone 3 - Paper prototyping
-- [ ] Milestone 4 - Feedback & Iteration
+- [x] Milestone 3 - Paper prototyping
+- [x] Milestone 4 - Feedback & Iteration
 - [ ] Milestone 5 - Design & Architecture
 - [ ] Milestone 6 - Testing & CI
 - [ ] Milestone 7 - Release 1 and demo
