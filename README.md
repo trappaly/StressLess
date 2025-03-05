@@ -98,9 +98,14 @@ StressLess/
   - Express
 - Database:
 - Authentication:
-- Others:
-  - Code Formatter: Prettier (so that code format is consistent, make sure this run before you commit and push)
-  - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html)
+  
+### Notes:
+  - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it     promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
+    - Use automated tools like ESLint with `@typescript-eslint` to catch violations.
+    - Configure `Prettier` to handle code formatting automatically.
+    - Possibly enable pre-commit hooks with `Husky` to run linting and formatting checks.
+    - Integrate these tools into the CI/CD pipeline to prevent non-compliant code from being merged.
+    - Conduct code reviews to catch any remaining inconsistencies.
 
 ## Getting Started
 
