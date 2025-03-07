@@ -1,8 +1,4 @@
-# Solved Issues
-
-This markdown contains common issues one of us faced while working on the project and how we solved them. Please contribute to this list if you faced any issue and solved it.
-
-## `PORT` is already in use
+# `PORT` is already in use
 
 If you get an error like this:
 

@@ -45,6 +45,8 @@ https://trello.com/b/qHGNCIJI/stressless
 
 ### Project Directory Structure
 
+This is a mono-repo project structure. The root directory contains the backend, frontend, and documentation directories. The backend and frontend directories contain their respective codebases. There are 3 `package.json` in total. The root `package.json` is used for global dependencies and scripts only. See [Monorepo Guide](https://monorepo.guide/) for more information.
+
 ```
 StressLess/
 ├── backend/
@@ -73,10 +75,15 @@ StressLess/
             ├── Sprint Planning [num].md
             ├── Sprint Review [num].md
     ├── dev docs/
-        ├── solved-issues.md
+        ├── general bugs fixed/ # log bugs that were not specific to backend or frontend
+        ├── typescript styling/ # log typescript styling configurations
+            ├── prettier.md     # guide to automate code formatting
+            ├── eslint.md       # guide to catch typescript violations
 ├── README.md
 ├── .gitignore
-├── .prettierrc, .prettierignore (code formatter)
+├── .prettierrc, .prettierignore # code formatter
+├── eslint.config.mjs            # linter
+├── package.json                 # global dependencies and scripts
 ```
 
 - The `docs` directory contains all markdowns, separated into `agile docs` and `dev docs`.
@@ -102,7 +109,8 @@ StressLess/
 ### Notes:
   - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it     promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
     - Use automated tools like ESLint with `@typescript-eslint` to catch violations.
-    - Configure `Prettier` to handle code formatting automatically.
+    - Configure `Prettier` to handle code formatting automatically. See the file [Prettier Guide](docs/dev%20docs/typescript%20styling/prettier.md) for more information.
+    - Configure `ESLint` to catch TypeScript violations. See the file [ESLint Guide](docs/dev%20docs/typescript%20styling/eslint.md) for more information.
     - Possibly enable pre-commit hooks with `Husky` to run linting and formatting checks.
     - Integrate these tools into the CI/CD pipeline to prevent non-compliant code from being merged.
     - Conduct code reviews to catch any remaining inconsistencies.
