@@ -68,7 +68,7 @@ StressLess/
     ├── README.md (read to set up environment)
 ├── docs/
     ├── agile docs/
-        ├── Living Document.md
+        ├── Living Document.md            # requirements, user stories, etc.
         ├── milestones report/
         ├── Sprint [num]/
             ├── Sprint Journal [num].md
@@ -87,12 +87,10 @@ StressLess/
 ```
 
 - The `docs` directory contains all markdowns, separated into `agile docs` and `dev docs`.
-- The `Living Document` file contains the requirements, user stories, and other relevant information to our project.
-- Upon updating the project, please update this README with the new directory structure.
+- Upon updating the project, please update this `README.md` with the new directory structure.
 - Add files/folders that should not be committed to git in the `.gitignore` files in the root, `backend`, or `frontend` directories as suitable.
 - NEVER commit `.env` files or any sensitive information to the repository.
-- Always document new technology and how to start things up in the README.
-- Use `pnpm` instead of `npm` for commands.
+- Always document new technology and how to start things up in the `README.md`.
 
 ## Tech Stack
 
@@ -107,8 +105,9 @@ StressLess/
 - Authentication:
   
 ### Notes:
-  - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it     promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
-    - Use automated tools like ESLint with `@typescript-eslint` to catch violations.
+  - Look at the [package.json global](package.json), [backend package.json](backend/package.json), and [frontend package.json](frontend/package.json) for more information on the dependencies and available scripts.
+  - Use `pnpm` instead of `npm` for commands.
+  - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
     - Configure `Prettier` to handle code formatting automatically. See the file [Prettier Guide](docs/dev%20docs/typescript%20styling/prettier.md) for more information.
     - Configure `ESLint` to catch TypeScript violations. See the file [ESLint Guide](docs/dev%20docs/typescript%20styling/eslint.md) for more information.
     - Possibly enable pre-commit hooks with `Husky` to run linting and formatting checks.
@@ -131,17 +130,11 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
-2. Set up Code Formatter ([Prettier](https://prettier.io/)):
-
-[Integrate into your IDE](https://prettier.io/docs/editors)
-
-Have `prettier` run on save in your IDE for ease of use. You can also run `pnpm format` in either `backend` or `frontend` folder to format all files.
-
 ### Development
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
 Read each README in the `backend` and `frontend` directories for more information. or follow the steps below:
 
-3. Start the backend:
+2. Start the backend:
 
 ```bash
 cd backend
@@ -149,7 +142,7 @@ pnpm install
 pnpm start
 ```
 
-4. Start the frontend:
+3. Start the frontend:
 
 ```bash
 cd frontend

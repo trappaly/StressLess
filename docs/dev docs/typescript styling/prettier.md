@@ -53,7 +53,7 @@ Refer to the [Prettier Docs](https://prettier.io/docs/editors) for setup instruc
 
 ## **Manually Running Prettier**
 
-If you need to format all files manually, run:
+If you need to format all files manually, at our project's root run:
 
 ```sh
 pnpm format
