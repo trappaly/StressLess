@@ -2,7 +2,7 @@
 
 [https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612](https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612) (We do not have PRO account so contact @Khanh Phuong Do to suggest edits)
 
-![](https://github.com/user-attachments/assets/ef445c3b-dad9-471f-9d2b-9c288230058b)
+![Screenshot from 2025-03-08 11-01-00](https://github.com/user-attachments/assets/961c7e71-3be5-4727-8692-3e6ca5d2113e)
 
 ## Design Entities
 
