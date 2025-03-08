@@ -65,6 +65,7 @@ Table user_deadlines {
   description text
   priority varchar(50)
   projected_duration integer
+  is_completed boolean [default: false]
   created_at timestamp
 }
 
