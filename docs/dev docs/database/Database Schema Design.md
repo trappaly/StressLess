@@ -2,7 +2,7 @@
 
 [https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612](https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612) (We do not have PRO account so contact @Khanh Phuong Do to suggest edits)
 
-![Screenshot from 2025-03-08 11-01-00](https://github.com/user-attachments/assets/961c7e71-3be5-4727-8692-3e6ca5d2113e)
+![StressLess](https://github.com/user-attachments/assets/556ad34b-e19c-418d-b760-1c54152746c5)
 
 ## Design Entities
 
@@ -23,7 +23,6 @@
 Table users {
   id uuid [primary key]
   username varchar
-  password_hash varchar
   created_at timestamp
 }
 
