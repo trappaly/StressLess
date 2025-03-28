@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix",
-    "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}"
+    "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,8 @@
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "eslint": "^9.21.0",
-    "prettier": "^3.5.3"
+    "husky": "^9.1.7",
+    "prettier": "^3.5.3",
+    "vitest": "^3.0.9"
   }
 }
