@@ -91,6 +91,10 @@ StressLess/
 - Add files/folders that should not be committed to git in the `.gitignore` files in the root, `backend`, or `frontend` directories as suitable.
 - NEVER commit `.env` files or any sensitive information to the repository.
 - Always document new technology and how to start things up in the `README.md`.
+- **Main Branch Protection**: The `main` branch is protected. This means:
+  - Do not commit directly to the `main` branch.
+  - Make changes in a new branch and then make a pull request to merge changes into the `main` branch.
+  - When making a pull request, another team member should approve the pull request and merge to `main`.
 
 ## Tech Stack
 
