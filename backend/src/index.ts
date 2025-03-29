@@ -1,10 +1,14 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS for all origins
+app.use(cors());
 
 // example counter
 let counter = 0;
