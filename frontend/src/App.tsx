@@ -5,17 +5,24 @@ import './App.css';
 function App() {
   const [message, setMessage] = useState("No message");
 
-  // Get the message from the root of the backend.
-  useEffect(() => {
+  function updateMessage() {
     axios.get(process.env.REACT_APP_BACKEND_BASE_URL || "localhost://3001")
       .then(response => setMessage(response.data))
       .catch(error => "Error");
-  });
+  }
+
+  function incrementBackendCounter() {
+    axios.post(process.env.REACT_APP_BACKEND_BASE_URL || "localhost://3001");
+    updateMessage();
+  }  
+
+  // Get the message from the root of the backend.
+  useEffect(updateMessage);
 
   return (
     <div className="App">
       <header className="App-header">Welcome to StressLess</header>
-      <p>{message}</p>
+      <p>{message} <button onClick={incrementBackendCounter}>Increment</button></p>
     </div>
   );
 }
