@@ -134,6 +134,14 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
+### Setting Up the Database
+
+1. Ensure that you have Node.js, pnpm, and Homebrew installed.
+2. Additionally, install pg through the command "pnpm i pg".
+3. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
+4. Ask Madel to add you to the StressLess database.
+5. For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.
+
 ### Development
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
 Read each README in the `backend` and `frontend` directories for more information. or follow the steps below:
