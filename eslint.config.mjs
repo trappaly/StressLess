@@ -18,6 +18,8 @@ export default [
         process: 'readonly',
         test: 'readonly',
         expect: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
       },
     },
     plugins: {

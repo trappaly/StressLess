@@ -5,11 +5,9 @@
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
-    "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -20,7 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "vitest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -42,5 +40,10 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react": "^16.2.0",
+    "@types/react": "^19.0.10",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^26.0.0",
+    "vitest": "^3.0.9"
   }
 }
