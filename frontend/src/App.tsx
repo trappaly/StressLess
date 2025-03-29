@@ -6,13 +6,13 @@ function App() {
   const [message, setMessage] = useState("No message");
 
   function updateMessage() {
-    axios.get(process.env.REACT_APP_BACKEND_BASE_URL || "localhost://3001")
+    axios.get(process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost://3001")
       .then(response => setMessage(response.data))
       .catch(error => "Error");
   }
 
   function incrementBackendCounter() {
-    axios.post(process.env.REACT_APP_BACKEND_BASE_URL || "localhost://3001");
+    axios.post(process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost://3001");
     updateMessage();
   }  
 
