@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+const URL = process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost:3001";
+
 function App() {
   const [message, setMessage] = useState("No message");
 
   function updateMessage() {
-    axios.get(process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost://3001")
+    axios.get(URL)
       .then(response => setMessage(response.data))
       .catch(error => "Error");
   }
 
   function incrementBackendCounter() {
-    axios.post(process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost://3001");
+    axios.post(URL);
     updateMessage();
   }  
 
