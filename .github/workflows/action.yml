@@ -1,100 +1,64 @@
-# GitHub Actions 
+name: CI Pipeline
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "development", "feat/CI"]
+    branches:
+      - development
+      - main
+    paths-ignore:
+      - '**/*.md'
   pull_request:
-    branches: [ "main", "development", "feat/CI"]
+    branches:
+      - development
+      - main
 
-
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build-and-test:
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
-    steps: 
 
-    # 1. Set Up Environment 
-    # 2. Compile TypeScript Code 
-    # 3. Build with React for FrontEnd and Build with node.js for Backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # Check out Code
-    - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-    # Install Dependencies
-    - name: devDependencies
-    - run: pnpm install
+      - name: Install pnpm
+        run: npm install -g pnpm
 
-    # Start FrontEnd 
-    - name: start
-      run: pnpm react-scripts start 
-      with: 
-        json-file: frontend/package.json
+      - name: Install dependencies concurrently for frontend and backend
+        run: pnpm run install
 
-    # Build FrontEnd
-     - name: build
-       uses: react-scripts build
-       with: 
-         json-file:frontend/package.json
+      - name: Lint code
+        run: pnpm run lint
 
-    # Test FrontEnd
-    - name: tetest:unit": st 
-      uses: vitest
-      with: 
-        json-file: frontend/package.json
+      - name: Run unit tests concurrently for frontend and backend
+        run: pnpm run test:unit
 
-    # Ejects FrontEnd
-    - name: eject
-      uses: react-scripts eject
-      with:
-        json-file: frontend/package.json
+      - name: Build frontend
+        run: pnpm --filter frontend build
 
+      - name: Build backend
+        run: pnpm --filter backend build
 
-    # Start BackEnd 
-    - name: start
-      run: pnpm ts-node src/index.ts
-      with:
-        json-file: backend/package.json    
+      - name: Set backend environment variables
+        run: |
+          echo "PGHOST=${{ secrets.PGHOST }}" >> $GITHUB_ENV
+          echo "PGDATABASE=${{ secrets.PGDATABASE }}" >> $GITHUB_ENV
+          echo "PGUSER=${{ secrets.PGUSER }}" >> $GITHUB_ENV
+          echo "PGPASSWORD=${{ secrets.PGPASSWORD }}" >> $GITHUB_ENV
 
+      - name: Set frontend environment variables
+        run: |
+          echo "REACT_APP_BACKEND_BASE_URL=${{ secrets.REACT_APP_BACKEND_BASE_URL }}" >> $GITHUB_ENV
+      
 
-    # Build BackEnd
-    - name: build 
-      uses: tsc
-      with:
-        json-file: backend/package.json
+      - name: Build backend and frontend concurrently
+        run: pnpm run build
 
-
-    # Serves BackEnd
-    - name: serve 
-      uses: node dist/index.js
-      with:
-        json-file: backend/package.json
-
-
-    # Tests BackEnd
-    - name: test
-      uses: vitest
-      with:
-        json-file: backend/package.json
-    
-    # Running Tests with BackEnd and FrontEnd  
-    - name: test:unit 
-      run: pnpm test:unit
-
-    # Lint to Check for Bugs and Errors
-    - name: lint
-      run: pnpm exec enlist 
-
-    # Formatting Code
-    - name: format
-      run: pnpm exec prettier
-
-    # Husky
-    - name: prepare
-      run: husky
+      - name: Start backend and frontend concurrently
+        run: pnpm run start
