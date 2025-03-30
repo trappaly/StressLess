@@ -1,0 +1,67 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - development
+      - main
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches:
+      - development
+      - main
+      - feat/*
+
+jobs:
+  build-and-test:
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies top-level
+        run: pnpm install
+
+      - name: Install dependencies concurrently for frontend and backend
+        run: pnpm run install:all
+
+      - name: Lint code
+        run: pnpm run lint
+
+      - name: Run unit tests concurrently for frontend and backend
+        run: pnpm run test:unit
+
+      - name: Build frontend
+        run: pnpm --filter frontend build
+
+      - name: Build backend
+        run: pnpm --filter backend build
+
+      - name: Set backend environment variables
+        run: |
+          echo "PGHOST=${{ secrets.PGHOST }}" >> $GITHUB_ENV
+          echo "PGDATABASE=${{ secrets.PGDATABASE }}" >> $GITHUB_ENV
+          echo "PGUSER=${{ secrets.PGUSER }}" >> $GITHUB_ENV
+          echo "PGPASSWORD=${{ secrets.PGPASSWORD }}" >> $GITHUB_ENV
+
+      - name: Set frontend environment variables
+        run: |
+          echo "REACT_APP_BACKEND_BASE_URL=${{ secrets.REACT_APP_BACKEND_BASE_URL }}" >> $GITHUB_ENV
+      
+
+      - name: Build backend and frontend concurrently
+        run: pnpm run build:all
+
+#      - name: Start backend and frontend concurrently
+#        run: pnpm run start:all

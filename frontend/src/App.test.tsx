@@ -15,7 +15,7 @@ describe('sample app test', () => {
     expect(btn).toBeInTheDocument();
   });
 
-  it('shouldn\'t be getting info from backend on unit tests', () => {
+  it("shouldn't be getting info from backend on unit tests", () => {
     render(<App />);
     const defaultCounter = screen.getByText(/Backend not available/i);
     expect(defaultCounter).toBeInTheDocument();
