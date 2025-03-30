@@ -16,8 +16,8 @@ function App() {
 
   // Tracer code to test requesting backend to manipulate databse.
   function incrementBackendCounter() {
-    axios.post(URL);
-    updateMessage();
+    axios.post(URL)
+      .then(response => updateMessage());
   }  
 
   // Get the message from the root of the backend.

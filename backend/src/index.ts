@@ -8,7 +8,7 @@ const cors = require("cors");
 // Configuration
 
 const app = express();
-const port = process.env.PORT || 3001;
+export const port = parseInt(process.env.PORT || "") || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -26,7 +26,7 @@ const pool = new Pool({
   }
 });
 
-let counter = 0;
+export let counter = 0;
 
 
 // Tracer code: Route for retrieving the "users" table from the database.
@@ -57,6 +57,7 @@ app.post('/', async (req: Request, res: Response) => {
   const values = ["student-" + Math.floor(Math.random() * 65536), "12345"]
   try {
     const result = await client.query(text, values);
+    res.json(result.rows);
   } catch(errors) {
     console.log(errors);
   } finally {
