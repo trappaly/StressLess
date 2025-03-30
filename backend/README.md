@@ -19,6 +19,10 @@ This is the backend for the project. It is built with Node.js and Express.js.
 - Enter the following environment variables into `.env` in the below format:
 ```env
 PORT=<Port number used for backend>
+PGHOST=<PostgreSQL hostname>
+PGDATABASE=<PostgreSQL database name>
+PGUSER=<PostgreSQL username>
+PGPASSWORD=<PostgreSQL password>
 ```
 
 ## Getting Started
@@ -40,6 +44,3 @@ pnpm format
 ```bash
 pnpm start
 ```
-
-## .env environment variables
-- `PORT`: The port used for the backend.
