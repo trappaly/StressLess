@@ -8,7 +8,7 @@ const cors = require('cors');
 // Configuration
 
 const app = express();
-export const port = parseInt(process.env.PORT || "") || 3001;
+export const port = parseInt(process.env.PORT || '') || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -47,11 +47,11 @@ app.post('/', async (req: Request, res: Response) => {
   const client = await pool.connect();
 
   const text = `INSERT INTO users(username, password_hash) VALUES($1, $2) RETURNING *`;
-  const values = ["student-" + Math.floor(Math.random() * 65536), "12345"];
+  const values = ['student-' + Math.floor(Math.random() * 65536), '12345'];
   try {
     const result = await client.query(text, values);
     res.json(result.rows);
-  } catch(errors) {
+  } catch (errors) {
     console.log(errors);
   } finally {
     client.release();

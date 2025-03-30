@@ -5,13 +5,13 @@ on:
     branches:
       - development
       - main
-      - feat/*
     paths-ignore:
       - '**/*.md'
   pull_request:
     branches:
       - development
       - main
+      - feat/*
 
 jobs:
   build-and-test:
