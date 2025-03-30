@@ -1,0 +1,70 @@
+# GitHub Actions 
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main", "development", "feat/CI"]
+  pull_request:
+    branches: [ "main", "development", "feat/CI"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps: 
+
+    # 1. Set Up Environment 
+    # 2. Compile TypeScript Code 
+    # 3. Build with React for FrontEnd and Build with node.js for Backend
+
+    # Check out Code
+    - uses: actions/checkout@v3
+
+    # Set up Node.js
+    - name: Set up Node.js
+    - uses: actions/setup-node@v3
+
+    # Install pnpm (May or may not need this also npm might not work)
+    - name: Install pnpm
+    - run: npm install -g pnpm 
+
+    # Sets up TypeScript
+    - name: TypeScript
+    - uses: actions/setup-TypeScript
+
+    # Build FrontEnd
+     - name: build
+     - uses: react-scripts build"
+
+    # Start FrontEnd 
+    - name: start
+    - run: pnpm react-scripts start 
+
+    # Build BackEnd
+    - name: start 
+    - uses: tsc
+
+    # Start BackEnd 
+    - name: start
+    - run: pnpm ts-node src/index.ts
+
+    # Running Testing  
+    - name: testing 
+    - run: pnpm test:unit
+
+    # Lint
+    - name: lint
+    - run: pnpm lint
+
+    # Format
+    - name: format
+    - run: pnpm format
