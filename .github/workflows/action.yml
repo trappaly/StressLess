@@ -29,6 +29,10 @@ jobs:
     # Check out Code
     - uses: actions/checkout@v3
 
+    # Install Dependencies
+    - name: devDependencies
+    - run: pnpm install
+
     # Start FrontEnd 
     - name: start
       run: pnpm react-scripts start 
