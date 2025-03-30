@@ -20,6 +20,7 @@ export default [
         expect: 'readonly',
         describe: 'readonly',
         it: 'readonly',
+        require: 'readonly',
       },
     },
     plugins: {
