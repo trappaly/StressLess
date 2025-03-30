@@ -1,5 +1,8 @@
 <a id="readme-top"></a>
 
+[![Build](https://github.com/trappaly/StressLess/actions/workflows/action.yml/badge.svg)](https://github.com/trappaly/StressLess/actions/workflows/action.yml)
+
+
 # StressLess
 
 <details>
