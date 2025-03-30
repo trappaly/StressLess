@@ -30,8 +30,11 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      - name: Install dependencies top-level
+        run: pnpm install
+
       - name: Install dependencies concurrently for frontend and backend
-        run: pnpm run install
+        run: pnpm run install:all
 
       - name: Lint code
         run: pnpm run lint
@@ -58,7 +61,7 @@ jobs:
       
 
       - name: Build backend and frontend concurrently
-        run: pnpm run build
+        run: pnpm run build:all
 
       - name: Start backend and frontend concurrently
-        run: pnpm run start
+        run: pnpm run start:all
