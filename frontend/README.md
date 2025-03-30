@@ -15,6 +15,13 @@ This project is the frontend for the project. It was bootstrapped with [Create R
 - [Node.js](https://nodejs.org/en/)
 - [pnpm](https://pnpm.io/) (Use `pnpm` instead of `npm` for commands)
 
+### .env environment variables
+- Add a `.env` file into the root of the `frontend` directory.
+- Enter the following environment variables into `.env` in the below format:
+```env
+REACT_APP_BACKEND_BASE_URL=<The URL used for the backend>
+```
+
 ## Getting Started
 
 1. Install dependencies
