@@ -187,7 +187,112 @@ Our app is different because it automatically creates a schedule to complete tas
 4. We will make sure to thoroughly document the build process. We will also document server setup instructions for any online functionality, such as authentication or backups.
 5. Our MVP’s scope is appropriate for the semester, since we have several components to implement, including handling user input, making a scheduler algorithm, and designing an appropriate calendar interface.
 
-# 5. Scope and Feature List
+# **5. Design Requirements**
+
+## 5.1 Data Modeling
+
+![image.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/image.png)
+
+**Data Models: Diagram** [https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612](https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612)
+
+![image.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/image%201.png)
+
+## 5.2 Software Architecture
+
+### a) Major software components and their functionality at a conceptual level.
+
+Our system consists of several key software components that interact to provide a seamless experience for users in managing their schedules efficiently. Below is a conceptual breakdown of each major component and its role within the system.
+
+1. **User Interface (Frontend)**
+    - Provides a responsive and intuitive UI for users to interact with the system.
+    - Allows users to enter preferences, create events and deadlines, and view their generated study schedules.
+    - Displays notifications and reminders about upcoming deadlines and study sessions.
+2. **Authentication & Authorization**
+    - Manages user registration and login using third party service.
+    - Supports authentication methods like email/password login
+    - Ensures secure session handling and prevents unauthorized access to user data.
+3. **User Preferences Module**
+    - Collects user input on study habits, break preferences, and schedule constraints.
+    - Stores and updates user preferences dynamically to refine scheduling logic.
+4. **Event & Deadline Management**
+    - Allows users to add events (e.g., classes, meetings) and deadlines (e.g., assignments, exams).
+    - Supports **recurring events** with configurable patterns (e.g., daily, weekly).
+    - Tracks estimated time needed to complete each task before its deadline.
+    - Stores user-defined and system-generated events (e.g., study blocks).
+5. **Backend with Business Logic**
+    - Core logic that **dynamically generates personalized study schedules** based on user preferences, events, and deadlines.
+    - Uses algorithms to:
+        - Allocate study blocks efficiently.
+        - Prioritize deadlines based on urgency and estimated effort.
+        - Ensure optimal work-break balance according to user habits.
+    - Recalculates and adjusts schedules in response to new inputs (e.g., updated deadlines, changed availability).
+6. **Database**
+    - Stores **all user data**, including profiles, preferences, events, and deadlines.
+    - Ensures **data integrity** through relational constraints and indexing.
+    - Supports querying for efficient retrieval of scheduling-related information.
+
+### b) Interfaces between components at a high level.
+
+- **Frontend ↔ Backend (API Layer)**
+    - The frontend communicates with the backend via **RESTful API endpoints** (e.g., `/api/preferences`, `/api/events`, `/api/generate_schedule`).
+- **Backend ↔ Database**
+    - The backend fetches and updates user data using SQL queries.
+- **Authentication ↔ Third Party Service**
+    - The frontend authenticates users via third party service and passes authentication tokens to the backend for access control.
+- **Backend ↔ Scheduling Logic**
+    - The backend triggers the scheduling engine, which processes user inputs and generates personalized study plans.
+
+### c) Major data storage components and interfaces between data storage and software components.
+
+| **Component** | **Data Source** | **Interaction Method** |
+| --- | --- | --- |
+| Frontend | Backend | API Calls |
+| Backend | Database | SQL Queries |
+| Authentication | Users Table | Token |
+| Scheduling Engine (Business Logic) | Preferences, Events, Deadlines | Queries User Data, Generates Study Plan |
+| Event Management | Events Table | CRUD Operations via API |
+| Deadline Tracking | Deadlines Table | Queries and Updates Task Completion |
+
+### d) Diagram of StressLess system's architecture.
+
+[https://docs.google.com/presentation/d/1bnXGg1ByNbccVPqFxQus0D66CyCj5prQ6tJ-d1poBzU/edit?usp=sharing](https://docs.google.com/presentation/d/1bnXGg1ByNbccVPqFxQus0D66CyCj5prQ6tJ-d1poBzU/edit?usp=sharing)
+
+![image.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/image%202.png)
+
+### e) Assumptions underpinning our chosen architecture
+
+- Users input accurate information about their preferences and availability.
+- Events and deadlines are regularly updated by users for schedule accuracy.
+- The scheduling logic is rule-based initially, with potential for AI-powered optimization in later versions.
+- The system is scalable to support future enhancements (e.g., AI-based time management, collaboration features).
+
+## 5.3 Software Design
+
+| Layer | Packages & Structure | Responsibility | Interfaces & Data Passed |
+| --- | --- | --- | --- |
+| User Interface / Frontend | `components/` - reusable UI components; `pages/` - main pages `Landing`, `Profile`, `Calendar`; `hooks/` - custom React hooks for managing state and API requests; `context/` - global state management using `Context` API; `services/` - API communication layer; `utils/` - imported utilities | Handles user interaction and navigation. Displays schedules, events, and deadlines. Sends user actions to the backend via API requests. Ensures a responsive and intuitive UI with secure sign-up/sign-in/sign-out. | Communicates with **Backend API** (`/api/...`) via HTTP requests. Receives JWT token from authentication flow and stores in session. Sends user input data (preferences, events, deadlines) to the backend. Retrieves processed schedule data and displays it.  |
+| Backend API (Business Logic) | `routes/`- define API endpoints; `controllers/` - handles requests, processes data, and calls services; `services/` - business logic for authentication, scheduling, preferences; `models/` - database schemas | Processes authentication requests and verifies JWT tokens. Stores and retrieves user preferences, events, and deadlines. Generates study/break schedules based on user preferences and events. Prioritizes tasks with approaching deadlines. Adjusts study sessions dynamically based on time constraints. Exposes `RESTful API` endpoints for the frontend. | Receives authentication tokens from **Frontend.** Fetches user preferences, events, and deadlines from **Database.** Returns optimized study schedule to **Backend API**, which then serves it to the **Frontend.** |
+| Database | `users` - store user profiles and third-party uid; `preferences`; `events`; `deadlines` | Stores user details. Persists user preferences, events, and deadlines. Provides fast query access for scheduling algorithms. | CRUD operations via **Backend API.** Returns stored preferences, events, and deadlines to **Backend API**. |
+
+## 5.4 Documentation Plan
+
+### User guide
+
+A user guide document will be available in the repository that describes how the end-user can use the application. The guide will be detailed, describing expected behaviors of the application.
+
+### Help menu
+
+The application will contain a help menu that either shows a simplified or full version of the user guide. Therefore, the user can get help inside the app.
+
+### Developer guide
+
+The repository will be bundled with a developer guide which contains information about how to build the app in a single step, as well as how to deploy the app on a server.
+
+### Code documentation
+
+As usual, the code will be documented as well.
+
+# 6. Scope and Feature List
 
 ## 4+ major features you will implement. The major features should constitute a minimal viable product (MVP).
 
@@ -212,7 +317,7 @@ Our app is different because it automatically creates a schedule to complete tas
 - A way to share the calendar with other people in the app
 - A community for users to share their routines and advices
 
-# 6. Use Cases
+# 7. Use Cases
 
 ## Use Case 1
 
@@ -472,11 +577,11 @@ A new schedule is generated that includes these added recovery periods
 
 1.) What time of day are you the most productive?
 
-Answers: Morning, Night, Afternoon
+Answers: ranges of time  within a day
 
-2.) Do you prefer to work in long sessions or shorter sessions? 
+2.) How long do you want to work? 
 
-Answers: Shorter Sessions(5 minutes to 15 minutes), Longer Sessions(30 minutes to 1hr)
+Answers: must be greater than 0 minutes less than 4 hours(to promote mental wellness)
 
 3.) How much sleep do you typically get?
 
@@ -490,7 +595,7 @@ Answers: manual input(must be a valid time of day)
 
 Answers:  manual input(must be a valid time of day && after the start of the workday)
 
-# 7. References
+# 8. References
 
 - Cirillo, Francesco. (2019). *Pomofocus.* MicraSol LLP. **[https://pomofocus.io](https://pomofocus.io/)
 - Google. (2025). *Google Calendar*. Google. [https://workspace.google.com/intl/en-US/products/calendar/](https://workspace.google.com/intl/en-US/products/calendar/)
