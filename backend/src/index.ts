@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-// import dotenv from 'dotenv';
 
 const { Pool } = require('pg');
 
@@ -23,7 +22,9 @@ const pool = new Pool({
   ssl: {
     require: true,
   }
-})
+});
+
+let counter = 0;
 
 app.get("/", async (req, res) => {
 
@@ -42,12 +43,17 @@ app.get("/", async (req, res) => {
   }
   res.status(404);
 
-})
-
-//Define route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World!');
 });
+
+// //Define route
+// app.get('/', (req: Request, res: Response) => {
+//   res.send('Hello, World! Counter = ' + counter);
+// });
+app.post('/', (req: Request, res: Response) => {
+  counter++;
+  res.send(200);
+});
+
 //Start the server:
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
