@@ -29,42 +29,70 @@ jobs:
     # Check out Code
     - uses: actions/checkout@v3
 
-    # Set up Node.js
-    - name: Set up Node.js
-    - uses: actions/setup-node@v3
-
-    # Install pnpm (May or may not need this also npm might not work)
-    - name: Install pnpm
-    - run: npm install -g pnpm 
-
-    # Sets up TypeScript
-    - name: TypeScript
-    - uses: actions/setup-TypeScript
+    # Start FrontEnd 
+    - name: start
+      run: pnpm react-scripts start 
+      with: 
+        json-file: frontend/package.json
 
     # Build FrontEnd
      - name: build
-     - uses: react-scripts build"
+       uses: react-scripts build
+       with: 
+         json-file:frontend/package.json
 
-    # Start FrontEnd 
-    - name: start
-    - run: pnpm react-scripts start 
+    # Test FrontEnd
+    - name: test 
+      uses: vitest
+      with: 
+        json-file: frontend/package.json
 
-    # Build BackEnd
-    - name: start 
-    - uses: tsc
+    # Ejects FrontEnd
+    - name: eject
+      uses: react-scripts eject
+      with:
+        json-file: frontend/package.json
+
 
     # Start BackEnd 
     - name: start
-    - run: pnpm ts-node src/index.ts
+      run: pnpm ts-node src/index.ts
+      with:
+        json-file: backend/package.json    
 
-    # Running Testing  
-    - name: testing 
-    - run: pnpm test:unit
 
-    # Lint
+    # Build BackEnd
+    - name: build 
+      uses: tsc
+      with:
+        json-file: backend/package.json
+
+
+    # Serves BackEnd
+    - name: serve 
+      uses: node dist/index.js
+      with:
+        json-file: backend/package.json
+
+
+    # Tests BackEnd
+    - name: test
+      uses: vitest
+      with:
+        json-file: backend/package.json
+    
+    # Running Tests with BackEnd and FrontEnd  
+    - name: test:unit 
+      run: pnpm test:unit
+
+    # Lint to Check for Bugs and Errors
     - name: lint
-    - run: pnpm lint
+      run: pnpm exec enlist 
 
-    # Format
+    # Formatting Code
     - name: format
-    - run: pnpm format
+      run: pnpm exec prettier
+
+    # Husky
+    - name: prepare
+      run: husky
