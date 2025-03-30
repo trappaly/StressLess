@@ -46,8 +46,8 @@ app.get('/', async (req, res) => {
 app.post('/', async (req: Request, res: Response) => {
   const client = await pool.connect();
 
-  const text = `INSERT INTO users(username, password_hash) VALUES($1, $2) RETURNING *`
-  const values = ["student-" + Math.floor(Math.random() * 65536), "12345"]
+  const text = `INSERT INTO users(username, password_hash) VALUES($1, $2) RETURNING *`;
+  const values = ["student-" + Math.floor(Math.random() * 65536), "12345"];
   try {
     const result = await client.query(text, values);
     res.json(result.rows);

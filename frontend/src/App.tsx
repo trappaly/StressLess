@@ -11,13 +11,19 @@ function App() {
   function updateMessage() {
     axios.get(URL)
       .then(response => setMessage("User count: " + response.data.length))
-      .catch(error => setMessage("Backend not available"));
+      .catch(error => {
+        console.log(error);
+        setMessage('Backend not available');
+      });
   }
 
   // Tracer code to test requesting backend to manipulate databse.
   function incrementBackendCounter() {
     axios.post(URL)
-      .then(response => updateMessage());
+      .then(response => {
+        console.log(response);
+        updateMessage();
+      });
   }  
 
   // Get the message from the root of the backend.
