@@ -170,8 +170,8 @@ pnpm start
 - [x] Milestone 2 - Git Setup
 - [x] Milestone 3 - Paper prototyping
 - [x] Milestone 4 - Feedback & Iteration
-- [ ] Milestone 5 - Design & Architecture
-- [ ] Milestone 6 - Testing & CI
+- [x] Milestone 5 - Design & Architecture
+- [x] Milestone 6 - Testing & CI
 - [ ] Milestone 7 - Release 1 and demo
 - [ ] Milestone 8 - Documentation
 - [ ] Milestone 9 - Code Review and demo
