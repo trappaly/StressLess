@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  },
   "scripts": {
-    "backend:install": "pnpm --filter backend install",
-    "frontend:install": "pnpm --filter frontend install",
-    "install:all": "concurrently -c \"auto\" \"pnpm backend:install\" \"pnpm frontend:install\"",
     "backend:build": "pnpm --filter backend build",
     "frontend:build": "pnpm --filter frontend build",
     "build:all": "concurrently -c \"auto\" \"pnpm backend:build\" \"pnpm frontend:build\"",
@@ -28,7 +28,6 @@
     "@eslint/js": "^9.21.0",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
-    "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",

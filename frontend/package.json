@@ -7,8 +7,6 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
-    "@types/react-dom": "^19.0.4",
     "axios": "^1.8.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -42,8 +40,14 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.2.0",
-    "@types/react": "^19.0.10",
+    "@types/express": "^5.0.0",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
+    "@types/testing-library__react": "^10.2.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.23.0",
+    "eslint-config-react-app": "^7.0.1",
     "jsdom": "^26.0.0",
     "vitest": "^3.0.9"
   }
