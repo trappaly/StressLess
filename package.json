@@ -24,5 +24,8 @@
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0"
   }
 }

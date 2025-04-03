@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id             Int       @id @default(autoincrement())
+  username       String    @unique
+  password_hash  String
+  created_at     DateTime  @default(now())
+}
+
+model preference_questions {
+  id             Int       @id @default(autoincrement())
+  question_text  String
+}
+
+model user_preferences {
+  id             Int       @id @default(autoincrement())
+  user_id        String
+  question_id    String
+  answer         String?
+}
+
+model user_events {
+  id                     Int       @id @default(autoincrement())
+  user_id                String
+  title                  String    @db.VarChar(255)
+  start_time             DateTime  @default(now())
+  end_time               DateTime?
+  description            String?
+  location_place         String?   @db.VarChar(255)
+  is_recurring           Boolean   @default(false)
+  recurrence_pattern     String?   @db.VarChar(255)
+  recurrence_start_date  DateTime?
+  recurrence_end_date    DateTime?
+  is_generated           Boolean   @default(false)
+  break_time             String?
+  created_at             DateTime  @default(now())
+}
+
+model user_deadlines {
+  id                     Int       @id @default(autoincrement())
+  user_id                String
+  event_id               String
+  title                  String    @db.VarChar(255)
+  due_time               DateTime?
+  description            String?
+  priority               String?    @db.VarChar(255)
+  projected_duration     Integer?
+  created_at             DateTime
+}
