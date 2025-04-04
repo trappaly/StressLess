@@ -1,5 +1,9 @@
 import { faker } from '@faker-js/faker';
 
+/**
+ * Create a random user object for testing purposes.
+ * @returns A random user object.
+ */
 export function randomUser() {
   return {
     id: faker.string.uuid(),
@@ -8,6 +12,11 @@ export function randomUser() {
   };
 }
 
+/**
+ * Create a random user preferences object (a user's response to a survey
+ * question) for testing purposes.
+ * @returns A random user preferences object.
+ */
 export function randomUserPreferences(
   user_id = faker.string.uuid(),
   question_id = faker.string.uuid()
@@ -20,6 +29,10 @@ export function randomUserPreferences(
   };
 }
 
+/**
+ * Create a random survey question for testing purposes.
+ * @returns A random preferences question object.
+ */
 export function randomPreferenceQuestion(
   question_text = faker.lorem.words(10)
 ) {
@@ -29,6 +42,10 @@ export function randomPreferenceQuestion(
   };
 }
 
+/**
+ * Create a random user deadline for testing purposes. 
+ * @returns A random user deadline object.
+ */
 export function randomUserDeadline(
   user_id = faker.string.uuid(),
   event_id = faker.string.uuid()
@@ -47,6 +64,10 @@ export function randomUserDeadline(
   };
 }
 
+/**
+ * Create a random user event for testing purposes. 
+ * @returns A random user event object.
+ */
 export function randomUserEvent(user_id = faker.string.uuid()) {
   const startTime = faker.date.soon({ days: 7 });
   return {
@@ -69,6 +90,10 @@ export function randomUserEvent(user_id = faker.string.uuid()) {
   };
 }
 
+/**
+ * Create a random user event for testing purposes. The event is set to be recurring.
+ * @returns A random user event object.
+ */
 export function randomRecurringUserEvent(user_id = faker.string.uuid()) {
   const event = randomUserEvent(user_id);
   event.is_recurring = true;
@@ -76,6 +101,10 @@ export function randomRecurringUserEvent(user_id = faker.string.uuid()) {
 }
 
 // Source: https://stackoverflow.com/a/1214753
+/**
+ * Adds `minutes` to `data` and returns the new Date.
+ * @returns `date` + `minutes`
+ */
 function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60000);
 }
