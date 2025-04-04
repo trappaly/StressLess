@@ -77,7 +77,7 @@ export function randomUserEvent(user_id = faker.string.uuid()) {
     start_time: startTime,
     end_time: addMinutes(startTime, faker.number.int(240)),
     description: faker.lorem.words(10),
-    location: faker.location.streetAddress(),
+    location_place: faker.location.streetAddress(),
     priority: 'low',
     is_recurring: false,
     recurrence_pattern: '',
