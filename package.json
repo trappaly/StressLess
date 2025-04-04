@@ -4,9 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "backend:install": "pnpm --filter backend install",
-    "frontend:install": "pnpm --filter frontend install",
-    "install:all": "concurrently -c \"auto\" \"pnpm backend:install\" \"pnpm frontend:install\"",
     "backend:build": "pnpm --filter backend build",
     "frontend:build": "pnpm --filter frontend build",
     "build:all": "concurrently -c \"auto\" \"pnpm backend:build\" \"pnpm frontend:build\"",
