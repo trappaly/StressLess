@@ -57,6 +57,6 @@ model user_deadlines {
   due_time               DateTime?
   description            String?
   priority               String?    @db.VarChar(255)
-  projected_duration     Integer?
+  projected_duration     Int?
   created_at             DateTime
 }
