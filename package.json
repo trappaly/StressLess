@@ -1,5 +1,5 @@
 {
-  "name": "StressLess",
+  "name": "stressless",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "backend:test:unit": "pnpm --filter backend test",
     "frontend:test:unit": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
-    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix",
+    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*'",
     "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}",
     "prepare": "husky"
   },
