@@ -1,5 +1,10 @@
 import {Router} from 'express'; 
 import {Request, Response, NextFunction} from 'express';
+import Signup from '../controllers/Auth/Signup';
+import Login from '../controllers/Auth/Login';
+import Logout from '../controllers/Auth/Logout';
+import Responses from '../controllers/User/Responses'
+
 // import * as expressJwt from 'express-jwt';
 
 // Creates the router 
@@ -14,79 +19,25 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 router.use(timeLog)
 
 // Login route
-router.get('/', (req: Request, res: Response) => {
-  res.send('LogIn');
-})
+router.post('/login', Login.login);
+
 
 // Sign up route 
-  router.get('/', (req: Request, res: Response) => {
-  res.send('SignUp');
-})
+router.post('/signup', Signup.signup);
 
-// Authenticate with Google route
-  router.get('/', (req: Request, res: Response) => {
-  res.send('GoogleAuthentication');
-})
 
-// Authetnicate with Microsoft
- router.get('/', (req: Request, res: Response) => {
-  res.send('MicrosfotAuthentication');
+// Redirect to Firebase (different route at some point), this needs to be edited
+  router.get('/firebase', (req: Request, res: Response) => {
+  res.send('Redirect to Firebase');
 })
 
 // Log out route 
-router.get('/', (req: Request, res: Response) => {
-  res.send('LogOut');
-})
+router.post('/logout', Logout.logout);
 
-// Survey results route
-router.get('/', (req: Request, res: Response) => {
-  res.send('SurveyResults');
-})
+// Get survey results 
+router.get('/getsurveyresults:/userID', Responses.getResponses);
 
 
-
-//import HomeController from '../controllers/Home';
-
-// Sign up route
-//router.get('/signup', RegisterController.show);
-//router.post('/signup', RegisterController.perform);
-
-// Google authetnication 
-// router.get('/auth/google', GoogleController.show);
-// router.post('auth/google', GoogleController.perform);
-
-// Microsoft authentication 
-// router.get('/auth/microsoft', MicrosoftController.show);
-// router.post('/auth/microsoft', MicrosoftController.perform);
-
-// Log in route 
-// router.get('/login',  LoginController.show);
-// router.post('/login', LoginController.perform);
-
-// Log out 
-// router.get('/logout', LogoutController.show);
-// router.get('/logout', LogoutController.perform);
-
-
-
-// GET method route
-//router.get('/', (req: Request, res: Response) => {
-  //res.send('GET request to the homepage');
-//})
-
-
-// POST method route 
- // router.post('/', (req: Request, res: Response) => {
- // res.send('POST request to the homepage');
-// })
-
-// PUT method route
-  // router.put('/', (req: Request, res: Response) => {
-  // res.send('PUT request to the homepage');
-// })
-
-// DELETE method route
- // router.delete('/', (req: Request, res: Response) => {
-  // res.send('DELETE request to the homepage');
-//})
+// Save survey results 
+router.post ('/savesurveyresults:/userID', Responses.saveResponses);
 
