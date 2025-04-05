@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {
-    "concurrently": "^9.1.2"
-  },
   "scripts": {
     "backend:build": "pnpm --filter backend build",
     "frontend:build": "pnpm --filter frontend build",
@@ -34,6 +31,7 @@
     "vitest": "^3.0.9"
   },
   "dependencies": {
-    "@prisma/client": "^6.5.0"
+    "@prisma/client": "^6.5.0",
+    "concurrently": "^9.1.2"
   }
 }
