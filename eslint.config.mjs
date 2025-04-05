@@ -21,6 +21,7 @@ export default [
         describe: 'readonly',
         it: 'readonly',
         require: 'readonly',
+        exports: 'readonly',
       },
     },
     plugins: {
