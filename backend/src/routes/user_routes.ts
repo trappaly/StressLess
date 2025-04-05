@@ -7,6 +7,7 @@ import Responses from '../controllers/User/Responses'
 
 // import * as expressJwt from 'express-jwt';
 
+
 // Creates the router 
 const express = require("express");
 const router = express.Router();
@@ -39,4 +40,6 @@ router.get('/getsurveyresults:/userID', Responses.getResponses);
 
 // Save survey results 
 router.post ('/savesurveyresults:/userID', Responses.saveResponses);
+
+export default router;
 
