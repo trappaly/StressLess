@@ -40,11 +40,12 @@ USER root
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm -r install --frozen-lockfile --ignore-scripts
 
-# Run the application as a non-root user.
+# Change the working directory to the 'node' user
 USER node
 
 # Expose the port that the application listens on.
 EXPOSE 3000
+EXPOSE 3001
 
-# Run the application.
-CMD pnpm backend:start
+# Run the application. Will get overridden by docker-compose.
+CMD pnpm backend:start && pnpm frontend:start

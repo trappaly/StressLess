@@ -16,6 +16,23 @@ services:
       - app-network
     env_file:
       - ./backend/.env
+    user: node
+    volumes:
+      - ./backend:/usr/src/app/backend
+    command: pnpm backend:start
+  frontend:
+    build: ./
+    ports:
+      - "3000:3000"  # Maps the container port to the host machine port
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+    user: node
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./frontend/.env
+    command: pnpm --filter frontend start
+
 
 networks:
   app-network:
