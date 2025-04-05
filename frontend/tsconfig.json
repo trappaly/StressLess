@@ -11,7 +11,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "node"],
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
