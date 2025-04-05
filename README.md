@@ -137,12 +137,41 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
+### Setting Environment Variables
+In the root, create a `.env` file and add the following variables:
+
+```bash
+DATABASE_URL=<postgresql://neondb_owner:keyblablabla...>
+```
+
+In the `backend` directory, create a `.env` file and add the following variables:
+
+```bash
+PORT=3001
+PGHOST=<some-secret-key-found-on-neon>
+PGDATABASE=<found-on-neon>
+PGUSER=<found-on-neon>
+PGPASSWORD=<some-secret-password-found-on-neon>
+```
+
+In the `frontend` directory, create a `.env` file and add the following variables:
+
+```bash
+NEXT_APP_BACKEND_BASE_URL=<someurl>
+```
+
 ### Setting Up the Database
 
 1. Ensure that you have Node.js, pnpm, and Homebrew installed.
 2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
 3. Ask Madel to add you to the StressLess database.
 4. For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.
+6. Run "neon auth". Make sure your .env file in the root is updated accordingly.
+
+Not Required:
+7. To check into the Neon database from your terminal, you can run the command `neon connection-string testing --database-name neondb --psql` and use commands such as "SELECT * FROM users;" from there (make sure your commands have a semicolon at the end).
+
+For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
 
 ### Development
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
@@ -161,6 +190,7 @@ pnpm start
 ```bash
 cd frontend
 pnpm install
+pnpm build
 pnpm start
 ```
 
