@@ -194,6 +194,20 @@ pnpm build
 pnpm start
 ```
 
+## Docker
+
+## Install Docker Desktop for your OS.
+
+https://docs.docker.com/get-started/get-docker/
+
+## Access the application by running
+
+```bash
+docker compose up --build
+```
+
+For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
+
 ## Milestones
 
 - [x] Milestone 1 - Requirements
