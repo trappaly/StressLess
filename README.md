@@ -140,6 +140,11 @@ cd StressLess
 2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
 3. Ask Madel to add you to the StressLess database.
 4. For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.
+5. Now, you need to download Prisma client. Run the command "npm install @prisma/client". You would run "npx prisma init" to initialize Prisma. To finish installing Prisma, you run "pnpm i -g prisma".
+6. The last thing you need to do is connect Neon. First run "pnpm install -g neonctl". Then, run "neon auth". Make sure your .env file in the root is updated accordingly.
+
+Not Required:
+7. To check into the Neon database from your terminal, you can run the command "neon connection-string testing --database-name neondb --psql" and use commands such as "SELECT * FROM users;" from there (make sure your commands have a semicolon at the end).
 
 ### Development
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
