@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 
 const { Pool } = require('pg');
 
-
 require('dotenv').config();
 const cors = require('cors');
 
