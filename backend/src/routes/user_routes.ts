@@ -27,7 +27,7 @@ router.post('/signup', Signup.signup);
 
 
 // Redirect to Firebase (different route at some point), this needs to be edited
-  router.get('/firebase', (req: Request, res: Response) => {
+router.get('/firebase', (req: Request, res: Response) => {
   res.send('Redirect to Firebase');
 })
 
@@ -36,7 +36,6 @@ router.post('/logout', Logout.logout);
 
 // Get survey results 
 router.get('/getsurveyresults:/userID', Responses.getResponses);
-
 
 // Save survey results 
 router.post ('/savesurveyresults:/userID', Responses.saveResponses);
