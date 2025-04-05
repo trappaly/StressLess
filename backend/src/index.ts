@@ -2,8 +2,8 @@ import express, { Request, Response } from 'express';
 
 const { Pool } = require('pg');
 
-const dotenv = require("dotenv").config();
-const cors = require("cors");
+const dotenv = require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,28 +21,24 @@ const pool = new Pool({
   port: 5432,
   ssl: {
     require: true,
-  }
+  },
 });
 
 let counter = 0;
 
-app.get("/", async (req, res) => {
-
+app.get('/', async (req, res) => {
   const client = await pool.connect();
 
   try {
-
-    const result = await client.query("SELECT * FROM users")
+    const result = await client.query('SELECT * FROM users');
 
     res.json(result.rows);
-
   } catch (errors) {
-    console.log(errors)
+    console.log(errors);
   } finally {
     client.release();
   }
   res.status(404);
-
 });
 
 // //Define route
