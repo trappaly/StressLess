@@ -26,6 +26,8 @@
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/express": "^5.0.1",
+    "@types/pg": "^8.11.11",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "concurrently": "^9.1.2",
@@ -33,5 +35,15 @@
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-microsoft": "^2.1.0",
+    "pg": "^8.14.1"
   }
 }
