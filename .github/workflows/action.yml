@@ -53,3 +53,6 @@ jobs:
 
       - name: Start backend and frontend concurrently
         run: pnpm run start:all
+
+      - name: Shutdown the server (optional)
+        run: pkill -f "node"
