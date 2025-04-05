@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import userRouter from './routes/user_routes';
 
 const { Pool } = require('pg');
 
