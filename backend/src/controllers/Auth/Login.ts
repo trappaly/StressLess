@@ -1,16 +1,30 @@
-import { Request, Response } from 'express';
+import { Request, Response} from 'express';
+import {PrismaClient} from '@prisma/client';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../firebaseConfig'; // Your Firebase configuration
 
+
+
+bcrypt from 'bcrypt';
+
+
+
+const prisma = new PrismaClient();
 
 /*
 * Log in Controller 
 */ 
 class Login {
-  public static login (req: Request, res: Response): any {
+
+    public static async login (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const { email } = req.body;
+     const {email} = req.body;
      try {
          // Check if user exists
-         const user = await User.findOne({ email }).select("+password");
+         const user = await prisma.user.findUnique({
+            where: {email},
+         }); 
+         
          if (!user)
              return res.status(401).json({
                  status: "failed",
@@ -18,21 +32,9 @@ class Login {
                  message:
                      "Invalid email or password. Please try again with the correct credentials.",
              });
-         // if user exists
-         // validate password
-         const isPasswordValid = await bcrypt.compare(
-             `${req.body.password}`,
-             user.password
-         );
-         // if not valid, return unathorized response
-         if (!isPasswordValid)
-             return res.status(401).json({
-                 status: "failed",
-                 data: [],
-                 message:
-                     "Invalid email or password. Please try again with the correct credentials.",
-             });
-         // return user info except password
+         // Valid password
+         
+         // Returns user info except password
          const { password, ...user_data } = user._doc;
  
          res.status(200).json({
