@@ -30,11 +30,13 @@
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
+    "prisma": "^6.5.0",
     "vitest": "^3.0.9"
   },
   "dependencies": {
-<<<<<<< HEAD
+    "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
+    "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -42,9 +44,5 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-microsoft": "^2.1.0",
     "pg": "^8.14.1"
-=======
-    "@prisma/client": "^6.5.0",
-    "concurrently": "^9.1.2"
->>>>>>> development
   }
 }
