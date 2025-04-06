@@ -1,12 +1,7 @@
 import { Request, Response} from 'express';
 import {PrismaClient} from '@prisma/client';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebaseConfig'; // Your Firebase configuration
-
-
-
-bcrypt from 'bcrypt';
-
+// import { auth } from '../firebaseConfig'; // Your Firebase configuration
 
 
 const prisma = new PrismaClient();
@@ -18,7 +13,7 @@ class Login {
 
     public static async login (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const {email} = req.body;
+     const {email, password} = req.body;
      try {
          // Check if user exists
          const user = await prisma.user.findUnique({
@@ -32,8 +27,7 @@ class Login {
                  message:
                      "Invalid email or password. Please try again with the correct credentials.",
              });
-         // Valid password
-         
+
          // Returns user info except password
          const { password, ...user_data } = user._doc;
  
