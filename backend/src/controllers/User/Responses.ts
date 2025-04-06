@@ -8,26 +8,11 @@ class SurveyResponse {
 
     // Gets the user responses 
     public static async getResponses (req: Request, res: Response): any {
-        const surveyresponses = await prisma.user.findMany({
-            where: {
-              OR: [
-                {
-                  email: {
-                    endsWith: 'gmail.com',
-                  },
-                },
-                { email: { endsWith: 'company.com' } },
-              ],
-              NOT: {
-                email: {
-                  endsWith: 'admin.company.com',
-                },
-              },
-            },
-            select: {
-              email: true,
-            },
-          })
+        const surveyresponses = await prisma.user.findMany();
+        where {
+          userID;
+        }
+           
           res.status(200).json({
             status: "success",
             data: surveyresponses;
