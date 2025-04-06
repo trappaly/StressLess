@@ -1,12 +1,9 @@
 {
-  "name": "StressLess",
+  "name": "stressless",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "backend:install": "pnpm --filter backend install",
-    "frontend:install": "pnpm --filter frontend install",
-    "install:all": "concurrently -c \"auto\" \"pnpm backend:install\" \"pnpm frontend:install\"",
     "backend:build": "pnpm --filter backend build",
     "frontend:build": "pnpm --filter frontend build",
     "build:all": "concurrently -c \"auto\" \"pnpm backend:build\" \"pnpm frontend:build\"",
@@ -16,7 +13,7 @@
     "backend:test:unit": "pnpm --filter backend test",
     "frontend:test:unit": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
-    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix",
+    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*'",
     "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}",
     "prepare": "husky"
   },
@@ -31,7 +28,6 @@
     "@types/pg": "^8.11.11",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
-    "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
@@ -48,6 +44,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-microsoft": "^2.1.0",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "concurrently": "^9.1.2"
   }
 }

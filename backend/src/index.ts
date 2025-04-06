@@ -6,8 +6,6 @@ const { Pool } = require('pg');
 require('dotenv').config();
 const cors = require('cors');
 
-// Configuration
-
 const app = express();
 export const port = parseInt(process.env.PORT || '') || 3001;
 
