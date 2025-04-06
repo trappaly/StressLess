@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import {PrismaClient} from '@prisma/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 
 class SurveyResponse {
@@ -10,7 +9,12 @@ class SurveyResponse {
     public static async getResponses (req: Request, res: Response): any {
         const surveyresponses = await prisma.user.findMany();
         where {
-          userID;
+          const user = await prisma.user.create({
+            data: {
+              email: 'elsa@prisma.io',
+              name: 'Elsa Prisma',
+            },
+          })
         }
            
           res.status(200).json({

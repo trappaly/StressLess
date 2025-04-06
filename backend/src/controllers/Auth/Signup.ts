@@ -4,15 +4,12 @@ class Signup {
 
   public static signup (req: Request, res: Response): any {
 
-// Authenticate 
-OR: [
-    {
-      email: {
-        endsWith: 'gmail.com',
-      },
-    },
-    { email: { endsWith: 'outlook.com' } },
-  ],
+const user = await prisma.user.create({
+  data: {
+    email: 'elsa@prisma.io',
+    name: 'Elsa Prisma',
+  },
+})
 
     res.status(200).json({
         status: "success",
@@ -29,5 +26,7 @@ OR: [
 }
 res.send('SignUp');
 res.end();
+
 }
+
 export default Signup;
