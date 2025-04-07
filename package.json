@@ -33,5 +33,14 @@
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
+    "@headlessui/react": "^2.2.0",
+    "undefined": "^0.1.0"
   }
 }
