@@ -1,41 +1,33 @@
 import { Request, Response} from 'express';
-import {PrismaClient} from '@prisma/client';
-import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from '../firebaseConfig'; // Your Firebase configuration
-
-
-const prisma = new PrismaClient();
+import prisma from "../../client";
 
 /*
-* Log in Controller 
+* Access users by logging in 
 */ 
 class Login {
-
     public static async login (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const {email, password} = req.body;
+     const {email, username, password} = req.body;
      try {
          // Check if user exists
          const user = await prisma.user.findUnique({
             where: {email},
          }); 
-         
+         // If it can't find the user
          if (!user)
              return res.status(401).json({
                  status: "failed",
                  data: [],
                  message:
-                     "Invalid email or password. Please try again with the correct credentials.",
+                     "Invalid email or password. Please try again.",
              });
-
-         // Returns user info except password
-         const { password, ...user_data } = user._doc;
- 
+        // User can succuesfully log in 
          res.status(200).json({
              status: "success",
-             data: [user_data],
-             message: "You have successfully logged in.",
+             data: [user],
+             message: "You have logged in.",
          });
+         // Problem with the server
      } catch (err) {
          res.status(500).json({
              status: "error",
@@ -44,10 +36,6 @@ class Login {
              message: "Internal Server Error",
          });
      }
-     res.end();
   }
 }
- 
-   // res.send('LogIn');
-
 export default Login;

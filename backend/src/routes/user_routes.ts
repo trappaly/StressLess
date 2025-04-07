@@ -36,10 +36,10 @@ router.get('/firebase', (req: Request, res: Response) => {
 router.post('/logout', Logout.logout);
 
 // Get survey results 
-router.get('/getsurveyresults:/userID', Responses.getResponses);
+router.get('/getsurveyresults/:/userID', Responses.getResponses);
 
 // Save survey results 
-router.post ('/savesurveyresults:/userID', Responses.saveResponses);
+router.post ('/savesurveyresults/:/userID', Responses.saveResponses);
 
 export default router;
 

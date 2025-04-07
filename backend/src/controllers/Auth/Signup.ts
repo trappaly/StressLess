@@ -1,20 +1,33 @@
 import { Request, Response } from 'express';
+import prisma from "../../client";
+
+/*
+* Creates users by signing up 
+*/
 
 class Signup {
+  public static async signup (req: Request, res: Response): Promise<any>{
+    const {email, username, password} = req.body;
 
-  public static signup (req: Request, res: Response): any {
-
-const user = await prisma.user.create({
-  data: {
-    email: 'elsa@prisma.io',
-    name: 'Elsa Prisma',
-  },
-})
-
+// need to figure out how to hash password
+   // hashed_password = ;
+    try {
+    const user = await prisma.users.create({
+      data: {
+        email, 
+        password
+       // password_hash: hashed_password;
+      },
+      // Accesses neccesary variables in user's model 
+      select: {
+        id: true,
+        username: true,
+      },
+    })
     res.status(200).json({
         status: "success",
-        data: [user_data],
-        message: "You have successfully signed up.",
+        data: [user],
+        message: "You have signed up.",
     });
 } catch (err) {
     res.status(500).json({
@@ -23,10 +36,7 @@ const user = await prisma.user.create({
         data: [],
         message: "There was an error signing up",
     });
+  }
+  }
 }
-res.send('SignUp');
-res.end();
-
-}
-
 export default Signup;
