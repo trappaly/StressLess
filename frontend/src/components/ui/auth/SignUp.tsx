@@ -26,7 +26,7 @@ export default function SignUpForm() {
         displayName: displayName,
       });
 
-      window.location.href = '/dashboard';
+      window.location.href = '/preferences';
     } catch (error: any) {
       setErrorMessage(error.message);
     }
