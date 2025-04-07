@@ -21,6 +21,7 @@ export default [
         describe: 'readonly',
         it: 'readonly',
         require: 'readonly',
+        React: 'readonly',
       },
     },
     plugins: {
@@ -29,6 +30,7 @@ export default [
     rules: {
       semi: ['error', 'always'],
       '@typescript-eslint/no-unused-vars': 'error',
+      'no-unused-vars': 'off',
     },
   },
 ];
