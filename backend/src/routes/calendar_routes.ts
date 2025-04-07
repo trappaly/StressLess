@@ -15,7 +15,7 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 router.use(timeLog);
 
 // Get all events for a particular user
-router.get('/events/by-user/:user', Event.getUserEvent);
+router.get('/events/by-user/:user', Event.getUserEvents);
 
 // Add an event
 router.post('/events', Event.postEvent);
@@ -25,5 +25,8 @@ router.get('/events/id/:id', Event.getEventById);
 
 // Modify an event
 router.put('/events/id/:id', Event.putEvent);
+
+// Delete an event
+router.delete('/events/id/:id', Event.deleteEvent);
 
 export default router;
