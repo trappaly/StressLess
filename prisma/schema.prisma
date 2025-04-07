@@ -16,26 +16,26 @@ datasource db {
 }
 
 model users {
-  id             Int       @id @default(autoincrement())
+  id             String    @id @default(uuid())
   username       String    @unique
   password_hash  String
   created_at     DateTime  @default(now())
 }
 
 model preference_questions {
-  id             Int       @id @default(autoincrement())
+  id             String     @id @default(uuid())
   question_text  String
 }
 
 model user_preferences {
-  id             Int       @id @default(autoincrement())
+  id             String     @id @default(uuid())
   user_id        String
   question_id    String
   answer         String?
 }
 
 model user_events {
-  id                     Int       @id @default(autoincrement())
+  id                     String    @id @default(uuid())
   user_id                String
   title                  String    @db.VarChar(255)
   start_time             DateTime  @default(now())
@@ -52,7 +52,7 @@ model user_events {
 }
 
 model user_deadlines {
-  id                     Int       @id @default(autoincrement())
+  id                     String    @id @default(uuid())
   user_id                String
   event_id               String
   title                  String    @db.VarChar(255)
