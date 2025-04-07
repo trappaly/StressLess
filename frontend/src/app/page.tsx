@@ -1,6 +1,5 @@
-// import Home from '@/components/LandingPage';
-import { UserPreferencesForm } from '@/components/UserPreferencesForm';
+import Home from '@/components/LandingPage';
 
 export default function Page() {
-  return <UserPreferencesForm />; //can change to either new landingpage or UserPreferencesForm *for now*
+  return <Home />;
 }
