@@ -7,11 +7,19 @@ import prisma from "../../client";
 class Login {
     public static async login (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const {email, username, password} = req.body;
+     const {email, username, password, id} = req.body;
      try {
          // Check if user exists
-         const user = await prisma.user.findUnique({
-            where: {email},
+         const user = await prisma.users.findUnique({
+            where: {
+               username
+               // password_hash: hashed_password;
+              },
+              // Accesses neccesary variables in user's model 
+              select: {
+                id: true,
+                username: true,
+              },
          }); 
          // If it can't find the user
          if (!user)

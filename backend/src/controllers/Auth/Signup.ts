@@ -6,17 +6,18 @@ import prisma from "../../client";
 */
 
 class Signup {
-  public static async signup (req: Request, res: Response): Promise<any>{
-    const {email, username, password} = req.body;
 
-// need to figure out how to hash password
-   // hashed_password = ;
+  /*
+  * Creates a user's account 
+  */
+  public static async signup (req: Request, res: Response): Promise<any>{
+    const {email, username, password_hash} = req.body;
+    
     try {
     const user = await prisma.users.create({
       data: {
-        email, 
-        password
-       // password_hash: hashed_password;
+        username, 
+        password_hash
       },
       // Accesses neccesary variables in user's model 
       select: {
@@ -24,12 +25,14 @@ class Signup {
         username: true,
       },
     })
+    // Succuesfully signs the user up 
     res.status(200).json({
         status: "success",
         data: [user],
-        message: "You have signed up.",
+        message: "You have created a StressLess account.",
     });
 } catch (err) {
+  // The user is unable to sign up 
     res.status(500).json({
         status: "error",
         code: 500,

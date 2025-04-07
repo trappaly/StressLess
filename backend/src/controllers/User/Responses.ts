@@ -16,9 +16,6 @@ class SurveyResponse {
         // Finds all of the user preferences and survey results 
         const survey_responses = await prisma.user_preferences.findMany({
         // Accesses neccesary variables in user's preferences model 
-            where: {
-              id: true
-            }, 
             select: {
               id: true,
               user_id: true, 
