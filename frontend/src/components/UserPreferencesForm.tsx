@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z
   .object({
@@ -59,6 +60,8 @@ const formSchema = z
   );
 
 export function UserPreferencesForm() {
+  const router = useRouter();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,6 +79,12 @@ export function UserPreferencesForm() {
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
+    // TODO: Send the data to our backend
+    // axios.post('/api/user/preferences', values)
+    //   .then((response) => {}
+    //   .catch((error) => {}
+    // TODO: for now, we just gonna route to dashboard upon click
+    router.push('/dashboard');
   }
 
   return (

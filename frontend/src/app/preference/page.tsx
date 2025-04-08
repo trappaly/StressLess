@@ -1,3 +1,4 @@
+'use client';
 // Onboarding form
 import { UserPreferencesForm } from '@/components/UserPreferencesForm';
 
