@@ -1,0 +1,7 @@
+# simulates real-world user scenarios to validate the entire application
+
+# Renders title, has “Get Started” button
+
+# Preference form can select answers, submit sends data
+
+# Renders daily/weekly/monthly views
