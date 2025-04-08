@@ -76,10 +76,10 @@ export default function Home() {
     setAllEvents([...allEvents, event]);
   }
 
-//  function handleDeleteModal(data: { event: { id: string } }) {
-    //    setShowDeleteModal(true);
-    //  setIdToDelete(Number(data.event.id));
-//  }
+  //  function handleDeleteModal(data: { event: { id: string } }) {
+  //    setShowDeleteModal(true);
+  //  setIdToDelete(Number(data.event.id));
+  //  }
 
   //  function handleDelete() {
   //    setAllEvents(
@@ -138,7 +138,7 @@ export default function Home() {
           selectMirror={true}
           dateClick={handleDateClick}
           drop={(data) => addEvent(data)}
-//          eventClick={(data) => handleDeleteModal(data)}
+          //          eventClick={(data) => handleDeleteModal(data)}
         />
       </nav>
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
