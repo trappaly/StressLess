@@ -27,8 +27,12 @@ export default function SignUpForm() {
       });
 
       window.location.href = '/preference';
-    } catch (error: any) {
-      setErrorMessage(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Something went wrong.');
+      }
     }
   };
 

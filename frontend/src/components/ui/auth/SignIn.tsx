@@ -13,8 +13,12 @@ export default function SignIn() {
     try {
       await signIn(email, password);
       window.location.href = '/dashboard';
-    } catch (error: any) {
-      setErrorMessage(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Something went wrong.');
+      }
     }
   };
 
