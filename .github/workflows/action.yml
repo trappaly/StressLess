@@ -39,13 +39,14 @@ jobs:
       - name: Lint code
         run: pnpm run lint
 
-      - name: Set environment variables
+      - name: Set root and backend variables
         run: |
           echo "PGHOST=${{ secrets.PGHOST }}" >> $GITHUB_ENV
           echo "PGDATABASE=${{ secrets.PGDATABASE }}" >> $GITHUB_ENV
           echo "PGUSER=${{ secrets.PGUSER }}" >> $GITHUB_ENV
           echo "PGPASSWORD=${{ secrets.PGPASSWORD }}" >> $GITHUB_ENV
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> $GITHUB_ENV
           
       - name: Set frontend environment variables
         run: |
