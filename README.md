@@ -46,6 +46,10 @@ https://trello.com/b/qHGNCIJI/stressless
 - Users can update their planned activities and regenerate the calendar.
 - Notifications for upcoming deadlines and important events.
 
+### Operational Use Cases
+
+At the moment, our project is still in progress and none of our use cases are operational so far. However, our team has already created the landing pages and survey components, so we are confident that our use cases will be functional soon. We will be updating this section of our README.md file as we add more functionality.
+
 ### Project Directory Structure
 
 This is a mono-repo project structure. The root directory contains the backend, frontend, and documentation directories. The backend and frontend directories contain their respective codebases. There are 3 `package.json` in total. The root `package.json` is used for global dependencies and scripts only. See [Monorepo Guide](https://monorepo.guide/) for more information.
