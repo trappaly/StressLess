@@ -35,9 +35,9 @@ router.post('/signup', Signup.signup);
 router.post('/logout', Logout.logout);
 
 // Get survey results 
-router.get('/getsurveyresults:/userID', Responses.getResponses);
+router.get('/surveyresults/:user_id', Responses.getResponses);
 
 
 // Save survey results 
-router.post ('/savesurveyresults:/userID', Responses.saveResponses);
+router.post ('/savesurveyresults/:user_id', Responses.saveResponses);
 
