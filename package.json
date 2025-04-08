@@ -14,7 +14,7 @@
     "frontend:test:unit": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
     "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*'",
-    "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}",
+    "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.ts",
     "prepare": "husky"
   },
   "keywords": [],
@@ -23,15 +23,19 @@
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/express": "^5.0.1",
+    "@types/pg": "^8.11.11",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
+    "prisma": "^6.5.0",
     "vitest": "^3.0.9"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "dotenv": "^16.4.7"
   }
 }

@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import Event from './controllers/Calendar/Event.ts';
 
 const { Pool } = require('pg');
 
@@ -57,6 +58,8 @@ app.post('/', async (req: Request, res: Response) => {
 
   res.status(404);
 });
+
+app.get('/events/:id', Event.getEventById);
 
 //Start the server:
 app.listen(port, () => {

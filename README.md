@@ -162,14 +162,37 @@ NEXT_APP_BACKEND_BASE_URL=<someurl>
 
 ### Setting Up the Database
 
+### Getting Onboard with Neon (Our Database)
 1. Ensure that you have Node.js, pnpm, and Homebrew installed.
 2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
-3. Ask Madel to add you to the StressLess database.
-4. For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.
-6. Run "neon auth". Make sure your .env file in the root is updated accordingly.
+3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+4. Install Neon on your system by running the command 
+```bash
+pnpm install -g neonctl
+```
+5. Run 
+```bash
+neon auth
+```
+6. Make sure your .env file in the root is updated accordingly.
 
-Not Required:
-7. To check into the Neon database from your terminal, you can run the command `neon connection-string testing --database-name neondb --psql` and use commands such as "SELECT * FROM users;" from there (make sure your commands have a semicolon at the end).
+### Installing Prisma (Tool Used to Access Our Database Neon)
+1. Install and generate Prisma Client:
+```bash
+pnpm install @prisma/client
+```
+2. Initialize Prisma:
+```bash
+npx prisma init
+```
+3. Finish installing Prisma:
+```bash
+pnpm i -g prisma
+```
+4. Optional: When migrating the Prisma schema, the command to do so is:
+```bash
+prisma migrate dev
+```
 
 For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
 
