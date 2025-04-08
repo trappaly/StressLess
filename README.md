@@ -174,6 +174,16 @@ NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
 
+### Installing Dependencies
+
+At root level, run:
+
+```bash
+pnpm install
+```
+
+This will install 3 workspaces, because we have specified so in [pnpm-workspace.yaml](pnpm-workspace.yaml). This will install the dependencies for the backend and frontend. Alternatively, you can go into each directory and run `pnpm install` separately.
+
 ### Setting Up the Database
 
 ### Getting Onboard with Neon (Our Database)
@@ -190,22 +200,10 @@ neon auth
 ```
 6. Make sure your .env file in the root is updated accordingly.
 
-### Installing Prisma (Tool Used to Access Our Database Neon)
-1. Install and generate Prisma Client:
+### Installing Prisma Client (Tool Used to Access Our Database Neon)
+
 ```bash
-pnpm install @prisma/client
-```
-2. Initialize Prisma:
-```bash
-npx prisma init
-```
-3. Finish installing Prisma:
-```bash
-pnpm i -g prisma
-```
-4. Optional: When migrating the Prisma schema, the command to do so is:
-```bash
-prisma migrate dev
+npx prisma generate
 ```
 
 For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
