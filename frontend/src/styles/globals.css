@@ -123,3 +123,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css */
+.interactive {
+  @apply cursor-pointer transition hover:opacity-80;
+}
+
