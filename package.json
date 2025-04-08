@@ -13,7 +13,7 @@
     "backend:test:unit": "pnpm --filter backend test",
     "frontend:test:unit": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
-    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*'",
+    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*'",
     "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.{ts,tsx}",
     "prepare": "husky"
   },
@@ -30,5 +30,14 @@
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
+    "@headlessui/react": "^2.2.0",
+    "undefined": "^0.1.0"
   }
 }
