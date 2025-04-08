@@ -33,19 +33,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
       - name: Lint code
         run: pnpm run lint
 
-      - name: Set backend environment variables
+      - name: Set environment variables
         run: |
           echo "PGHOST=${{ secrets.PGHOST }}" >> $GITHUB_ENV
           echo "PGDATABASE=${{ secrets.PGDATABASE }}" >> $GITHUB_ENV
           echo "PGUSER=${{ secrets.PGUSER }}" >> $GITHUB_ENV
           echo "PGPASSWORD=${{ secrets.PGPASSWORD }}" >> $GITHUB_ENV
-
-      - name: Run unit tests concurrently for frontend and backend
-        run: pnpm run test:unit
-
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          
       - name: Set frontend environment variables
         run: |
           echo "NEXT_APP_BACKEND_BASE_URL=${{ secrets.NEXT_APP_BACKEND_BASE_URL }}" >> $GITHUB_ENV
@@ -56,9 +57,14 @@ jobs:
           echo "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}" >> $GITHUB_ENV
       
-
+      - name: Run unit tests concurrently for frontend and backend
+        run: pnpm run test:unit
+        
       - name: Build backend and frontend concurrently
         run: pnpm run build:all
 
 #      - name: Start backend and frontend concurrently
 #        run: pnpm run start:all
+#
+#      - name: Shutdown the server (optional)
+#        run: pkill -f "node"
