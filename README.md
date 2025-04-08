@@ -55,6 +55,11 @@ StressLess/
 ├── backend/
     ├── src/
         ├── index.ts (entry point)
+        ├── client.ts (database connection)
+        ├── config/ (configuration files)
+        ├── controllers/ (business logic)
+        ├── routes/ (API endpoints)
+        ├── test/ (unit tests)
     ├── .gitignore, package.json, tsconfig.json
     ├── README.md (read to set up environment)
 ├── frontend/
@@ -63,12 +68,20 @@ StressLess/
         ├── manifest.json
         ├── .ico, .png
     ├── src/
-        ├── App.tsx, App.css
-        ├── index.tsx, index.css
-        ├── App.test.tsx
-        ├── setupTests.ts
+        ├── app/ (Next.js app directory)
+            ├── calendar/
+            ├── dashboard/
+            ├── preference/
+            ├── page.tsx
+            ├── layout.tsx
+        ├── components/
+        ├── lib/
+        ├── styles/
+        ├── tests/        
     ├── .gitignore, package.json, tsconfig.json
-    ├── README.md (read to set up environment)
+    ├── eslint.config.mjs, next.config.ts, next-env.d.ts, postcss.config.mjs
+    ├── vitest.config.ts, vitest.setup.ts
+    ├── README.md 
 ├── docs/
     ├── agile docs/
         ├── Living Document.md            # requirements, user stories, etc.
