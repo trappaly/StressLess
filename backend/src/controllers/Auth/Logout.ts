@@ -1,3 +1,4 @@
+
 import { Request, Response} from 'express';
 import prisma from "../../client";
 
@@ -39,4 +40,5 @@ catch (err) {
   }
   }
 }
+
 export default Logout;

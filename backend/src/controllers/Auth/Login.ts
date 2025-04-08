@@ -1,3 +1,4 @@
+
 import { Request, Response} from 'express';
 import prisma from "../../client";
 
@@ -45,5 +46,6 @@ class Login {
          });
      }
   }
+
 }
 export default Login;
