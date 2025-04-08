@@ -3,7 +3,7 @@ import {Request, Response, NextFunction} from 'express';
 import Signup from '../controllers/Auth/Signup';
 import Login from '../controllers/Auth/Login';
 import Logout from '../controllers/Auth/Logout';
-import Responses from '../controllers/User/Responses'
+import Responses from '../controllers/User/Responses';
 
 // import * as expressJwt from 'express-jwt';
 
@@ -14,10 +14,10 @@ const router = express.Router();
 
 // Keeps track of time on website
 const timeLog = (req: Request, res: Response, next: NextFunction) => {
-  console.log('Time: ', Date.now())
-  next()
-}
-router.use(timeLog)
+  console.log('Time: ', Date.now());
+  next();
+};
+router.use(timeLog);
 
 // Login route
 router.post('/login', Login.login);
@@ -32,7 +32,7 @@ router.post('/signup', Signup.signup);
 router.get('/firebase', (req: Request, res: Response) => {
   router.get('/firebase', (req: Request, res: Response) => {
   res.send('Redirect to Firebase');
-})
+});
 
 // Log out route 
 router.post('/logout', Logout.logout);

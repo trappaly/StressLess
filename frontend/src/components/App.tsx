@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css';
 
 const URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 
-function App() {
+export default function LandingPage() {
   const [message, setMessage] = useState('Backend not available');
 
   // Tracer code for updating backend message.
@@ -41,5 +40,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
