@@ -137,11 +137,14 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
-### Setting Environment Variables
+### Setting Environment Variables (Please contact a team member for the three .env files)
 In the root, create a `.env` file and add the following variables:
 
 ```bash
-DATABASE_URL=<postgresql://neondb_owner:keyblablabla...>
+
+# schema.prisma file:
+DATABASE_URL=<some-url>
+DIRECT_URL=<some-url>
 ```
 
 In the `backend` directory, create a `.env` file and add the following variables:
@@ -157,7 +160,18 @@ PGPASSWORD=<some-secret-password-found-on-neon>
 In the `frontend` directory, create a `.env` file and add the following variables:
 
 ```bash
-NEXT_APP_BACKEND_BASE_URL=<someurl>
+# Server-side
+NEXT_APP_BACKEND_BASE_URL=<some-url>
+
+# Client-side
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
 
 ### Setting Up the Database
@@ -197,6 +211,7 @@ prisma migrate dev
 For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
 
 ### Development
+
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
 Read each README in the `backend` and `frontend` directories for more information. or follow the steps below:
 
@@ -213,9 +228,48 @@ pnpm start
 ```bash
 cd frontend
 pnpm install
+pnpm dev
+```
+
+### Build
+
+To build the frontend for production, run the following command in the `frontend` directory:
+
+```bash
 pnpm build
+```
+
+This will create a `.next` directory with the production-ready files. Then you can run:
+
+```bash
 pnpm start
 ```
+
+## Available scripts are in `package.json` files.
+
+### Testing
+
+To run the unit tests for both frontend and backend, you can run at root level:
+
+```bash
+pnpm test:unit
+```
+
+Alternatively, you can run the tests in each directory separately:
+
+```bash
+pnpm test
+```
+
+### Formating and Linting
+
+To run formatting and linting checks, you can run at root level:
+
+```bash
+pnpm format
+pnpm lint
+```
+
 
 ## Docker
 
@@ -224,6 +278,8 @@ pnpm start
 https://docs.docker.com/get-started/get-docker/
 
 ## Access the application by running
+
+Open Docker Desktop. Then run in the command line at root level:
 
 ```bash
 docker compose up --build
