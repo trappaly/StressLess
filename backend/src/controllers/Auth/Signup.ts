@@ -1,3 +1,13 @@
+import { Request, Response } from 'express';
+
+class Signup {
+  public static signup(req: Request, res: Response): any {
+    res.send('SignUp');
+  }
+}
+
+export default Signup;
+
 // // routes/auth.ts (or wherever you want to handle user creation)
 // import express from 'express';
 // import { verifyFirebaseToken } from '../middleware/auth';
