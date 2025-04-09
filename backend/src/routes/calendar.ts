@@ -1,32 +1,22 @@
-import { Router } from 'express'; 
-import { Request, Response, NextFunction } from 'express';
-import Event from '../controllers/Calendar/Event';
+import { Router } from 'express';
+import EventController from '../controllers/EventController';
 
-// import * as expressJwt from 'express-jwt';
-
-// Creates the router 
+// Creates the router
 const router = Router();
 
-// Keeps track of time on website
-const timeLog = (req: Request, res: Response, next: NextFunction) => {
-  console.log('Time: ', Date.now());
-  next();
-};
-router.use(timeLog);
-
 // Get all events for a particular user
-router.get('/events/by-user/:user', Event.getUserEvents);
+router.get('/events/by-user/:user', EventController.getUserEvents);
 
 // Add an event
-router.post('/events', Event.postEvent);
+router.post('/events', EventController.postEvent);
 
 // Get an event by id
-router.get('/events/id/:id', Event.getEventById);
+router.get('/events/id/:id', EventController.getEventById);
 
 // Modify an event
-router.put('/events/id/:id', Event.putEvent);
+router.put('/events/id/:id', EventController.putEvent);
 
 // Delete an event
-router.delete('/events/id/:id', Event.deleteEvent);
+router.delete('/events/id/:id', EventController.deleteEvent);
 
 export default router;
