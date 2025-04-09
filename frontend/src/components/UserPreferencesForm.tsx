@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const formSchema = z
   .object({
@@ -79,10 +80,18 @@ export function UserPreferencesForm() {
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
-    // TODO: Send the data to our backend
-    // axios.post('/api/user/preferences', values)
-    //   .then((response) => {}
-    //   .catch((error) => {}
+    let outputs = [];
+    for (const question in values) {
+      outputs.push({
+        question_text: question,
+        answer: String(values[question as keyof z.infer<typeof formSchema>]),
+      });
+    }
+    console.log(outputs);
+    // Send the data to our backend
+    axios.post('/surveyresults/:userid', values)
+      .then((response) => {console.log(response)})
+      .catch((error) => {console.log(error)});
     // TODO: for now, we just gonna route to dashboard upon click
     router.push('/dashboard');
   }
