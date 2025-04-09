@@ -18,18 +18,14 @@ export default function SignInSignUp() {
         {isSignUp ? (
           <>
             Already have an account?{' '}
-            <span
-              className="underline underline-offset-4 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
-            >
+            <span className="underline underline-offset-4 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 cursor-pointer">
               Sign In
             </span>
-           </>
+          </>
         ) : (
           <>
             Don&apos;t have an account?{' '}
-            <span
-              className="underline underline-offset-4 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
-            >
+            <span className="underline underline-offset-4 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 cursor-pointer">
               Sign Up
             </span>
           </>
