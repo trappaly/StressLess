@@ -131,6 +131,7 @@ StressLess/
 ### Notes:
   - Look at the [package.json global](package.json), [backend package.json](backend/package.json), and [frontend package.json](frontend/package.json) for more information on the dependencies and available scripts.
   - Use `pnpm` instead of `npm` for commands.
+  - Use `pnpm exec` instead of `npx` for commands.
   - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
     - Configure `Prettier` to handle code formatting automatically. See the file [Prettier Guide](docs/dev%20docs/typescript%20styling/prettier.md) for more information.
     - Configure `ESLint` to catch TypeScript violations. See the file [ESLint Guide](docs/dev%20docs/typescript%20styling/eslint.md) for more information.
@@ -220,7 +221,7 @@ neon auth
 ### Installing Prisma Client (Tool Used to Access Our Database Neon)
 
 ```bash
-npx prisma generate
+pnpm exec prisma generate
 ```
 
 For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
