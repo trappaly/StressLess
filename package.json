@@ -30,11 +30,9 @@
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
-    "prisma": "^6.5.0",
     "vitest": "^3.0.9"
   },
   "dependencies": {
-    "@prisma/client": "^6.5.0",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7"
   }

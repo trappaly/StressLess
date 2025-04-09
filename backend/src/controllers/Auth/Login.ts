@@ -6,21 +6,21 @@ import prisma from "../../client";
 * Access users by logging in 
 */ 
 class Login {
-    public static async login (req: Request, res: Response): Promise <any > {
+    public static async getUser (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const {email, username, password} = req.body;
+     const {id} = req.body;
      try {
          // Check if user exists
          const user = await prisma.user.findUnique({
-            where: {email},
+            where: {id},
          }); 
          // If it can't find the user
          if (!user)
-             return res.status(401).json({
+             return res.status(404).json({
                  status: "failed",
                  data: [],
                  message:
-                     "Invalid email or password. Please try again.",
+                     "Can't find the user",
              });
         // User can succuesfully log in 
          res.status(200).json({

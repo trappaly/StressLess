@@ -19,7 +19,7 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 router.use(timeLog);
 
 // Login route
-router.post('/login', Login.login);
+router.post('/login', Login.getUser);
 
 
 // Sign up route 

@@ -9,12 +9,12 @@ import prisma from "../../client";
 class Logout {
 
  public static async logout(req: Request, res: Response): Promise<any> {
-  const {email} = req.body;
+  const {id} = req.body;
 
   try {
-    const user = await prisma.users.updateMany({
+    const user = await prisma.users.findUnique({
       select: {
-        email
+        id
       },
     });
     res.status(200).json({
