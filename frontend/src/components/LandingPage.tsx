@@ -47,7 +47,7 @@ const Home: React.FC = () => {
         >
           <Button
             onClick={scrollToSignUp}
-            className="rounded-full px-6 py-3 text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg hover:scale-105 transition-all"
+            className="rounded-full px-6 py-3 text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg hover:scale-105 transition-all cursor-pointer"
           >
             Get Started
           </Button>

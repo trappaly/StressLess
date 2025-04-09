@@ -76,7 +76,7 @@ export default function SignUpForm() {
           )}
           <button
             onClick={handleSignUp}
-            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition"
+            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer"
           >
             Sign Up
           </button>
