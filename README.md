@@ -48,7 +48,7 @@ https://trello.com/b/qHGNCIJI/stressless
 
 ### Operational Use Cases
 
-At the moment, our project is still in progress and none of our use cases are operational so far. However, our team has already created the landing pages and survey components, so we are confident that our use cases will be functional soon. We will be updating this section of our README.md file as we add more functionality.
+Use Case 3 defining Julie's ability to create an account, log in, and take the preferences survey is currently operational. The user is able to perform all three of the aformentioned tasks.
 
 ### Project Directory Structure
 
