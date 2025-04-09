@@ -25,6 +25,11 @@ PGUSER=<PostgreSQL username>
 PGPASSWORD=<PostgreSQL password>
 ```
 
+Configure Firebase auth:
+
+In `src/config/serviceAccountKey.ts`, add the path to your Firebase service account key JSON file. This file is used to authenticate with Firebase services.
+You can find the file here https://www.notion.so/Secrets-1c581728581b807fb0e9cbce78d5daeb
+
 ## Getting Started
 
 1. Install dependencies

@@ -38,8 +38,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <Header />
-          <main>{children}</main>
+            <Header />
+            <main>{children}</main>
           </ThemeProvider>
         </AuthProvider>
       </body>
