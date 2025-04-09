@@ -7,22 +7,19 @@ import prisma from "../../client";
 
 class Signup {
   public static async signup (req: Request, res: Response): Promise<any>{
-    const {email, username, password} = req.body;
+    const {id, email} = req.body;
 
     try {
     const user = await prisma.users.create({
       data: {
-        email, 
-        password
-       // password_hash: hashed_password;
+        id: true
       },
-      // Accesses neccesary variables in user's model 
       select: {
         id: true,
-        username: true,
+        email: true,
       },
-    });
-    res.status(200).json({
+    })
+    res.status(201).json({
         status: "success",
         data: [user],
         message: "You have signed up.",

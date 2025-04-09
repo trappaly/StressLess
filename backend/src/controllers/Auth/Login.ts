@@ -1,18 +1,34 @@
 
 import { Request, Response} from 'express';
 import prisma from "../../client";
+import bcrypt from "bcrypt";
 
 /*
 * Access users by logging in 
 */ 
 class Login {
+
+    
+ hashPassword = async (password: string) => {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log("Hashed Password:", hashedPassword);
+};
+
+  verifyPassword = async (inputPassword: string, storedHash: string) => {
+    const isMatch = await bcrypt.compare(inputPassword, storedHash);
+    console.log("Password Match:", isMatch);
+};
+
+
     public static async getUser (req: Request, res: Response): Promise <any > {
      // Get variables for the login process
-     const {id} = req.body;
+     const {email} = req.body;
      try {
          // Check if user exists
          const user = await prisma.user.findUnique({
-            where: {id},
+            where: {
+                email},
          }); 
          // If it can't find the user
          if (!user)
