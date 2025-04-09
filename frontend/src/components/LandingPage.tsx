@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // import { Input } from '@/components/ui/input';
-import { ModeToggle } from '@/components/ModeToggle';
 import SignInSignUp from '@/components/ui/auth/SignInSignUp';
 
 const Home: React.FC = () => {
@@ -16,7 +15,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200 font-sans">
-      <ModeToggle />
 
       {/* Hero */}
       <div className="h-screen flex flex-col items-center justify-center text-center px-6 relative">
