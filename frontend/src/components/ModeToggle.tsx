@@ -8,7 +8,7 @@ export function ModeToggle() {
   const { theme, setTheme } = useTheme(); // manages the theme
 
   return (
-    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="cursor-pointer">
       {theme === 'dark' ? (
         <Sun className="h-[1.2rem] w-[1.2rem]" />
       ) : (
