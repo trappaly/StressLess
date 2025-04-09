@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-class Login {
-    public static login (req: Request, res: Response): any {
-    res.send('LogIn');
-    }
+class Signout {
+  public static signout(req: Request, res: Response): any {
+    res.send('SignOut');
+  }
 }
-export default Login;
+export default Signout;

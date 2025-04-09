@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
-class Logout {
-    public static logout (req: Request, res: Response): any {
+class Signin {
+  public static signin(req: Request, res: Response): any {
     res.send('LogOut');
-    }
+  }
 }
 
-export default Logout;
+export default Signin;
