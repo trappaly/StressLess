@@ -17,7 +17,7 @@ class FakeDataFactory {
   public randomUser() {
     this.usersCount++;
     return {
-      id: this.usersCount,
+      id: faker.string.uuid(),
       username: faker.internet.username(),
       created_at: faker.date.past({ years: 5 }),
     };
@@ -30,7 +30,7 @@ class FakeDataFactory {
   public randomPreferenceQuestion(question_text = faker.lorem.words(10)) {
     this.preferenceQuestionsCount++;
     return {
-      id: this.preferenceQuestionsCount,
+      id: faker.string.uuid(),
       question_text: question_text,
     };
   }
@@ -41,12 +41,12 @@ class FakeDataFactory {
    * @returns A random user preferences object.
    */
   public randomUserPreference(
-    user_id = this.usersCount,
-    question_id = this.preferenceQuestionsCount
+    user_id = faker.string.uuid(),
+    question_id = faker.string.uuid()
   ) {
     this.userPreferencesCount++;
     return {
-      id: this.userPreferencesCount,
+      id: faker.string.uuid(),
       user_id: user_id,
       question_id: question_id,
       answer: faker.lorem.words(10),
@@ -57,11 +57,11 @@ class FakeDataFactory {
    * Create a random user event for testing purposes.
    * @returns A random user event object.
    */
-  public randomUserEvent(user_id = this.usersCount) {
+  public randomUserEvent(user_id = faker.string.uuid()) {
     const startTime = faker.date.soon({ days: 7 });
     this.userEventsCount++;
     return {
-      id: this.userEventsCount,
+      id: faker.string.uuid(),
       user_id: user_id,
       title: faker.company.catchPhrase(),
       start_time: startTime,
@@ -84,12 +84,12 @@ class FakeDataFactory {
    * @returns A random user deadline object.
    */
   public randomUserDeadline(
-    user_id = this.usersCount,
-    event_id = this.userEventsCount
+    user_id = faker.string.uuid(),
+    event_id = faker.string.uuid()
   ) {
     this.userDeadlinesCount++;
     return {
-      id: this.userDeadlinesCount,
+      id: faker.string.uuid(),
       user_id: user_id,
       event_id: event_id,
       title: faker.company.catchPhrase(),
@@ -105,7 +105,7 @@ class FakeDataFactory {
    * Create a random user event for testing purposes. The event is set to be recurring.
    * @returns A random user event object.
    */
-  public randomRecurringUserEvent(user_id = this.usersCount) {
+  public randomRecurringUserEvent(user_id = faker.string.uuid()) {
     const event = this.randomUserEvent(user_id);
     event.is_recurring = true;
     return event;
