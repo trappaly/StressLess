@@ -18,7 +18,7 @@ class Signup {
         id: true,
         email: true,
       },
-    })
+    });
     res.status(201).json({
         status: "success",
         data: [user],

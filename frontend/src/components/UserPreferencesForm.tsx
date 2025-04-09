@@ -89,9 +89,14 @@ export function UserPreferencesForm() {
     }
     console.log(outputs);
     // Send the data to our backend
-    axios.post('/surveyresults/:userid', values)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.log(error)});
+    axios
+      .post('/surveyresults/:userid', values)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     // TODO: for now, we just gonna route to dashboard upon click
     router.push('/dashboard');
   }
