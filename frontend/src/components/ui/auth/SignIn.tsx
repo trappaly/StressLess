@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
+import { getAuth } from 'firebase/auth';
+import axios from 'axios';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
-  const { signIn, loading } = useAuth();
+  const { signIn, user, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -12,7 +14,29 @@ export default function SignIn() {
 
     try {
       await signIn(email, password);
-      window.location.href = '/dashboard';
+
+      // 3. Get the Firebase ID token
+      const idToken = await getAuth().currentUser?.getIdToken(true);
+
+      if (!idToken) {
+        console.log(`${idToken} not found`);
+        throw new Error('Failed to retrieve ID token');
+      }
+
+      // 4. Send the ID token to the backend API for user creation
+      const response = await axios.post(
+        'http://localhost:3001/api/auth/signin',
+        {
+          idToken,
+        }
+      );
+
+      // 5. Handle response from your API
+      if (response.status === 201) {
+        window.location.href = '/calendar'; // Redirect after successful signup
+      } else {
+        setErrorMessage(response.data.message);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
