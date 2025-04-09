@@ -23,11 +23,14 @@ PGHOST=<PostgreSQL hostname>
 PGDATABASE=<PostgreSQL database name>
 PGUSER=<PostgreSQL username>
 PGPASSWORD=<PostgreSQL password>
+
+DATABASE_URL=<PostgreSQL connection string>
+DIRECT_URL=<Direct URL to your Neon database>
 ```
 
 Configure Firebase auth:
 
-In `src/config/serviceAccountKey.ts`, add the path to your Firebase service account key JSON file. This file is used to authenticate with Firebase services.
+In `src/serviceAccountKey.ts`, add the path to your Firebase service account key JSON file. This file is used to authenticate with Firebase services.
 You can find the file here https://www.notion.so/Secrets-1c581728581b807fb0e9cbce78d5daeb
 
 ## Getting Started

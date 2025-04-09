@@ -156,15 +156,6 @@ cd StressLess
 ```
 
 ### Setting Environment Variables (Please contact a team member for the three .env files)
-In the root, create a `.env` file and add the following variables:
-
-```bash
-
-# schema.prisma file:
-DATABASE_URL=<some-url>
-DIRECT_URL=<some-url>
-```
-
 In the `backend` directory, create a `.env` file and add the following variables:
 
 ```bash
@@ -173,6 +164,9 @@ PGHOST=<some-secret-key-found-on-neon>
 PGDATABASE=<found-on-neon>
 PGUSER=<found-on-neon>
 PGPASSWORD=<some-secret-password-found-on-neon>
+
+DATABASE_URL=<some-url>
+DIRECT_URL=<some-url>
 ```
 
 In the `frontend` directory, create a `.env` file and add the following variables:
@@ -205,22 +199,13 @@ This will install 3 workspaces, because we have specified so in [pnpm-workspace.
 ### Setting Up the Database
 
 ### Getting Onboard with Neon (Our Database)
-1. Ensure that you have Node.js, pnpm, and Homebrew installed.
-2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
-3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
-4. Install Neon on your system by running the command 
-```bash
-pnpm install -g neonctl
-```
-5. Run 
-```bash
-neon auth
-```
-6. Make sure your .env file in the root is updated accordingly.
+1. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+2. Make sure your .env file in the backend is good. 
 
 ### Installing Prisma Client (Tool Used to Access Our Database Neon)
 
 ```bash
+cd backend
 pnpm exec prisma generate
 ```
 
