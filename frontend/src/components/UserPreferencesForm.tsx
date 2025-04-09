@@ -90,7 +90,7 @@ export function UserPreferencesForm() {
     console.log(outputs);
     // Send the data to our backend
     axios
-      .post('/surveyresults/:userid', values)
+      .post('/surveyresults/placeholder-user-id', values)
       .then((response) => {
         console.log(response);
       })
