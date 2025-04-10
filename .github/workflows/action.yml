@@ -18,6 +18,9 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
 
+    env:
+      SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,7 +63,7 @@ jobs:
 
       - name: Set Firebase Admin SDK secrets
         run: |
-            echo "$SERVICE_ACCOUNT_KEY" > backend/src/serviceAccountKey.json
+          echo "$SERVICE_ACCOUNT_KEY" > ./backend/src/serviceAccountKey.json
       - name: Run unit tests concurrently for frontend and backend
         run: pnpm run test:unit
         
