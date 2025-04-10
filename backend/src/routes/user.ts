@@ -1,14 +1,19 @@
-import Responses from '../controllers/User/Responses';
+// import {Router} from 'express'; 
+import {Request, Response, NextFunction} from 'express';
+import PreferenceController from '../controllers/PreferenceController';
 
-// TODO: what is reponses? why is it in user?
-// Creates the router
-const express = require('express');
+// Creates the router 
+const express = require("express");
 const router = express.Router();
 
-// Get survey results
-router.get('/getsurveyresults:/userID', Responses.getResponses);
+// Keeps track of time on website
+const timeLog = (req: Request, res: Response, next: NextFunction) => {
+  console.log('Time: ', Date.now());
+  next();
+};
+router.use(timeLog);
 
-// Save survey results
-router.post('/savesurveyresults:/userID', Responses.saveResponses);
+// Save survey results to database 
+router.post('/surveyresults/:user_id', PreferenceController.postPreferences);
 
 export default router;
