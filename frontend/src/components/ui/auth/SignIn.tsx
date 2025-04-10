@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
-  const { signIn, user, loading } = useAuth();
+  const { signIn, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
