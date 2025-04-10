@@ -31,8 +31,9 @@ DIRECT_URL=<Direct URL to your Neon database>
 
 Configure Firebase auth:
 
-In `src/serviceAccountKey.ts`, add the path to your Firebase service account key JSON file. This file is used to authenticate with Firebase services.
-You can find the file here https://www.notion.so/Secrets-1c581728581b807fb0e9cbce78d5daeb
+The file `backend/serviceAccountKey.json` is the Firebase service account key JSON.
+An example is provided. This file is used to authenticate with Firebase services.
+Ask a team member for the content of this file.
 
 ## Getting Started
 

@@ -186,6 +186,11 @@ NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
 
+### Setting Other Secrets
+The file `backend/serviceAccountKey.json` is the Firebase service account key JSON.
+An example is provided. This file is used to authenticate with Firebase services.
+Ask a team member for the content of this file.
+
 ### Installing Dependencies
 
 At root level, run:
