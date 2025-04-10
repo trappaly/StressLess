@@ -2,7 +2,8 @@
  * Prisma client
  */
 
-import { PrismaClient } from '@prisma/client';
+// Need to specify client path directly now
+import { PrismaClient } from '../db/generated/client/client';
 
 let prisma = new PrismaClient();
 
