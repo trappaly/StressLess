@@ -33,7 +33,9 @@
     "vitest": "^3.0.9"
   },
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "concurrently": "^9.1.2",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "prisma": "~6.6.0"
   }
 }
