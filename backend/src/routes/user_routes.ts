@@ -34,10 +34,7 @@ router.post('/signup', Signup.signup);
 // Log out route 
 router.post('/logout', Logout.logout);
 
-// Get survey results 
-router.get('/surveyresults/:id', Responses.getResponses);
 
-
-// Save survey results 
-router.post ('/savesurveyresults/:id', Responses.saveResponses);
+// Save survey results to database 
+router.post('/surveyresults/:user_id', Responses.getResponses);
 
