@@ -62,6 +62,7 @@ jobs:
           echo "NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}" >> $GITHUB_ENV
 
       - name: Set Firebase Admin SDK secrets
+        working-directory: backend
         run: |
           echo "$SERVICE_ACCOUNT_KEY" > ./serviceAccountKey.json
 
