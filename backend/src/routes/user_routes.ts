@@ -18,23 +18,6 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 };
 router.use(timeLog);
 
-// Login route
-router.post('/login', Login.getUser);
-
-
-// Sign up route 
-router.post('/signup', Signup.signup);
-
-
-// Redirect to Firebase (different route at some point), this needs to be edited
-  router.get('/firebase', (req: Request, res: Response) => {
-  res.send('Redirect to Firebase');
-});
-
-// Log out route 
-router.post('/logout', Logout.logout);
-
-
 // Save survey results to database 
 router.post('/surveyresults/:user_id', Responses.getResponses);
 
