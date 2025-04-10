@@ -13,7 +13,7 @@
     "backend:test:unit": "pnpm --filter backend test",
     "frontend:test:unit": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
-    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*'",
+    "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*' --ignore-pattern 'backend/src/db/generated/*'",
     "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.ts",
     "prepare": "husky"
   },
@@ -36,7 +36,6 @@
     "schema": "backend/src/db/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "^6.6.0",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "prisma": "~6.6.0"
