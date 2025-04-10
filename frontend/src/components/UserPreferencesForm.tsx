@@ -82,7 +82,7 @@ export function UserPreferencesForm() {
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
-    let outputs = [];
+    const outputs = [];
     for (const question in values) {
       outputs.push({
         question_text: question,
