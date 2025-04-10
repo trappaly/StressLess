@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
+import { getAuth } from 'firebase/auth';
+import axios from 'axios';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -12,7 +14,29 @@ export default function SignIn() {
 
     try {
       await signIn(email, password);
-      window.location.href = '/dashboard';
+
+      // 3. Get the Firebase ID token
+      const idToken = await getAuth().currentUser?.getIdToken(true);
+
+      if (!idToken) {
+        console.log(`${idToken} not found`);
+        throw new Error('Failed to retrieve ID token');
+      }
+
+      // 4. Send the ID token to the backend API for user creation
+      const response = await axios.post(
+        'http://localhost:3001/api/auth/signin',
+        {
+          idToken,
+        }
+      );
+
+      // 5. Handle response from your API
+      if (response.status === 201) {
+        window.location.href = '/calendar'; // Redirect after successful signup
+      } else {
+        setErrorMessage(response.data.message);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
@@ -48,7 +72,7 @@ export default function SignIn() {
           )}
           <button
             onClick={handleSignIn}
-            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition"
+            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer"
           >
             Sign In
           </button>

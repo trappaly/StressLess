@@ -1,18 +1,17 @@
 import { Request, Response } from 'express';
-import prisma from '../../client';
+import prisma from '../config/prisma.ts';
 
-class Event {
-
+export default class EventController {
   /**
    * Gets all the events for specified user.
    * req.params.user - ID of the user
-   */ 
+   */
   public static async getUserEvents(req: Request, res: Response) {
     try {
       const userEvents = await prisma.user_events.findMany({
         where: {
-          user_id: req.params.user_id
-        }
+          user_id: req.params.user_id,
+        },
       });
       res.json(userEvents);
     } catch {
@@ -28,8 +27,8 @@ class Event {
     try {
       const event = await prisma.user_events.findFirstOrThrow({
         where: {
-          id: req.params.id // Ensure id is uuid
-        }
+          id: req.params.id, // Ensure id is uuid
+        },
       });
       res.json(event);
     } catch {
@@ -115,5 +114,3 @@ class Event {
     };
   }
 }
-
-export default Event;
