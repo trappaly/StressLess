@@ -94,7 +94,7 @@ export function UserPreferencesForm() {
     axios
       .post(URL + '/api/user/surveyresults/placeholder-user-id', outputs)
       .then((response) => {
-        console.log("Successfully posted answers");
+        console.log('Successfully posted answers');
         console.log(response);
       })
       .catch((error) => {
