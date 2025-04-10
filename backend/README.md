@@ -8,6 +8,7 @@ This is the backend for the project. It is built with Node.js and Express.js.
 - Express.js
 - TypeScript
 - pnpm
+- Prisma
 
 ## Prerequisites
 
@@ -49,3 +50,27 @@ pnpm format
 ```bash
 pnpm start
 ```
+
+### Setting Up the Database
+
+### Getting Onboard with Neon (Our Database)
+1. Ensure that you have Node.js, pnpm, and Homebrew installed.
+2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
+3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+4. Install Neon on your system by running the command 
+```bash
+pnpm install -g neonctl
+```
+5. Run 
+```bash
+neon auth
+```
+6. Make sure your .env file in the root is updated accordingly.
+
+### Installing Prisma Client (Tool Used to Access Our Database Neon)
+
+```bash
+pnpm exec prisma generate
+```
+
+For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)

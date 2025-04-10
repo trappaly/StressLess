@@ -202,30 +202,6 @@ pnpm install
 
 This will install 3 workspaces, because we have specified so in [pnpm-workspace.yaml](pnpm-workspace.yaml). This will install the dependencies for the backend and frontend. Alternatively, you can go into each directory and run `pnpm install` separately.
 
-### Setting Up the Database
-
-### Getting Onboard with Neon (Our Database)
-1. Ensure that you have Node.js, pnpm, and Homebrew installed.
-2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
-3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
-4. Install Neon on your system by running the command 
-```bash
-pnpm install -g neonctl
-```
-5. Run 
-```bash
-neon auth
-```
-6. Make sure your .env file in the root is updated accordingly.
-
-### Installing Prisma Client (Tool Used to Access Our Database Neon)
-
-```bash
-pnpm exec prisma generate
-```
-
-For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
-
 ### Development
 
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
