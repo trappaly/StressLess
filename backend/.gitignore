@@ -6,4 +6,4 @@ node_modules
 *.xml
 *.log
 .env
-src/config/serviceAccountKey.json
+serviceAccountKey.json
