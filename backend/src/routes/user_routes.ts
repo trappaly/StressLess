@@ -1,9 +1,6 @@
 // import {Router} from 'express'; 
 import {Request, Response, NextFunction} from 'express';
-import Signup from '../controllers/Auth/Signup';
-import Login from '../controllers/Auth/Login';
-import Logout from '../controllers/Auth/Logout';
-import Responses from '../controllers/User/Responses';
+import PreferenceController from '../controllers/PreferenceController';
 
 // import * as expressJwt from 'express-jwt';
 
@@ -19,5 +16,5 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 router.use(timeLog);
 
 // Save survey results to database 
-router.post('/surveyresults/:user_id', Responses.getResponses);
+router.post('/surveyresults/:user_id', PreferenceController.postPreferences);
 
