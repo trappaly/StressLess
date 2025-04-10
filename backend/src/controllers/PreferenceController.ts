@@ -18,6 +18,9 @@ export default class PreferenceController {
             question_text: preference.question_text
           },
         });
+        if (!question) {
+          throw new Error('Question not found: ' + preference.question_text);
+        }
         // Pushes user responses into the new array
         survey_responses.push({
           user_id: userId,
@@ -38,7 +41,7 @@ export default class PreferenceController {
 
     } catch (error: any) {
       // Unable to get responses
-      res.status(500).json({ error: 'Error in saving preferences' });
+      res.status(500).json({ error: 'Error in saving preferences, ' + error.message });
     }
   }
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
+const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 
 export default function LandingPage() {
   const [message, setMessage] = useState('Backend not available');

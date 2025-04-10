@@ -19,6 +19,8 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
+const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
+
 const formSchema = z
   .object({
     productiveTime: z
@@ -90,8 +92,9 @@ export function UserPreferencesForm() {
     console.log(outputs);
     // Send the data to our backend
     axios
-      .post('/surveyresults/placeholder-user-id', values)
+      .post(URL + '/api/user/surveyresults/placeholder-user-id', outputs)
       .then((response) => {
+        console.log("Successfully posted answers");
         console.log(response);
       })
       .catch((error) => {
