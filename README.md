@@ -156,15 +156,6 @@ cd StressLess
 ```
 
 ### Setting Environment Variables (Please contact a team member for the three .env files)
-In the root, create a `.env` file and add the following variables:
-
-```bash
-
-# schema.prisma file:
-DATABASE_URL=<some-url>
-DIRECT_URL=<some-url>
-```
-
 In the `backend` directory, create a `.env` file and add the following variables:
 
 ```bash
@@ -173,6 +164,9 @@ PGHOST=<some-secret-key-found-on-neon>
 PGDATABASE=<found-on-neon>
 PGUSER=<found-on-neon>
 PGPASSWORD=<some-secret-password-found-on-neon>
+
+DATABASE_URL=<some-url>
+DIRECT_URL=<some-url>
 ```
 
 In the `frontend` directory, create a `.env` file and add the following variables:
@@ -192,6 +186,11 @@ NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
 
+### Setting Other Secrets
+The file `backend/serviceAccountKey.json` is the Firebase service account key JSON.
+An example is provided. This file is used to authenticate with Firebase services.
+Ask a team member for the content of this file.
+
 ### Installing Dependencies
 
 At root level, run:
@@ -201,6 +200,21 @@ pnpm install
 ```
 
 This will install 3 workspaces, because we have specified so in [pnpm-workspace.yaml](pnpm-workspace.yaml). This will install the dependencies for the backend and frontend. Alternatively, you can go into each directory and run `pnpm install` separately.
+
+### Setting Up the Database
+
+### Getting Onboard with Neon (Our Database)
+1. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+2. Make sure your .env file in the backend is good. 
+
+### Installing Prisma Client (Tool Used to Access Our Database Neon)
+
+```bash
+cd backend
+pnpm exec prisma generate
+```
+
+For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
 
 ### Development
 
