@@ -59,7 +59,7 @@ export default function ProfilePage() {
         </div>
 
         {/* User Name */}
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Cheyanne Vinscon</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Julie</h1>
 
         {/* User Preferences */}
         <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
@@ -68,7 +68,7 @@ export default function ProfilePage() {
             {formatTime(userPreferences.productiveTime[0])} – {formatTime(userPreferences.productiveTime[1])}
           </div>
           <div>
-            <span className="font-semibold">Preferred work duration:</span>{" "}
+            <span className="font-semibold">Your preference on work duration:</span>{" "}
             {userPreferences.workDuration} minutes
           </div>
           <div>
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                 Make changes to your preferences here. Click save when you're done.
               </DialogDescription>
             </DialogHeader>
-            <UserPreferencesForm onSave={handleSavePreferences} />
+            <UserPreferencesForm onSave={handleSavePreferences} disableCard />
           </DialogContent>
         </Dialog>
       </div>

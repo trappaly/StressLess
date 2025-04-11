@@ -15,8 +15,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { useRouter } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 
 //Define form shema
 export const formSchema = z
@@ -27,11 +27,13 @@ export const formSchema = z
         message: 'End must be after start',
       }),
     workDuration: z
+      .coerce
       .number({ invalid_type_error: 'Please enter a valid number of minutes' })
       .min(1, 'Work duration must be at least 1 minute')
       .max(240, 'Keep it under 4 hours for wellness!'),
 
     sleepHours: z
+      .coerce
       .number({ invalid_type_error: 'Please enter a valid number of hours' })
       .min(1, 'Get some sleep')
       .max(24, 'Over 24 hours is insane and not possible'),
@@ -62,9 +64,11 @@ export const formSchema = z
 
   type UserPreferencesFormProps = {
     onSave?: (values: z.infer<typeof formSchema>) => void;
+    disableCard?: boolean; // check if preference registration or edit to add description
+
   };
 
-export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
+export function UserPreferencesForm({ onSave, disableCard }: UserPreferencesFormProps) {
   const router = useRouter();
 
   // 1. Define your form.
@@ -95,16 +99,23 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
     // TODO: for now, we just gonna route to dashboard upon click
     router.push('/dashboard');
     }
-  }
+  };
 
-  return (
-    <Card className="max-w-xl mx-auto mt-10 shadow-xl">
-      <CardHeader>
-        <CardTitle>User Preferences</CardTitle>
-      </CardHeader>
-      <CardContent>
+  const content = (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Optional Title + Description */}
+        {!disableCard && (
+          <>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Set Your Preferences
+            </h1>
+            <p className="text-muted-foreground text-sm">
+            Tell us how you like to work so we can build a schedule that fits your routine. 
+            Your answers here help StressLess customize your calendar.
+            </p>
+          </>
+        )}
             {/* Productive Time */}
             <FormField
               control={form.control}
@@ -112,6 +123,9 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Most Productive Time</FormLabel>
+                  <FormDescription>
+                    What time of day are you the most productive?
+                  </FormDescription>
                   <Slider
                     min={0}
                     max={1439}
@@ -123,9 +137,6 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
                     <span>{minutesToTime(field.value[0])}</span>
                     <span>{minutesToTime(field.value[1])}</span>
                   </div>
-                  <FormDescription>
-                    What time of day are you the most productive?
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -138,12 +149,12 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Work Duration</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., 3" {...field} />
-                  </FormControl>
                   <FormDescription>
                     How long do you want to work?
                   </FormDescription>
+                  <FormControl>
+                    <Input placeholder="e.g., 3" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -155,7 +166,10 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
               name="sleepHours"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Preferred Sleep Time</FormLabel>
+                  <FormLabel>Preferred Sleep Amount</FormLabel>
+                  <FormDescription>
+                  How much sleep do you typically get?
+                  </FormDescription>
                   <FormControl>
                     <Input
                       type="number"
@@ -164,9 +178,6 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Used to avoid scheduling anything too late.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -179,12 +190,12 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Start of Workday</FormLabel>
+                  <FormDescription>
+                  What time of day do you want to start doing work?
+                  </FormDescription>
                   <FormControl>
                     <Input type="time" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Enter a time like 09:00 (24hr)
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -197,10 +208,10 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>End of Workday</FormLabel>
+                  <FormDescription>What time of day do you want to stop doing work?</FormDescription>
                   <FormControl>
                     <Input type="time" {...field} />
                   </FormControl>
-                  <FormDescription>Must be after start time</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -211,10 +222,18 @@ export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
             </Button>
           </form>
         </Form>
-      </CardContent>
-    </Card>
   );
+
+    // 👇 Wrap in Card only if not disabled
+    return disableCard ? content : (
+      <Card className="max-w-xl mx-auto mt-10 shadow-xl">
+        <CardHeader>
+        </CardHeader>
+        <CardContent>{content}</CardContent>
+      </Card>
+    );
 }
+
 
 function minutesToTime(mins: number) {
   const h = Math.floor(mins / 60)
