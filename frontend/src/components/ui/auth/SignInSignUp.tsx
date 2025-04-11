@@ -10,7 +10,7 @@ export default function SignInSignUp() {
   };
 
   return (
-    <div className="text-center">
+    <div id="signup-signin" className="text-center">
       <button
         onClick={toggleSignInSignUp}
         className="mb-4 text-xl font-semibold text-indigo-600 dark:text-indigo-400 focus:outline-none"
