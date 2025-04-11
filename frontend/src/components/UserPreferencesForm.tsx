@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { useRouter } from 'next/navigation';
 
-const formSchema = z
+//Define form shema
+export const formSchema = z
   .object({
     productiveTime: z
       .tuple([z.number(), z.number()])
@@ -59,7 +60,11 @@ const formSchema = z
     }
   );
 
-export function UserPreferencesForm() {
+  type UserPreferencesFormProps = {
+    onSave?: (values: z.infer<typeof formSchema>) => void;
+  };
+
+export function UserPreferencesForm({ onSave }: UserPreferencesFormProps) {
   const router = useRouter();
 
   // 1. Define your form.
@@ -79,12 +84,17 @@ export function UserPreferencesForm() {
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
+    if(onSave){
+      //If updating preference
+      onSave(values);
+    }else{
     // TODO: Send the data to our backend
     // axios.post('/api/user/preferences', values)
     //   .then((response) => {}
     //   .catch((error) => {}
     // TODO: for now, we just gonna route to dashboard upon click
     router.push('/dashboard');
+    }
   }
 
   return (

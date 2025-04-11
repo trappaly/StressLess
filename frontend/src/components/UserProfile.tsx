@@ -11,22 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { UserPreferencesForm } from "./UserPreferencesForm";
-import { FormEvent } from "react";
-// replace with u
-type UserPreferences = {
-  username: string;
-  productiveTime: [number, number]; // in minutes
-  workDuration: number; // in minutes
-  sleepHours: number;
-  startTime: string; // "HH:mm"
-  endTime: string;
-};
+import { UserPreferencesForm, formSchema } from "./UserPreferencesForm";
+import { useState } from "react";
+import { z } from "zod";
 
-const mockUserData: UserPreferences = {
-  username: "Cheyanne Vinscon",
+// Mock Data
+const mockUserData = {
   productiveTime: [540, 720],
   workDuration: 60,
   sleepHours: 8,
@@ -41,11 +31,19 @@ function formatTime(minutes: number) {
 }
 
 export default function ProfilePage() {
-  const data = mockUserData; // Replace this with actual data
+  // Using state to hold user preferences
+  const [userPreferences, setUserPreferences] = useState(mockUserData); // Replace this with actual data
+  // Using state to open page
+  const [open, setOpen] = useState(false);
 
-  
-  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
-    throw new Error("Function not implemented yet.");
+  // Handle the save preference logic
+  function handleSavePreferences(values: z.infer<typeof formSchema>): void {
+    console.log('Updated preferences:', values);
+
+    // Update state of user preference 
+    setUserPreferences(values);
+    // Close the dialog after save
+    setOpen(false); 
   }
 
   return (
@@ -57,49 +55,46 @@ export default function ProfilePage() {
       </div>
   
       {/* Username */}
-      <h1 className="text-2xl font-bold">{data.username}</h1>
+      <h1 className="text-2xl font-bold">{"Cheyanne Vinscon"}</h1>
   
       {/* Preferences */}
       <div className="space-y-3 text-lg">
         <div>
           <span className="font-medium"> Your most productive times:</span>{" "}
-          {formatTime(data.productiveTime[0])} – {formatTime(data.productiveTime[1])}
+          {formatTime(userPreferences.productiveTime[0])} – {formatTime(userPreferences.productiveTime[1])}
         </div>
         <div>
           <span className="font-medium">Your preference on work duration:</span>{" "}
-          {data.workDuration} minutes
+          {userPreferences.workDuration} minutes
         </div>
         <div>
           <span className="font-medium"> Sleep Hours:</span>{" "}
-          {data.sleepHours} hrs
+          {userPreferences.sleepHours} hrs
         </div>
         <div>
           <span className="font-medium">Work Start Time:</span>{" "}
-          {data.startTime}
+          {userPreferences.startTime}
         </div>
         <div>
           <span className="font-medium">Work End Time:</span>{" "}
-          {data.endTime}
+          {userPreferences.endTime}
         </div>
       </div>
     {/* Edit Button + Dialog */}
     <div className="flex mt-8"> 
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
       <Button className="bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Edit Preferences</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit preferences</DialogTitle>
           <DialogDescription>
             Make changes to your preferences here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}></form>
-        < UserPreferencesForm />
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        
+        < UserPreferencesForm onSave={handleSavePreferences}/>
       </DialogContent>
     </Dialog>
   </div>
