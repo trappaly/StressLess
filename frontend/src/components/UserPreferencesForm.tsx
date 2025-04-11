@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 
+const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 // Define form schema
 export const formSchema = z
   .object({
@@ -82,7 +83,28 @@ export function UserPreferencesForm({ onSave, disableCard }: UserPreferencesForm
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+
+     console.log(values);
+    const outputs = [];
+    for (const question in values) {
+      outputs.push({
+        question_text: question,
+        answer: String(values[question as keyof z.infer<typeof formSchema>]),
+      });
+    }
+    
     console.log(values);
+
+    axios
+      .post(URL + '/api/user/surveyresults/placeholder-user-id', outputs)
+      .then((response) => {
+        console.log('Successfully posted answers');
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // TODO: for now, we just gonna route to dashboard upon click
     if (onSave) {
       onSave(values);
     } else {
