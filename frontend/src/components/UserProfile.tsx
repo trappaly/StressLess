@@ -1,7 +1,6 @@
-'use client'
-
-import { UserIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+'use client';
+import { UserIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,99 +8,99 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { UserPreferencesForm, formSchema } from './UserPreferencesForm'
-import { useState } from 'react'
-import { z } from 'zod'
-import { toast } from 'sonner'
+} from "@/components/ui/dialog";
+import { UserPreferencesForm, formSchema } from "./UserPreferencesForm";
+import { useState } from "react";
+import { z } from "zod";
 
-// Mock user data (replace w/ real data later)
+// Mock Data
 const mockUserData = {
-  productiveTime: [600, 820],
-  workDuration: 40,
-  sleepHours: 7,
-  startTime: '08:00 AM',
-  endTime: '6:00 PM',
-}
+  productiveTime: [540, 720],
+  workDuration: 60,
+  sleepHours: 8,
+  startTime: '09:00',
+  endTime: '17:00',
+};
 
-function formatTime(minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const hour12 = h % 12 || 12;
-  return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
+function formatTime(minutes: number) {
+  const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+  const m = (minutes % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
 }
 
 export default function ProfilePage() {
-  const [userPreferences, setUserPreferences] = useState(mockUserData)
-  const [open, setOpen] = useState(false)
+  // Using state to hold user preferences
+  const [userPreferences, setUserPreferences] = useState(mockUserData); // Replace this with actual data
+  // Using state to open page
+  const [open, setOpen] = useState(false);
 
-  function handleSavePreferences(values: z.infer<typeof formSchema>) {
-    setUserPreferences(values)
-    setOpen(false)
-    toast('Preferences saved!')
+  // Handle the save preference logic
+  function handleSavePreferences(values: z.infer<typeof formSchema>): void {
+    console.log('Updated preferences:', values);
+
+    // Update state of user preference 
+    setUserPreferences(values);
+    // Close the dialog after save
+    setOpen(false); 
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200 font-sans">
-    <div className="min-h-screen px-4 py-12 bg-muted/40 dark:bg-[#111827] text-gray-800 dark:text-gray-100 font-sans">
-      <div className="max-w-2xl mx-auto space-y-10">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-muted rounded-full shadow-sm">
-            <UserIcon className="w-8 h-8 text-gray-700 dark:text-gray-300" />
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
+      {/* Background split: top pink, bottom white */}
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-purple-50 dark:bg-[#1a1a2e] z-0" />
+      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-white dark:bg-[#1a1a2e] z-0" />
+
+      {/* Profile Card */}
+      <div className="relative z-10 max-w-3xl w-full mx-4 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-10 flex flex-col items-center gap-6 border dark:border-gray-700">
+        
+      {/* User Icon */}
+        <div className="p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg -mt-24">
+          <UserIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />
+        </div>
+
+        {/* User Name */}
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Julie</h1>
+
+        {/* User Preferences */}
+        <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
+          <div>
+            <span className="font-semibold">Your most productive times:</span>{" "}
+            {formatTime(userPreferences.productiveTime[0])} – {formatTime(userPreferences.productiveTime[1])}
           </div>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Your Profile</h1>
-            <p className="text-sm text-muted-foreground">Manage your preferences and daily rhythm</p>
+            <span className="font-semibold">Your preference on work duration:</span>{" "}
+            {userPreferences.workDuration} minutes
+          </div>
+          <div>
+            <span className="font-semibold">Sleep Hours:</span>{" "}
+            {userPreferences.sleepHours} hrs
+          </div>
+          <div>
+            <span className="font-semibold">Work Start Time:</span>{" "}
+            {userPreferences.startTime}
+          </div>
+          <div>
+            <span className="font-semibold">Work End Time:</span>{" "}
+            {userPreferences.endTime}
           </div>
         </div>
 
-        {/* Preferences Summary */}
-        <div className="bg-white dark:bg-muted rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-6">
-          <div>
-            <h2 className="text-lg font-medium mb-2">Current Preferences</h2>
-            <ul className="space-y-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-              <li>
-                <span className="font-semibold">Productive Hours:</span>{' '}
-                {formatTime(userPreferences.productiveTime[0])} –{' '}
-                {formatTime(userPreferences.productiveTime[1])}
-              </li>
-              <li>
-                <span className="font-semibold">Work Session Length:</span>{' '}
-                {userPreferences.workDuration} minutes
-              </li>
-              <li>
-                <span className="font-semibold">Sleep Goal:</span>{' '}
-                {userPreferences.sleepHours} hours
-              </li>
-              <li>
-                <span className="font-semibold">Workday:</span>{' '}
-                {userPreferences.startTime} – {userPreferences.endTime}
-              </li>
-            </ul>
-          </div>
-
-          {/* Edit Button + Dialog */}
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto mt-2 cursor-pointer" variant="default">
-                Edit Preferences
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px] max-h-[85vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Edit Preferences</DialogTitle>
-                <DialogDescription>
-                  Adjust your productivity and scheduling habits.
-                </DialogDescription>
-              </DialogHeader>
-              <UserPreferencesForm onSave={handleSavePreferences} disableCard />
-            </DialogContent>
-          </Dialog>
-        </div>
+         {/* Edit Button + Dialog */}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-pink-400 hover:bg-pink-500 text-white">Edit Preferences</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Preferences</DialogTitle>
+              <DialogDescription>
+                Make changes to your preferences here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <UserPreferencesForm onSave={handleSavePreferences} disableCard />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
-    </div>
-  )
+  );
 }
