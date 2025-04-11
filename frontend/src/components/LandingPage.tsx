@@ -11,8 +11,9 @@ const Home: React.FC = () => {
   // const router = useRouter();
 
   const scrollToSignUp = () =>
-    document.getElementById('signin-signup')?.scrollIntoView({ behavior: 'smooth' });
-
+    document
+      .getElementById('signin-signup')
+      ?.scrollIntoView({ behavior: 'smooth' });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200 font-sans">
