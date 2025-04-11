@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
-import { updateProfile } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
+import axios from 'axios';
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
@@ -26,7 +27,28 @@ export default function SignUpForm() {
         displayName: displayName,
       });
 
-      window.location.href = '/preference';
+      // 3. Get the Firebase ID token
+      const idToken = await getAuth().currentUser?.getIdToken(true);
+
+      if (!idToken) {
+        console.log(`${idToken} not found`);
+        throw new Error('Failed to retrieve ID token');
+      }
+
+      // 4. Send the ID token to the backend API for user creation
+      const response = await axios.post(
+        'http://localhost:3001/api/auth/signup',
+        {
+          idToken,
+        }
+      );
+
+      // 5. Handle response from your API
+      if (response.status === 201) {
+        window.location.href = '/preference'; // Redirect after successful signup
+      } else {
+        setErrorMessage('Cannot create new account');
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);

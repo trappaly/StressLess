@@ -13,9 +13,9 @@ const Home: React.FC = () => {
   const scrollToSignUp = () =>
     document.getElementById('signin-signup')?.scrollIntoView({ behavior: 'smooth' });
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200 font-sans">
-
       {/* Hero */}
       <div className="h-screen flex flex-col items-center justify-center text-center px-6 relative">
         <motion.div

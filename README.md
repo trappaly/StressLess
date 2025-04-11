@@ -46,6 +46,10 @@ https://trello.com/b/qHGNCIJI/stressless
 - Users can update their planned activities and regenerate the calendar.
 - Notifications for upcoming deadlines and important events.
 
+### Operational Use Cases
+
+Use Case 3 defining Julie's ability to create an account, log in, and take the preferences survey is currently operational. The user is able to perform all three of the aformentioned tasks.
+
 ### Project Directory Structure
 
 This is a mono-repo project structure. The root directory contains the backend, frontend, and documentation directories. The backend and frontend directories contain their respective codebases. There are 3 `package.json` in total. The root `package.json` is used for global dependencies and scripts only. See [Monorepo Guide](https://monorepo.guide/) for more information.
@@ -55,6 +59,11 @@ StressLess/
 ├── backend/
     ├── src/
         ├── index.ts (entry point)
+        ├── client.ts (database connection)
+        ├── config/ (configuration files)
+        ├── controllers/ (business logic)
+        ├── routes/ (API endpoints)
+        ├── test/ (unit tests)
     ├── .gitignore, package.json, tsconfig.json
     ├── README.md (read to set up environment)
 ├── frontend/
@@ -63,12 +72,20 @@ StressLess/
         ├── manifest.json
         ├── .ico, .png
     ├── src/
-        ├── App.tsx, App.css
-        ├── index.tsx, index.css
-        ├── App.test.tsx
-        ├── setupTests.ts
+        ├── app/ (Next.js app directory)
+            ├── calendar/
+            ├── dashboard/
+            ├── preference/
+            ├── page.tsx
+            ├── layout.tsx
+        ├── components/
+        ├── lib/
+        ├── styles/
+        ├── tests/        
     ├── .gitignore, package.json, tsconfig.json
-    ├── README.md (read to set up environment)
+    ├── eslint.config.mjs, next.config.ts, next-env.d.ts, postcss.config.mjs
+    ├── vitest.config.ts, vitest.setup.ts
+    ├── README.md 
 ├── docs/
     ├── agile docs/
         ├── Living Document.md            # requirements, user stories, etc.
@@ -114,6 +131,7 @@ StressLess/
 ### Notes:
   - Look at the [package.json global](package.json), [backend package.json](backend/package.json), and [frontend package.json](frontend/package.json) for more information on the dependencies and available scripts.
   - Use `pnpm` instead of `npm` for commands.
+  - Use `pnpm exec` instead of `npx` for commands.
   - TypeScript Style Guide: Please refer to this [document](https://google.github.io/styleguide/tsguide.html) We chose the **Google TypeScript Style Guide** because it promotes consistency, readability, and maintainability in TypeScript projects. It aligns with industry best practices, ensuring clean and efficient code that is easy to understand and collaborate on. To enforce these guidelines, we plan to:
     - Configure `Prettier` to handle code formatting automatically. See the file [Prettier Guide](docs/dev%20docs/typescript%20styling/prettier.md) for more information.
     - Configure `ESLint` to catch TypeScript violations. See the file [ESLint Guide](docs/dev%20docs/typescript%20styling/eslint.md) for more information.
@@ -137,13 +155,7 @@ git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
 
-### Setting Environment Variables
-In the root, create a `.env` file and add the following variables:
-
-```bash
-DATABASE_URL=<postgresql://neondb_owner:keyblablabla...>
-```
-
+### Setting Environment Variables (Please contact a team member for the three .env files)
 In the `backend` directory, create a `.env` file and add the following variables:
 
 ```bash
@@ -152,51 +164,60 @@ PGHOST=<some-secret-key-found-on-neon>
 PGDATABASE=<found-on-neon>
 PGUSER=<found-on-neon>
 PGPASSWORD=<some-secret-password-found-on-neon>
+
+DATABASE_URL=<some-url>
+DIRECT_URL=<some-url>
 ```
 
 In the `frontend` directory, create a `.env` file and add the following variables:
 
 ```bash
-NEXT_APP_BACKEND_BASE_URL=<someurl>
+# Server-side
+NEXT_APP_BACKEND_BASE_URL=<some-url>
+
+# Client-side
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
+
+### Setting Other Secrets
+The file `backend/serviceAccountKey.json` is the Firebase service account key JSON.
+An example is provided. This file is used to authenticate with Firebase services.
+Ask a team member for the content of this file.
+
+### Installing Dependencies
+
+At root level, run:
+
+```bash
+pnpm install
+```
+
+This will install 3 workspaces, because we have specified so in [pnpm-workspace.yaml](pnpm-workspace.yaml). This will install the dependencies for the backend and frontend. Alternatively, you can go into each directory and run `pnpm install` separately.
 
 ### Setting Up the Database
 
 ### Getting Onboard with Neon (Our Database)
-1. Ensure that you have Node.js, pnpm, and Homebrew installed.
-2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
-3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
-4. Install Neon on your system by running the command 
-```bash
-pnpm install -g neonctl
-```
-5. Run 
-```bash
-neon auth
-```
-6. Make sure your .env file in the root is updated accordingly.
+1. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+2. Make sure your .env file in the backend is good. 
 
-### Installing Prisma (Tool Used to Access Our Database Neon)
-1. Install and generate Prisma Client:
+### Installing Prisma Client (Tool Used to Access Our Database Neon)
+
 ```bash
-pnpm install @prisma/client
-```
-2. Initialize Prisma:
-```bash
-npx prisma init
-```
-3. Finish installing Prisma:
-```bash
-pnpm i -g prisma
-```
-4. Optional: When migrating the Prisma schema, the command to do so is:
-```bash
-prisma migrate dev
+cd backend
+pnpm exec prisma generate
 ```
 
 For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
 
 ### Development
+
 You can either go into each directory and start the backend and frontend separately or use a tool like `concurrently` to run both at the same time.
 Read each README in the `backend` and `frontend` directories for more information. or follow the steps below:
 
@@ -213,8 +234,46 @@ pnpm start
 ```bash
 cd frontend
 pnpm install
+pnpm dev
+```
+
+### Build
+
+To build the frontend for production, run the following command in the `frontend` directory:
+
+```bash
 pnpm build
+```
+
+This will create a `.next` directory with the production-ready files. Then you can run:
+
+```bash
 pnpm start
+```
+
+## Available scripts are in `package.json` files.
+
+### Testing
+
+To run the unit tests for both frontend and backend, you can run at root level:
+
+```bash
+pnpm test:unit
+```
+
+Alternatively, you can run the tests in each directory separately:
+
+```bash
+pnpm test
+```
+
+### Formating and Linting
+
+To run formatting and linting checks, you can run at root level:
+
+```bash
+pnpm format
+pnpm lint
 ```
 
 ## Docker
@@ -224,6 +283,8 @@ pnpm start
 https://docs.docker.com/get-started/get-docker/
 
 ## Access the application by running
+
+Open Docker Desktop. Then run in the command line at root level:
 
 ```bash
 docker compose up --build

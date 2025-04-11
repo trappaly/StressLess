@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
-import Event from './controllers/Calendar/Event.ts';
+import routes from './routes';
+import EventController from './controllers/EventController.ts';
 
 const { Pool } = require('pg');
 
@@ -59,7 +60,10 @@ app.post('/', async (req: Request, res: Response) => {
   res.status(404);
 });
 
-app.get('/events/:id', Event.getEventById);
+app.get('/events/:id', EventController.getEventById);
+
+// API Routes
+app.use('/api', routes);
 
 //Start the server:
 app.listen(port, () => {

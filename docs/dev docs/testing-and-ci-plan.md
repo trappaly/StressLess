@@ -40,8 +40,18 @@ describe('name of suite of tests', () => {
 - Enter `pnpm test` in this folder.
 
 ## Which Development Actions Trigger a CI Build
-The development actions that will trigger a CI build are when there is push or pull request on either the main or the development branch. 
+Here’s a cleaner, more polished revision of your section and explanation:
 
+---
+
+## When CI Builds Are Triggered
+
+A Continuous Integration (CI) build is triggered by the following development actions:
+
+- **Pushes** to the `main` or `development` branches
+- **Pull requests** targeting `main`, `development`, or any feature branch following the `feat/*` naming convention
+- CI will **not** be triggered for changes to markdown files (`*.md`)
+- Developers can also **skip CI manually** by including `[ci skip]` or `[skip ci]` in their commit messages
 
 ### Vitest has two modes. 
   - The first mode is watch mode which automatically runs all tests when a file is changed
