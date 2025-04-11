@@ -84,7 +84,7 @@ export function UserPreferencesForm() {
     //   .then((response) => {}
     //   .catch((error) => {}
     // TODO: for now, we just gonna route to dashboard upon click
-    router.push('/dashboard');
+    router.push('/calendar');
   }
 
   return (
