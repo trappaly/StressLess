@@ -16,8 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import axios from 'axios';
+import { Card, CardHeader, CardContent } from './ui/card';
 
 //Define form shema
 export const formSchema = z

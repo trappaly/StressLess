@@ -102,8 +102,8 @@ export default function ProfilePage() {
             <DialogHeader>
               <DialogTitle>Edit Preferences</DialogTitle>
               <DialogDescription>
-                Make changes to your preferences here. Click save when you're
-                done.
+                Make changes to your preferences here. Click save when
+                you&apos;re done.
               </DialogDescription>
             </DialogHeader>
             <UserPreferencesForm onSave={handleSavePreferences} disableCard />
