@@ -101,7 +101,7 @@ export function UserPreferencesForm() {
         console.log(error);
       });
     // TODO: for now, we just gonna route to dashboard upon click
-    router.push('/calendar');
+    router.push('/dashboard');
   }
 
   return (
