@@ -36,8 +36,6 @@
     "schema": "backend/src/db/schema.prisma"
   },
   "dependencies": {
-    "concurrently": "^9.1.2",
-    "dotenv": "^16.4.7",
-    "prisma": "~6.6.0"
+    "concurrently": "^9.1.2"
   }
 }

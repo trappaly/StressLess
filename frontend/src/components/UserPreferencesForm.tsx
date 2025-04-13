@@ -17,6 +17,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent } from './ui/card';
+import axios from 'axios';
+
+const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 
 //Define form shema
 export const formSchema = z
@@ -92,10 +95,24 @@ export function UserPreferencesForm({
       //If updating preference
       onSave(values);
     } else {
-      // TODO: Send the data to our backend
-      // axios.post('/api/user/preferences', values)
-      //   .then((response) => {}
-      //   .catch((error) => {}
+      const outputs = [];
+      for (const question in values) {
+        outputs.push({
+          question_text: question,
+          answer: String(values[question as keyof z.infer<typeof formSchema>]),
+        });
+      }
+      console.log(outputs);
+      // Send the data to our backend
+      axios
+        .post(URL + '/api/user/surveyresults/placeholder-user-id', outputs)
+        .then((response) => {
+          console.log('Successfully posted answers');
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // TODO: for now, we just gonna route to dashboard upon click
       router.push('/dashboard');
     }
