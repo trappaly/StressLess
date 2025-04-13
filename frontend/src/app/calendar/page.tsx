@@ -26,7 +26,8 @@ interface Event {
 }
 
 export default function Home() {
-  const [events] = useState([ //commented out setEvents(unused var)
+  const [events] = useState([
+    //commented out setEvents(unused var)
     { title: 'event 1', id: '1' },
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
