@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
   const scrollToSignUp = () =>
     document
-      .getElementById('signup-signin')
+      .getElementById('signin-signup')
       ?.scrollIntoView({ behavior: 'smooth' });
 
   return (
