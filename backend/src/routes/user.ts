@@ -1,9 +1,9 @@
-// import {Router} from 'express'; 
-import {Request, Response, NextFunction} from 'express';
+// import {Router} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import PreferenceController from '../controllers/PreferenceController';
 
-// Creates the router 
-const express = require("express");
+// Creates the router
+const express = require('express');
 const router = express.Router();
 
 // Keeps track of time on website
@@ -13,7 +13,9 @@ const timeLog = (req: Request, res: Response, next: NextFunction) => {
 };
 router.use(timeLog);
 
-// Save survey results to database 
+// Save survey results to database
 router.post('/surveyresults/:user_id', PreferenceController.postPreferences);
+// Get all survey results from database
+router.get('/surveyresults/:user_id', PreferenceController.getPreferences);
 
 export default router;

@@ -1,6 +1,5 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import routes from './routes';
-import EventController from './controllers/EventController.ts';
 
 const { Pool } = require('pg');
 
@@ -25,42 +24,6 @@ const pool = new Pool({
     require: true,
   },
 });
-
-export let counter = 0;
-
-app.get('/', async (req, res) => {
-  const client = await pool.connect();
-  try {
-    const result = await client.query('SELECT * FROM users');
-    console.log(counter);
-    res.json(result.rows);
-  } catch (errors) {
-    console.log(errors);
-  } finally {
-    client.release();
-  }
-  res.status(404);
-});
-
-// Tracer code: Route for adding a user to the "users" table of the database.
-app.post('/', async (req: Request, res: Response) => {
-  const client = await pool.connect();
-
-  const text = `INSERT INTO users(username, password_hash) VALUES($1, $2) RETURNING *`;
-  const values = ['student-' + Math.floor(Math.random() * 65536), '12345'];
-  try {
-    const result = await client.query(text, values);
-    res.json(result.rows);
-  } catch (errors) {
-    console.log(errors);
-  } finally {
-    client.release();
-  }
-
-  res.status(404);
-});
-
-app.get('/events/:id', EventController.getEventById);
 
 // API Routes
 app.use('/api', routes);
