@@ -10,8 +10,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { UserPreferencesForm, formSchema } from './UserPreferencesForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
+import { useAuth } from '@/components/context/auth/AuthContext';
+import axios from 'axios';
+
+const URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
 
 // Mock Data
 const mockUserData = {
@@ -31,10 +35,34 @@ function formatTime(minutes: number) {
 }
 
 export default function ProfilePage() {
+  const { user, loading } = useAuth();
+
   // Using state to hold user preferences
   const [userPreferences, setUserPreferences] = useState(mockUserData); // Replace this with actual data
   // Using state to open page
   const [open, setOpen] = useState(false);
+
+  // Fetch preferences when user is available
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        if (!user?.uid) return;
+
+        const res = await axios.get(
+          `${URL}/api/user/surveyresults/${user.uid}`
+        );
+        setUserPreferences(res.data); // make sure your backend returns the correct structure
+      } catch (err) {
+        console.error('Failed to fetch user preferences:', err);
+      }
+    };
+
+    if (!loading && user) {
+      fetchPreferences().then(() => {
+        console.log('Fetched user preferences:', userPreferences);
+      });
+    }
+  }, [user, loading]);
 
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
@@ -44,6 +72,10 @@ export default function ProfilePage() {
     setUserPreferences(values);
     // Close the dialog after save
     setOpen(false);
+  }
+
+  if (loading || !userPreferences) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -61,7 +93,7 @@ export default function ProfilePage() {
 
         {/* User Name */}
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Julie
+          {user?.displayName}
         </h1>
 
         {/* User Preferences */}
