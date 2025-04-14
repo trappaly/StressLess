@@ -43,7 +43,7 @@ class SurveyResponse {
      skipDuplicates: true,
      });
        // Succuesfully is able to store survey responses in the database
-       res.json(store_responses);
+       res.status(200).json(store_responses);
      }
    // Unable to get survey responses 
  catch (error: any) {
