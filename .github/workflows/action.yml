@@ -37,6 +37,7 @@ jobs:
         run: pnpm install
 
       - name: Generate Prisma client
+        working-directory: backend
         run: pnpm exec prisma generate
 
       - name: Lint code

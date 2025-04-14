@@ -22,3 +22,5 @@ node_modules/
 **/appsettings.Development.json
 
 **/screenshots
+
+backend/src/db/generated/

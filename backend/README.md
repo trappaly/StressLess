@@ -58,7 +58,7 @@ pnpm start
 ### Setting Up the Database
 
 ### Getting Onboard with Neon (Our Database)
-1. Ensure that you have Node.js, pnpm, and Homebrew installed.
+1. Ensure that you have Node.js, pnpm, and Homebrew (Mac only) installed.
 2. Create a Neon database account (you can just simply create a Neon database account by using your GitHub account).
 3. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
 4. Install Neon on your system by running the command 
@@ -69,7 +69,7 @@ pnpm install -g neonctl
 ```bash
 neon auth
 ```
-6. Make sure your .env file in the root is updated accordingly.
+6. Make sure your .env file in the backend is updated accordingly.
 
 ### Installing Prisma Client (Tool Used to Access Our Database Neon)
 

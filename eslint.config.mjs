@@ -23,6 +23,8 @@ export default [
         require: 'readonly',
         React: 'readonly',
         exports: 'readonly',
+        HTMLInputElement: "readonly",
+        HTMLFormElement: "readonly"
       },
     },
     plugins: {
