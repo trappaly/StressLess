@@ -20,5 +20,3 @@ function Label({
     />
   );
 }
-
-export { Label };
