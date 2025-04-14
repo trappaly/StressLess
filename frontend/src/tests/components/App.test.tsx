@@ -1,11 +1,10 @@
 import React from 'react';
-import { describe, it, expect } from "vitest"
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Landing from '../../components/App';
 
 describe('sample app test', () => {
-  it('fake test', () => {
-  })
+  it('fake test', () => {});
 
   // it('should pass this test', () => {
   //   render(<Landing />);
