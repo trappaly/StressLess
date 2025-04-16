@@ -1,4 +1,11 @@
-import { faker } from '@faker-js/faker';
+import { de, faker } from '@faker-js/faker';
+
+interface FakeDataFactoryOptions {
+  id?: boolean | string;
+  userId?: string;
+  questionId?: string;
+  eventId?: string;
+}
 
 /**
  * Class for creating fake data. Class fields act as counters for id.
@@ -10,15 +17,19 @@ class FakeDataFactory {
   userEventsCount = 0;
   userDeadlinesCount = 0;
 
+  defaultOptions = {
+    id: true,
+  };
+
   /**
    * Create a random user object for testing purposes.
    * @returns A random user object.
    */
-  public randomUser() {
+  public randomUser(options: FakeDataFactoryOptions = this.defaultOptions) {
     this.usersCount++;
     return {
-      id: faker.string.uuid(),
-      username: faker.internet.username(),
+      id: this.generateId(options.id),
+      email: faker.internet.email(),
       created_at: faker.date.past({ years: 5 }),
     };
   }
@@ -27,11 +38,11 @@ class FakeDataFactory {
    * Create a random survey question for testing purposes.
    * @returns A random preferences question object.
    */
-  public randomPreferenceQuestion(question_text = faker.lorem.words(10)) {
+  public randomPreferenceQuestion(options: FakeDataFactoryOptions = this.defaultOptions) {
     this.preferenceQuestionsCount++;
     return {
-      id: faker.string.uuid(),
-      question_text: question_text,
+      id: this.generateId(options.id),
+      question_text: faker.lorem.words(10),
     };
   }
 
@@ -40,15 +51,12 @@ class FakeDataFactory {
    * question) for testing purposes.
    * @returns A random user preferences object.
    */
-  public randomUserPreference(
-    user_id = faker.string.uuid(),
-    question_id = faker.string.uuid()
-  ) {
+  public randomUserPreference(options: FakeDataFactoryOptions = this.defaultOptions) {
     this.userPreferencesCount++;
     return {
-      id: faker.string.uuid(),
-      user_id: user_id,
-      question_id: question_id,
+      id: this.generateId(options.id),
+      user_id: options.userId || faker.string.uuid(),
+      question_id: options.questionId || faker.string.uuid(),
       answer: faker.lorem.words(10),
     };
   }
@@ -57,12 +65,12 @@ class FakeDataFactory {
    * Create a random user event for testing purposes.
    * @returns A random user event object.
    */
-  public randomUserEvent(user_id = faker.string.uuid()) {
+  public randomUserEvent(options: FakeDataFactoryOptions = this.defaultOptions) {
     const startTime = faker.date.soon({ days: 7 });
     this.userEventsCount++;
     return {
-      id: faker.string.uuid(),
-      user_id: user_id,
+      id: this.generateId(options.id),
+      user_id: options.userId || faker.string.uuid(),
       title: faker.company.catchPhrase(),
       start_time: startTime,
       end_time: FakeDataFactory.addMinutes(startTime, faker.number.int(240)),
@@ -83,15 +91,12 @@ class FakeDataFactory {
    * Create a random user deadline for testing purposes.
    * @returns A random user deadline object.
    */
-  public randomUserDeadline(
-    user_id = faker.string.uuid(),
-    event_id = faker.string.uuid()
-  ) {
+  public randomUserDeadline(options: FakeDataFactoryOptions = this.defaultOptions) {
     this.userDeadlinesCount++;
     return {
-      id: faker.string.uuid(),
-      user_id: user_id,
-      event_id: event_id,
+      id: this.generateId(options.id),
+      user_id: options.userId || faker.string.uuid(),
+      event_id: options.eventId || faker.string.uuid(),
       title: faker.company.catchPhrase(),
       due_time: faker.date.soon({ days: 30 }),
       description: faker.lorem.words(faker.number.int(256)),
@@ -105,8 +110,8 @@ class FakeDataFactory {
    * Create a random user event for testing purposes. The event is set to be recurring.
    * @returns A random user event object.
    */
-  public randomRecurringUserEvent(user_id = faker.string.uuid()) {
-    const event = this.randomUserEvent(user_id);
+  public randomRecurringUserEvent(options: FakeDataFactoryOptions = this.defaultOptions) {
+    const event = this.randomUserEvent(options);
     event.is_recurring = true;
     return event;
   }
@@ -118,6 +123,19 @@ class FakeDataFactory {
    */
   private static addMinutes(date: Date, minutes: number) {
     return new Date(date.getTime() + minutes * 60000);
+  }
+
+  /**
+   * Return the specified id, generates an id, or returns undefined
+   */
+  private generateId(id?: boolean | string): string | undefined {
+    if (id === true) {
+      return faker.string.uuid();
+    } else if (typeof id === 'string') {
+      return id;
+    } else {
+      return undefined;
+    }
   }
 }
 
