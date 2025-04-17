@@ -46,13 +46,13 @@ export default class Deadline {
    */ 
   public static async postDeadline(req: Request, res: Response) {
     try {
-      // Accesses all of the variables and their values in the deadline data structure
+      // Accesses all of the deadline variables in the request
       const values = this.getUserDeadlineValues(req);   
       // Creates a new deadline   
       const result = await prisma.user_deadlines.create({
         data: { ...values },
       });
-      // Succuesfully creates a new deadline
+      // Successfully creates a new deadline
       res.json(result);
     }
     catch {
@@ -66,14 +66,14 @@ export default class Deadline {
    */
   public static async putDeadline(req: Request, res: Response) {
     try {
-      // Accesses all of the variables and their values in the deadline data structure
+      // Accesses all of the deadline variables in the request
       const values = this.getUserDeadlineValues(req);
       // Edits the current deadline 
       const result = await prisma.user_deadlines.update({
-        where: {id: req.params.id}, 
+        where: { id: req.params.id }, 
         data: { ...values },
       });
-      // Succuesfully updates a new deadline
+      // Successfully updates a new deadline
       res.json(result);
     }
     catch {
@@ -90,7 +90,7 @@ export default class Deadline {
       // Deletes a deadline
       const deadline = await prisma.user_deadlines.delete({
         where: {
-          id: req.params.event_id
+          id: req.params.id
         }        
       });
       // Succuesfully deletes a deadline
@@ -104,12 +104,11 @@ export default class Deadline {
   
   
   /**
-   * Gets all of the values associated with a deadline 
+   * Gets all of the values associated with a deadline from the request body
+   * (i.e. excluding id, since database generates id automatically)
    */
   private static getUserDeadlineValues(req: Request) {
-    // Getting all of the information of the deadline from user input
     const {                   
-      id,
       user_id,               
       event_id,              
       title,                 
@@ -119,9 +118,7 @@ export default class Deadline {
       projected_duration,
       created_at     
     } = req.body;
-    // Saving all of the deadline values to the database 
     return {   
-      id,                
       user_id,               
       event_id,              
       title,                 
