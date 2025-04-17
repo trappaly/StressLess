@@ -72,26 +72,27 @@ export default function ProfilePage() {
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
     console.log('Updated preferences:', values);
-    const outputs = [];
-    for (const question in values) {
-      outputs.push({
-        question_text: question,
-        answer: String(values[question as keyof z.infer<typeof formSchema>]),
-      });
-    }
-    console.log(outputs);
-    // Send the data to our backend
-    if (!user?.uid) return;
-
-    axios
-      .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
-      .then((response) => {
-        console.log('Successfully posted answers for user: ', user!.uid);
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // TODO: Need to update the preferences in the backend. Use PUT instead of POST
+    // const outputs = [];
+    // for (const question in values) {
+    //   outputs.push({
+    //     question_text: question,
+    //     answer: String(values[question as keyof z.infer<typeof formSchema>]),
+    //   });
+    // }
+    // console.log(outputs);
+    // // Send the data to our backend
+    // if (!user?.uid) return;
+    //
+    // axios
+    //   .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
+    //   .then((response) => {
+    //     console.log('Successfully posted answers for user: ', user!.uid);
+    //     console.log(response);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
     // Update state of user preference
     setUserPreferences(values);
     // Close the dialog after save
