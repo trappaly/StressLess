@@ -55,7 +55,7 @@ export default class PreferenceController {
   /**
    * Get all preferences of a user.
    */
-  public static async getPreferences(
+  public static async getPreferencesByUserId(
     req: Request,
     res: Response
   ): Promise<any> {
@@ -68,6 +68,7 @@ export default class PreferenceController {
           user_id: userId,
         },
       });
+
       res.json(preferences);
     } catch (error: any) {
       res

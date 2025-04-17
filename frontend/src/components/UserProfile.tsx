@@ -1,5 +1,5 @@
 'use client';
-import { UserIcon } from 'lucide-react';
+import { EditIcon, UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -14,33 +14,24 @@ import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
-
-const URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
-
-// Mock Data
-const mockUserData = {
-  productiveTime: [540, 720],
-  workDuration: 60,
-  sleepHours: 8,
-  startTime: '09:00',
-  endTime: '17:00',
-};
-
-function formatTime(minutes: number) {
-  const h = Math.floor(minutes / 60)
-    .toString()
-    .padStart(2, '0');
-  const m = (minutes % 60).toString().padStart(2, '0');
-  return `${h}:${m}`;
-}
+import { backendBaseUrl, formatTime } from '@/lib/utils';
+import { getPreferenceExtractData } from '@/lib/get-preference-extract-data';
+import { updateProfile } from 'firebase/auth';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
-
   // Using state to hold user preferences
-  const [userPreferences, setUserPreferences] = useState(mockUserData); // Replace this with actual data
+  const [userPreferences, setUserPreferences] = useState<ReturnType<
+    typeof getPreferenceExtractData
+  > | null>(null);
   // Using state to open page
   const [open, setOpen] = useState(false);
+  // Using state to set edit username
+  const [editMode, setEditMode] = useState(false);
+  // Using state to set display name
+  const [displayName, setDisplayName] = useState(
+    user?.displayName || 'Studious Student'
+  );
 
   // Fetch preferences when user is available
   useEffect(() => {
@@ -49,25 +40,45 @@ export default function ProfilePage() {
         if (!user?.uid) return;
 
         const res = await axios.get(
-          `${URL}/api/user/surveyresults/${user.uid}`
+          backendBaseUrl + `/api/user/surveyresults/${user.uid}`
         );
-        setUserPreferences(res.data); // make sure your backend returns the correct structure
+
+        const extractedData = getPreferenceExtractData(res.data);
+        setUserPreferences(extractedData);
       } catch (err) {
         console.error('Failed to fetch user preferences:', err);
       }
     };
 
     if (!loading && user) {
-      fetchPreferences().then(() => {
-        console.log('Fetched user preferences:', userPreferences);
-      });
+      fetchPreferences().then();
     }
   }, [user, loading]);
 
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
     console.log('Updated preferences:', values);
-
+    // TODO: Need to update the preferences in the backend. Use PUT instead of POST
+    // const outputs = [];
+    // for (const question in values) {
+    //   outputs.push({
+    //     question_text: question,
+    //     answer: String(values[question as keyof z.infer<typeof formSchema>]),
+    //   });
+    // }
+    // console.log(outputs);
+    // // Send the data to our backend
+    // if (!user?.uid) return;
+    //
+    // axios
+    //   .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
+    //   .then((response) => {
+    //     console.log('Successfully posted answers for user: ', user!.uid);
+    //     console.log(response);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
     // Update state of user preference
     setUserPreferences(values);
     // Close the dialog after save
@@ -92,9 +103,44 @@ export default function ProfilePage() {
         </div>
 
         {/* User Name */}
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          {user?.displayName}
-        </h1>
+        <div className="flex items-center space-x-2">
+          {editMode ? (
+            <input
+              type="text"
+              className="text-3xl font-bold bg-transparent border-b border-gray-400 dark:border-gray-600 focus:outline-none focus:border-pink-500 text-gray-900 dark:text-white"
+              value={displayName}
+              onChange={async (e) => {
+                setDisplayName(e.target.value);
+                await updateProfile(user!, {
+                  displayName: e.target.value,
+                });
+              }}
+              onBlur={() => setEditMode(false)}
+              autoFocus
+            />
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {displayName}
+              </h1>
+              <button
+                onClick={() => setEditMode(true)}
+                className="text-gray-500 hover:text-pink-500"
+                aria-label="Edit Name"
+              >
+                <EditIcon className="w-4 h-4" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/*<h1 className="text-3xl font-bold text-gray-900 dark:text-white">*/}
+        {/*  {displayName}*/}
+        {/*</h1>*/}
+
+        {/*<div>*/}
+        {/*  <EditIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />*/}
+        {/*</div>*/}
 
         {/* User Preferences */}
         <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
