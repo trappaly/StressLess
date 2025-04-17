@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { UserPreferencesForm, formSchema } from './UserPreferencesForm';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
