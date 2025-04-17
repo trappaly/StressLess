@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { UserPreferencesForm, formSchema } from './UserPreferencesForm';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
@@ -32,6 +32,13 @@ export default function ProfilePage() {
   const [displayName, setDisplayName] = useState(
     user?.displayName || 'Studious Student'
   );
+
+  // Runs after the component mounts or user changes
+  useEffect(() => {
+    if (user?.displayName) {
+      setDisplayName(user.displayName);
+    }
+  }, [user]);
 
   // Fetch preferences when user is available
   useEffect(() => {
@@ -58,27 +65,26 @@ export default function ProfilePage() {
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
     console.log('Updated preferences:', values);
-    // TODO: Need to update the preferences in the backend. Use PUT instead of POST
-    // const outputs = [];
-    // for (const question in values) {
-    //   outputs.push({
-    //     question_text: question,
-    //     answer: String(values[question as keyof z.infer<typeof formSchema>]),
-    //   });
-    // }
-    // console.log(outputs);
-    // // Send the data to our backend
-    // if (!user?.uid) return;
-    //
-    // axios
-    //   .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
-    //   .then((response) => {
-    //     console.log('Successfully posted answers for user: ', user!.uid);
-    //     console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    const outputs = [];
+    for (const question in values) {
+      outputs.push({
+        question_text: question,
+        answer: String(values[question as keyof z.infer<typeof formSchema>]),
+      });
+    }
+    console.log(outputs);
+    // Send the data to our backend
+    if (!user?.uid) return;
+
+    axios
+      .put(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
+      .then((response) => {
+        console.log('Successfully updated answers for user: ', user!.uid);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     // Update state of user preference
     setUserPreferences(values);
     // Close the dialog after save
@@ -99,7 +105,9 @@ export default function ProfilePage() {
       <div className="relative z-10 max-w-3xl w-full mx-4 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-10 flex flex-col items-center gap-6 border dark:border-gray-700">
         {/* User Icon */}
         <div className="p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg -mt-24">
-          <UserIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />
+          <button onClick={() => console.log(user!.displayName)}>
+            <UserIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />
+          </button>
         </div>
 
         {/* User Name */}
@@ -137,10 +145,6 @@ export default function ProfilePage() {
         {/*<h1 className="text-3xl font-bold text-gray-900 dark:text-white">*/}
         {/*  {displayName}*/}
         {/*</h1>*/}
-
-        {/*<div>*/}
-        {/*  <EditIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />*/}
-        {/*</div>*/}
 
         {/* User Preferences */}
         <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">

@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent } from './ui/card';
 import axios from 'axios';
 import { useAuth } from '@/components/context/auth/AuthContext';
-import { backendBaseUrl } from '@/lib/utils';
+import { backendBaseUrl, minutesToTime } from '@/lib/utils';
 //Define form shema
 export const formSchema = z
   .object({
@@ -246,12 +246,4 @@ export function UserPreferencesForm({
       <CardContent>{content}</CardContent>
     </Card>
   );
-}
-
-function minutesToTime(mins: number) {
-  const h = Math.floor(mins / 60)
-    .toString()
-    .padStart(2, '0');
-  const m = (mins % 60).toString().padStart(2, '0');
-  return `${h}:${m}`;
 }

@@ -15,3 +15,11 @@ export function formatTime(minutes: number) {
   const m = (minutes % 60).toString().padStart(2, '0');
   return `${h}:${m}`;
 }
+
+export function minutesToTime(mins: number) {
+  const h = Math.floor(mins / 60)
+    .toString()
+    .padStart(2, '0');
+  const m = (mins % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
