@@ -16,6 +16,9 @@ router.use(timeLog);
 // Save survey results to database
 router.post('/surveyresults/:user_id', PreferenceController.postPreferences);
 // Get all survey results from database
-router.get('/surveyresults/:user_id', PreferenceController.getPreferences);
+router.get(
+  '/surveyresults/:user_id',
+  PreferenceController.getPreferencesByUserId
+);
 
 export default router;
