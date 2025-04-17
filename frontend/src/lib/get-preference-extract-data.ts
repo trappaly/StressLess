@@ -1,4 +1,11 @@
-export function getPreferenceExtractData(data: any) {
+interface UserPreferenceData {
+  id: string;
+  user_id: string;
+  question_id: string;
+  answer: string;
+}
+
+export function getPreferenceExtractData(data: UserPreferenceData[]) {
   const returnedData = {
     productiveTime: [0, 0],
     workDuration: 0,
@@ -7,7 +14,7 @@ export function getPreferenceExtractData(data: any) {
     endTime: '',
   };
 
-  data.forEach((item: any) => {
+  data.forEach((item: UserPreferenceData) => {
     const { question_id, answer } = item;
 
     switch (question_id) {

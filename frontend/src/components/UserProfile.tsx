@@ -18,15 +18,6 @@ import { backendBaseUrl, formatTime } from '@/lib/utils';
 import { getPreferenceExtractData } from '@/lib/get-preference-extract-data';
 import { updateProfile } from 'firebase/auth';
 
-// Mock Data
-const mockUserData = {
-  productiveTime: [540, 720],
-  workDuration: 60,
-  sleepHours: 8,
-  startTime: '09:00',
-  endTime: '17:00',
-};
-
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   // Using state to hold user preferences
@@ -63,11 +54,6 @@ export default function ProfilePage() {
       fetchPreferences().then();
     }
   }, [user, loading]);
-
-  // Handle the edit name logic
-  function handleEditName() {
-    setEditMode(true);
-  }
 
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
