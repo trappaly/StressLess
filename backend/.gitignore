@@ -6,4 +6,5 @@ node_modules
 *.xml
 *.log
 .env
+*.env
 serviceAccountKey.json

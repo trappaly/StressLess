@@ -28,7 +28,12 @@ const pool = new Pool({
 // API Routes
 app.use('/api', routes);
 
-//Start the server:
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Start the server:
+// Do not listen to port when testing (https://stackoverflow.com/a/63293781)
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+export default app;

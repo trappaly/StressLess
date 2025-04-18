@@ -7,16 +7,19 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
-    "test": "vitest"
+    "test": "env-cmd -f ./.test.env vitest",
+    "test:ci": "vitest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.4",
+    "@types/supertest": "^6.0.3",
     "supertest": "^7.1.0",
     "vitest": "^3.0.9"
   },
@@ -27,6 +30,7 @@
     "@prisma/client": "^6.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "env-cmd": "^10.1.0",
     "express": "^4.21.2",
     "firebase-admin": "^13.2.0",
     "pg": "^8.14.1",

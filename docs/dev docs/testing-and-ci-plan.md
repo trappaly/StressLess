@@ -30,6 +30,8 @@ describe('name of suite of tests', () => {
 2. Import the necessary backend functions that will be tested
 3. Use the same structure for adding tests.
 
+- Note: For backend automated tests, the environment variables in `backend/.test.env` will be used instead of the environment variables in `backend/.env`.
+
 ## Which Tests Will Be Executed in a CI Build 
 
 - We will run all tests with Vitest including unit test and end-to-end tests
