@@ -32,9 +32,6 @@
     "prettier": "^3.5.3",
     "vitest": "^3.0.9"
   },
-  "prisma": {
-    "schema": "backend/src/db/schema.prisma"
-  },
   "dependencies": {
     "concurrently": "^9.1.2"
   }

@@ -18,9 +18,8 @@ import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent } from './ui/card';
 import axios from 'axios';
-
-const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
-
+import { useAuth } from '@/components/context/auth/AuthContext';
+import { backendBaseUrl, minutesToTime } from '@/lib/utils';
 //Define form shema
 export const formSchema = z
   .object({
@@ -73,7 +72,7 @@ export function UserPreferencesForm({
   disableCard,
 }: UserPreferencesFormProps) {
   const router = useRouter();
-
+  const { user } = useAuth();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,17 +103,18 @@ export function UserPreferencesForm({
       }
       console.log(outputs);
       // Send the data to our backend
+      if (!user?.uid) return;
+
       axios
-        .post(URL + '/api/user/surveyresults/placeholder-user-id', outputs)
+        .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
         .then((response) => {
-          console.log('Successfully posted answers');
+          console.log('Successfully posted answers for user: ', user!.uid);
           console.log(response);
+          router.push('/dashboard');
         })
         .catch((error) => {
           console.log(error);
         });
-      // TODO: for now, we just gonna route to dashboard upon click
-      router.push('/dashboard');
     }
   }
 
@@ -246,12 +246,4 @@ export function UserPreferencesForm({
       <CardContent>{content}</CardContent>
     </Card>
   );
-}
-
-function minutesToTime(mins: number) {
-  const h = Math.floor(mins / 60)
-    .toString()
-    .padStart(2, '0');
-  const m = (mins % 60).toString().padStart(2, '0');
-  return `${h}:${m}`;
 }
