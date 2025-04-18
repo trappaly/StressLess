@@ -4,6 +4,14 @@ import PreferenceController from '../controllers/PreferenceController';
 const express = require('express');
 const router = express.Router();
 
+
+// Keeps track of time on the website
+const timeLog = (req: Request, res: Response, next: NextFunction) => {
+  console.log('Time: ', Date.now());
+  next();
+};
+router.use(timeLog);
+
 // Save survey results to database
 router.post('/surveyresults/:user_id', PreferenceController.postPreferences);
 // Get all survey results from database
