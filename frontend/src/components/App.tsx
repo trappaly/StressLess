@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
+import { backendBaseUrl } from '@/lib/utils';
 
 export default function LandingPage() {
   const [message, setMessage] = useState('Backend not available');
@@ -11,7 +10,7 @@ export default function LandingPage() {
   // Tracer code for updating backend message.
   function updateMessage() {
     axios
-      .get(URL)
+      .get(backendBaseUrl)
       .then((response) => setMessage('User count: ' + response.data.length))
       .catch((error) => {
         console.log(error);
@@ -21,7 +20,7 @@ export default function LandingPage() {
 
   // Tracer code to test requesting backend to manipulate databse.
   function incrementBackendCounter() {
-    axios.post(URL).then((response) => {
+    axios.post(backendBaseUrl).then((response) => {
       console.log(response);
       updateMessage();
     });

@@ -173,9 +173,9 @@ In the `frontend` directory, create a `.env` file and add the following variable
 
 ```bash
 # Server-side
-NEXT_APP_BACKEND_BASE_URL=<some-url>
 
 # Client-side
+NEXT_PUBLIC_BACKEND_BASE_URL=<some-url>
 # Firebase
 NEXT_PUBLIC_FIREBASE_API_KEY=<get-from-firebase>
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<get-from-firebase>
