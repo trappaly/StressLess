@@ -68,7 +68,7 @@ jobs:
           echo "$SERVICE_ACCOUNT_KEY" > ./serviceAccountKey.json
 
       - name: Run unit tests concurrently for frontend and backend
-        run: pnpm run test:unit
+        run: pnpm run test:unit:ci
 
       - name: Set root and backend variables for building
         run: |
