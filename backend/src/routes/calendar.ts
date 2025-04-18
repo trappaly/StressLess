@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import EventController from '../controllers/EventController';
-import DeadlineController from '../controllers/DeadlineController';
 
 // Creates the router
 const router = Router();
@@ -19,20 +18,5 @@ router.put('/events/id/:id', EventController.putEvent);
 
 // Delete an event
 router.delete('/events/id/:id', EventController.deleteEvent);
-
-// Get all deadlines for a particular user 
-router.get('/deadlines/by-user/:user', DeadlineController.getUserDeadlines);
-
-// Add a deadline
-router.post('/deadlines', DeadlineController.postDeadline);
-
-// Get a deadline by id
-router.get('/deadlines/id/:id', DeadlineController.getDeadlinebyId);
-
-// Modify a deadline 
-router.put('/deadlines/id/:id', DeadlineController.putDeadline);
-
-// Delete a deadline 
-router.delete('/deadlines/id/:id', DeadlineController.deleteDeadline);
 
 export default router;
