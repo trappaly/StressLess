@@ -19,9 +19,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardContent } from './ui/card';
 import axios from 'axios';
 import { useAuth } from '@/components/context/auth/AuthContext';
-
-const URL = process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
-
+import { backendBaseUrl, minutesToTime } from '@/lib/utils';
 //Define form shema
 export const formSchema = z
   .object({
@@ -108,7 +106,7 @@ export function UserPreferencesForm({
       if (!user?.uid) return;
 
       axios
-        .post(URL + `/api/user/surveyresults/${user.uid}`, outputs)
+        .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
         .then((response) => {
           console.log('Successfully posted answers for user: ', user!.uid);
           console.log(response);
@@ -248,12 +246,4 @@ export function UserPreferencesForm({
       <CardContent>{content}</CardContent>
     </Card>
   );
-}
-
-function minutesToTime(mins: number) {
-  const h = Math.floor(mins / 60)
-    .toString()
-    .padStart(2, '0');
-  const m = (mins % 60).toString().padStart(2, '0');
-  return `${h}:${m}`;
 }
