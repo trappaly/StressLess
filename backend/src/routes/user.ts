@@ -1,4 +1,6 @@
 import PreferenceController from '../controllers/PreferenceController';
+import { Request, Response, NextFunction } from 'express';
+
 
 // Creates the router
 const express = require('express');
