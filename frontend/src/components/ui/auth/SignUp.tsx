@@ -22,9 +22,18 @@ export default function SignUpForm() {
     try {
       await signUp(email, password);
 
+      if (!user) {
+        setErrorMessage('User not found');
+        return;
+      }
+
       // Update the user's display name
-      await updateProfile(user!, {
+      // TODO: this doesn't work because user is not yet authenticated. Maybe try
+      // TODO: to save displayName to cookie then update once user is authenticated
+      await updateProfile(user, {
         displayName: displayName,
+      }).then(() => {
+        console.log('Display name updated: ', user.displayName);
       });
 
       // 3. Get the Firebase ID token
