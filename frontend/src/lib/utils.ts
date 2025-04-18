@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export const backendBaseUrl =
-  process.env.NEXT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
+  process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:3001';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
