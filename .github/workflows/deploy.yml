@@ -1,0 +1,22 @@
+name: Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: |
+      !contains(github.event.head_commit.message, '[ci skip]') &&
+      !contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚀 Trigger Frontend Deploy on Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_FRONTEND_HOOK }}
+
+      - name: 🔧 Trigger Backend Deploy on Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_BACKEND_HOOK }}
