@@ -1,11 +1,9 @@
 import PreferenceController from '../controllers/PreferenceController';
 import { Request, Response, NextFunction } from 'express';
 
-
 // Creates the router
 const express = require('express');
 const router = express.Router();
-
 
 // Keeps track of time on the website
 const timeLog = (req: Request, res: Response, next: NextFunction) => {
