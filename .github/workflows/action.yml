@@ -78,3 +78,20 @@ jobs:
 #
 #      - name: Shutdown the server (optional)
 #        run: pkill -f "node"
+
+    deploy:
+      needs: build-and-test
+      if: |
+        (github.ref == 'refs/heads/main') &&
+        !contains(github.event.head_commit.message, '[ci skip]') &&
+        !contains(github.event.head_commit.message, '[skip ci]')
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: 🔧 Trigger Render Backend Deploy
+          run: |
+            curl -X POST ${{ secrets.RENDER_BACKEND_HOOK }}
+
+        - name: 🚀 Trigger Render Frontend Deploy
+          run: |
+            curl -X POST ${{ secrets.RENDER_FRONTEND_HOOK }}
