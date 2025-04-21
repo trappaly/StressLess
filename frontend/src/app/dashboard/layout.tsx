@@ -1,29 +1,20 @@
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
-
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true';
-
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <div className="flex">
-        {/* Sidebar Component */}
+      <div className="flex h-screen w-full"> {/* Add this flex container */}
         <AppSidebar />
-        
-        {/* Main Content */}
-        <main className="flex-grow p-4">
-          <SidebarTrigger />
+        <main className="flex-1 overflow-auto"> {/* Make main take remaining space */}
+         <SidebarTrigger /> 
           {children}
         </main>
       </div>
     </SidebarProvider>
-  );
+  )
 }

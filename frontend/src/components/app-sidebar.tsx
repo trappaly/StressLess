@@ -1,4 +1,4 @@
-import { Calendar, UserIcon, Settings } from 'lucide-react';
+import { Calendar, UserIcon} from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,7 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import Home from '../app/dashboard/calendar/page';
 // Menu items.
 const items = [
   {
@@ -27,7 +26,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating">
+    <Sidebar variant="floating" collapsible="offcanvas">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
