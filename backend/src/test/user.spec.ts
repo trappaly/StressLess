@@ -5,10 +5,14 @@ import FakeDataFactory from './FakeDataFactory';
 import prisma from '../config/prisma';
 
 describe('Test preference routes', () => {
+  // generate fake data
   let factory: FakeDataFactory;
+  // declares a user object but does not assign anything to it
   let user: { id: any; email?: string; created_at?: Date; };
+  // declaring an array of preference questions
   let preferenceQuestions: any[] = [];
 
+  // before all the tests are run, run this chunk of code once
   beforeAll(() => {
     factory = new FakeDataFactory;
     
@@ -21,11 +25,12 @@ describe('Test preference routes', () => {
     }
   });
   
-
+  // describe refers to a group of tests
   describe('Test getting preference routes', async () => {
     let preferences;
     let dbPreferences: any[];
 
+    // add data to the database which lets us test the routes
     beforeAll(async () => {
       // Add some answers to preference questions
       preferences = preferenceQuestions.map(question =>
@@ -40,6 +45,7 @@ describe('Test preference routes', () => {
       });
     });
 
+    // Comment this out if you don't want things to delete
     // Delete answers when done
     afterAll(async () => {
       await prisma.user_preferences.deleteMany({
