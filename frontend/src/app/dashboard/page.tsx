@@ -1,7 +1,8 @@
 'use client';
-import ProfilePage from '@/components/UserProfile';
+// dashboard page defaults to calendar
+import Home from "./calendar/page";
 // Authenticated pages
 // are protected by the middleware
 export default function Dashboard() {
-  return <ProfilePage />;
+  return <Home />;
 }
