@@ -10,22 +10,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-
+import Home from '../app/dashboard/calendar/page';
 // Menu items.
 const items = [
   {
     title: 'Profile',
-    url: '#',
+    url: '/dashboard/profilepage',
     icon: UserIcon,
   },
   {
     title: 'Calendar',
-    url: '#',
+    url: '/dashboard/calendar',
     icon: Calendar,
   },
   {
     title: 'Settings',
-    url: '#',
+    url: '/Settings',
     icon: Settings,
   },
 ];
