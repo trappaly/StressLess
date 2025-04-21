@@ -23,11 +23,6 @@ const items = [
     url: '/dashboard/calendar',
     icon: Calendar,
   },
-  {
-    title: 'Settings',
-    url: '/Settings',
-    icon: Settings,
-  },
 ];
 
 export function AppSidebar() {
