@@ -170,6 +170,10 @@ DATABASE_URL=<some-url>
 DIRECT_URL=<some-url>
 ```
 
+In the `backend` directory, **also** create a `.test.env` file in the same format as the backend `.env` file.
+However, please enter the information for the database used for automated testing.
+When running automated tests, the variables from `.test.env` will be used.
+
 In the `frontend` directory, create a `.env` file and add the following variables:
 
 ```bash

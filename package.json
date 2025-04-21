@@ -11,8 +11,11 @@
     "frontend:start": "pnpm --filter frontend start",
     "start:all": "concurrently -c \"auto\" \"pnpm backend:start\" \"pnpm frontend:start\"",
     "backend:test:unit": "pnpm --filter backend test",
+    "backend:test:unit:ci": "pnpm --filter backend test:ci",
     "frontend:test:unit": "pnpm --filter frontend test",
+    "frontend:test:unit:ci": "pnpm --filter frontend test",
     "test:unit": "concurrently -c \"auto\" \"pnpm backend:test:unit\" \"pnpm frontend:test:unit\"",
+    "test:unit:ci": "concurrently -c \"auto\" \"pnpm backend:test:unit:ci\" \"pnpm frontend:test:unit:ci\"",
     "lint": "pnpm exec eslint frontend backend --ext .ts,.tsx --fix --ignore-pattern 'frontend/.next/*' --ignore-pattern 'backend/dist/*' --ignore-pattern 'backend/src/db/generated/*'",
     "format": "pnpm exec prettier --write frontend/**/*.{ts,tsx} backend/**/*.ts",
     "prepare": "husky"
