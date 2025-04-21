@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
+import { backendBaseUrl } from '@/lib/utils';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -24,12 +25,9 @@ export default function SignIn() {
       }
 
       // 4. Send the ID token to the backend API for user creation
-      const response = await axios.post(
-        'http://localhost:3001/api/auth/signin',
-        {
-          idToken,
-        }
-      );
+      const response = await axios.post(backendBaseUrl + '/api/auth/signin', {
+        idToken,
+      });
 
       // 5. Handle response from your API
       if (response.status === 201) {

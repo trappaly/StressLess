@@ -3,24 +3,24 @@ import prisma from '../config/prisma.ts';
 
 /**
  * EventController
- * 
+ *
  * Functions for handling requests from the frontend for adding, viewing, and
  * deleting calendar events.
- * 
+ *
  * How to use:
- * 
+ *
  * User sends a HTTP request to the URL with the route that calls the below
  * function. Check ../routes/calendar.ts for the exact routes.
- * 
+ *
  * For example, if we want to get user events:
- * 
+ *
  * 1. From the frontend, send an HTTP GET request to the route which calls
  *    the getUserEvents function. For example:
- * 
+ *
  *    GET <BACKEND URL>/api/calendar/events/by-user/<your-user-id>
- * 
+ *
  * 2. The frontend receives the data in JSON format (JS objects/arrays).
- * 
+ *
  * Note that we can use the Axios library in the frontend to send HTTP requests.
  */
 export default class EventController {
