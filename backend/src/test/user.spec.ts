@@ -9,6 +9,8 @@ describe('Test preference routes', () => {
   let factory: FakeDataFactory;
   // declares a user object but does not assign anything to it
   let user: { id: any; email?: string; created_at?: Date; };
+  // declares a preference object but does not assign anything to it
+  let preference: { id: any; user_id: any; question_id: any; answer: string;};
   // declaring an array of preference questions
   let preferenceQuestions: any[] = [];
 
@@ -18,6 +20,9 @@ describe('Test preference routes', () => {
     
     // Create random user, NOT stored in database
     user = factory.randomUser({ id: "TEST_USER" });
+
+    // Create random preference, NOT stored in database
+    preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE", questionId: "TEST_QUESTION_ID" })
 
     // Create random questions, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -47,13 +52,13 @@ describe('Test preference routes', () => {
 
     // Comment this out if you don't want things to delete
     // Delete answers when done
-    afterAll(async () => {
-      await prisma.user_preferences.deleteMany({
-        where: {
-          user_id: "TEST_USER",
-        },
-      });
-    });
+    // afterAll(async () => {
+    //   await prisma.user_preferences.deleteMany({
+    //     where: {
+    //       user_id: "TEST_USER",
+    //     },
+    //   });
+    // });
 
     it('Gets the preferences', async () => {
       const res = await request(app).get(`/api/user/surveyresults/${user.id}`);
@@ -61,7 +66,28 @@ describe('Test preference routes', () => {
     });
   });
 
-  // describe('Test posting preference routes', async () => {
+  describe('Test posting preference routes', async () => {
+    beforeAll(async () => {
+      let dbPreferences: any[];
+      // Add answers to database
+      dbPreferences = await prisma.preference_questions.createManyAndReturn({
+        data: [{
+          question_text: 'Test',
+        }],
+      });
+    });
+    it('Saves survey results to the database', async () => {
+      let testPreference;
+      testPreference = {
+        question_text: 'Test',
+        answer: 'Test2',
+      }
+      console.log(testPreference);
+      const res = await request(app)
+      .post(`/api/user/surveyresults/${preference.user_id}`)
+      .send([testPreference]);
+      expect(res.statusCode).toBe(200);
+    });
+  });
 
-  // });
 });
