@@ -167,7 +167,7 @@ export function UserPreferencesForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Work Duration</FormLabel>
-              <FormDescription>How long do you want to work?</FormDescription>
+              <FormDescription>How long do you want to work?(in minutes)</FormDescription>
               <FormControl>
                 <Input placeholder="e.g., 3" {...field} />
               </FormControl>
@@ -184,7 +184,7 @@ export function UserPreferencesForm({
             <FormItem>
               <FormLabel>Preferred Sleep Amount</FormLabel>
               <FormDescription>
-                How much sleep do you typically get?
+                Roughly how many hours do you typically get?
               </FormDescription>
               <FormControl>
                 <Input type="number" step="0.5" placeholder="8" {...field} />

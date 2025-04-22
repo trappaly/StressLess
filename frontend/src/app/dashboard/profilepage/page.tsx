@@ -1,6 +1,6 @@
 'use client';
 // Onboarding form
-import ProfilePage from "@/components/UserProfile";
+import ProfilePage from '@/components/UserProfile';
 export default function Page() {
-    return <ProfilePage />;
+  return <ProfilePage />;
 }
