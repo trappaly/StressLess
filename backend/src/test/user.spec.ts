@@ -22,7 +22,7 @@ describe('Test preference routes', () => {
     user = factory.randomUser({ id: "TEST_USER" });
 
     // Create random preference, NOT stored in database
-    preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE", questionId: "TEST_QUESTION_ID" })
+    preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE" });
 
     // Create random questions, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -52,13 +52,13 @@ describe('Test preference routes', () => {
 
     // Comment this out if you don't want things to delete
     // Delete answers when done
-    // afterAll(async () => {
-    //   await prisma.user_preferences.deleteMany({
-    //     where: {
-    //       user_id: "TEST_USER",
-    //     },
-    //   });
-    // });
+    afterAll(async () => {
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: "TEST_USER",
+        },
+      });
+    });
 
     it('Gets the preferences', async () => {
       const res = await request(app).get(`/api/user/surveyresults/${user.id}`);
@@ -68,26 +68,44 @@ describe('Test preference routes', () => {
 
   describe('Test posting preference routes', async () => {
     beforeAll(async () => {
-      let dbPreferences: any[];
-      // Add answers to database
-      dbPreferences = await prisma.preference_questions.createManyAndReturn({
-        data: [{
-          question_text: 'Test',
-        }],
+      let dbPreferenceQuestion: any;
+      // Add a preference question to the database
+      // This addition is necessary as postPreferences retrieves a preference through a question_text
+      dbPreferenceQuestion = await prisma.preference_questions.create({
+        data: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
       });
     });
     it('Saves survey results to the database', async () => {
+      // defines testPreference
       let testPreference;
       testPreference = {
-        question_text: 'Test',
-        answer: 'Test2',
-      }
-      console.log(testPreference);
+        // defining an existing instance of question_text is necessary as preference is retrieved by question_text
+        question_text: 'TEST_QUESTION_TEXT',
+      };
       const res = await request(app)
       .post(`/api/user/surveyresults/${preference.user_id}`)
+      // send the test preference to the database
       .send([testPreference]);
       expect(res.statusCode).toBe(200);
     });
+    afterAll(async () => {
+      // Delete many user preferences
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: 'TEST_USER_PREFERENCE',
+        },
+      });
+    
+      // Delete many preference questions
+      await prisma.preference_questions.deleteMany({
+        where: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+    });
+    
   });
 
 });
