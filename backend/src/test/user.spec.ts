@@ -113,66 +113,58 @@ describe('Test preference routes', () => {
     
   });
 
-  // describe('Test updating preference routes', async () => {
-  //   beforeAll(async () => {
-  //     let dbPreferenceQuestion: any;
-  //     let dbUserPreference: any;
-  //     // Add a preference question to the database
-  //     // This addition is necessary as postPreferences retrieves a preference through a question_text
-  //     dbPreferenceQuestion = await prisma.preference_questions.create({
-  //       data: {
-  //         id: preferenceQuestion.id,
-  //         question_text: 'TEST_QUESTION_TEXT',
-  //       },
-  //     });
-  //     // Add a preference question to the database
-  //     // This addition is necessary as putPreference checks if there is an existing preference entry for a user by user_id
-  //     dbUserPreference = await prisma.user_preferences.create({
-  //       data: {
-  //         user_id: user.id,
-  //         question_id: preferenceQuestion.id,
-  //         answer: "This is a sample answer."
-  //       },
-  //     });
-  //   });
-  //   it('Updates survey results in the database', async () => {
-  //     const existing = await prisma.user_preferences.findFirst({
-  //       where: {
-  //         user_id: user.id,
-  //         question_id: preferenceQuestion.id,
-  //       },
-  //     });
-  //     console.log(existing)
-  //     const res = await request(app)
-  //     .put(`/api/user/surveyresults/${user.id}`)
-  //     // send the test preference to the database
-  //     .send({
-  //       preferences:[
-  //         {
-  //           user_id: user.id,
-  //           question_id: preferenceQuestion.id,
-  //           answer: "This is a new answer."
-  //         }
-  //       ]
-  //     });
-  //     expect(res.statusCode).toBe(200);
-  //   });
-  //   // afterAll(async () => {
-  //   //   // Delete many user preferences
-  //   //   await prisma.user_preferences.deleteMany({
-  //   //     where: {
-  //   //       user_id: 'TEST_USER_PREFERENCE',
-  //   //     },
-  //   //   });
+  describe('Test updating preference routes', async () => {
+    beforeAll(async () => {
+      let dbPreferenceQuestion: any;
+      let dbUserPreference: any;
+      // Add a preference question to the database
+      // This addition is necessary as postPreferences retrieves a preference through a question_text
+      dbPreferenceQuestion = await prisma.preference_questions.create({
+        data: {
+          id: preferenceQuestion.id,
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+      // Add a user preference to the database
+      // This addition is necessary as putPreference checks if there is an existing preference entry for a user by user_id
+      dbUserPreference = await prisma.user_preferences.create({
+        data: {
+          user_id: user.id,
+          question_id: preferenceQuestion.id,
+          answer: "This is a sample answer."
+        },
+      });
+    });
+    it('Updates survey results in the database', async () => {
+
+      let testPreference2;
+      testPreference2 = {
+        // defining an existing instance of question_text is necessary as preference is retrieved by question_text
+        question_text: 'TEST_QUESTION_TEXT',
+        answer: "This is a new sample answer.",
+      };
+      const res = await request(app)
+      .put(`/api/user/surveyresults/${user.id}`)
+      // send the updated test preference to the database
+      .send([testPreference2]);
+      expect(res.statusCode).toBe(200);
+    });
+    afterAll(async () => {
+      // Delete many user preferences
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: 'TEST_USER',
+        },
+      });
     
-  //   //   // Delete many preference questions
-  //   //   await prisma.preference_questions.deleteMany({
-  //   //     where: {
-  //   //       question_text: 'TEST_QUESTION_TEXT',
-  //   //     },
-  //   //   });
-  //   // });
+      // Delete many preference questions
+      await prisma.preference_questions.deleteMany({
+        where: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+    });
     
-  // });
+  });
 
 });
