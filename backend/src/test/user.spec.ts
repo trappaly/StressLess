@@ -11,6 +11,8 @@ describe('Test preference routes', () => {
   let user: { id: any; email?: string; created_at?: Date; };
   // declares a preference object but does not assign anything to it
   let preference: { id: any; user_id: any; question_id: any; answer: string;};
+  // declares a preference object but does not assign anything to it
+  let preferenceQuestion: { id: any; question_text: any};
   // declaring an array of preference questions
   let preferenceQuestions: any[] = [];
 
@@ -23,6 +25,9 @@ describe('Test preference routes', () => {
 
     // Create random preference, NOT stored in database
     preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE" });
+  
+    // Create random preference question, NOT stored in database
+    preferenceQuestion = factory.randomPreferenceQuestion({ id: "TEST_PREFERENCE_QUESTION"});
 
     // Create random questions, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -94,7 +99,7 @@ describe('Test preference routes', () => {
       // Delete many user preferences
       await prisma.user_preferences.deleteMany({
         where: {
-          user_id: 'TEST_USER_PREFERENCE',
+          user_id: preference.user_id,
         },
       });
     
@@ -107,5 +112,67 @@ describe('Test preference routes', () => {
     });
     
   });
+
+  // describe('Test updating preference routes', async () => {
+  //   beforeAll(async () => {
+  //     let dbPreferenceQuestion: any;
+  //     let dbUserPreference: any;
+  //     // Add a preference question to the database
+  //     // This addition is necessary as postPreferences retrieves a preference through a question_text
+  //     dbPreferenceQuestion = await prisma.preference_questions.create({
+  //       data: {
+  //         id: preferenceQuestion.id,
+  //         question_text: 'TEST_QUESTION_TEXT',
+  //       },
+  //     });
+  //     // Add a preference question to the database
+  //     // This addition is necessary as putPreference checks if there is an existing preference entry for a user by user_id
+  //     dbUserPreference = await prisma.user_preferences.create({
+  //       data: {
+  //         user_id: user.id,
+  //         question_id: preferenceQuestion.id,
+  //         answer: "This is a sample answer."
+  //       },
+  //     });
+  //   });
+  //   it('Updates survey results in the database', async () => {
+  //     const existing = await prisma.user_preferences.findFirst({
+  //       where: {
+  //         user_id: user.id,
+  //         question_id: preferenceQuestion.id,
+  //       },
+  //     });
+  //     console.log(existing)
+  //     const res = await request(app)
+  //     .put(`/api/user/surveyresults/${user.id}`)
+  //     // send the test preference to the database
+  //     .send({
+  //       preferences:[
+  //         {
+  //           user_id: user.id,
+  //           question_id: preferenceQuestion.id,
+  //           answer: "This is a new answer."
+  //         }
+  //       ]
+  //     });
+  //     expect(res.statusCode).toBe(200);
+  //   });
+  //   // afterAll(async () => {
+  //   //   // Delete many user preferences
+  //   //   await prisma.user_preferences.deleteMany({
+  //   //     where: {
+  //   //       user_id: 'TEST_USER_PREFERENCE',
+  //   //     },
+  //   //   });
+    
+  //   //   // Delete many preference questions
+  //   //   await prisma.preference_questions.deleteMany({
+  //   //     where: {
+  //   //       question_text: 'TEST_QUESTION_TEXT',
+  //   //     },
+  //   //   });
+  //   // });
+    
+  // });
 
 });
