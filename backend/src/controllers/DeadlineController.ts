@@ -3,7 +3,10 @@ import prisma from '../config/prisma';
 
 export default class Deadline {
   /**
-   * Accesses all of a user's deadlines
+   * Gets all the deadlines for specified user from the `user_events` table.
+   * Sends a array of objects with fields corresponding to columns in JSON format.
+   * 
+   * @param req.params.user_id ID of the user
    */
   public static async getUserDeadlines(req: Request, res: Response) {
     try {
@@ -22,7 +25,10 @@ export default class Deadline {
   }
 
   /**
-   * Accesses each indvidual deadline
+   * Gets an event by its id from the `user_deadlines` table. Sends on object with
+   * fields corresponding to columns in JSON format.
+   * 
+   * @param req.params.id - ID of the deadline
    */
   public static async getDeadlinebyId(req: Request, res: Response) {
     try {
@@ -41,7 +47,9 @@ export default class Deadline {
   }
 
   /**
-   * Creates a deadline
+   * Adds a new deadline to database using values in the request.
+   * @param req.body - Fields have the same names of the columns in the
+   *  `user_deadlines` table. `id` will be ignored since an UUID will be generated.
    */
   public static async postDeadline(req: Request, res: Response) {
     try {

@@ -25,8 +25,10 @@ import prisma from '../config/prisma.ts';
  */
 export default class EventController {
   /**
-   * Gets all the events for specified user.
-   * req.params.user - ID of the user
+   * Gets all the events for specified user from the `user_events` table.
+   * Sends a array of objects with fields corresponding to columns in JSON format.
+   * 
+   * @param req.params.user_id ID of the user
    */
   public static async getUserEvents(req: Request, res: Response) {
     try {
@@ -42,8 +44,10 @@ export default class EventController {
   }
 
   /**
-   * Gets an event by its id from the database.
-   * req.params.id - ID of the event
+   * Gets an event by its id from the `user_events` table. Sends on object with
+   * fields corresponding to columns in JSON format.
+   * 
+   * @param req.params.id - ID of the event
    */
   public static async getEventById(req: Request, res: Response) {
     try {
@@ -60,6 +64,8 @@ export default class EventController {
 
   /**
    * Adds a new event to database using values in the request.
+   * @param req.body - Fields have the same names of the columns in the
+   *  `user_events` table. `id` will be ignored since an UUID will be generated.
    */
   public static async postEvent(req: Request, res: Response) {
     const values = this.getUserEventValues(req);
@@ -70,8 +76,12 @@ export default class EventController {
   }
 
   /**
-   * Modifies a specified event with values in the request.
-   * req.params.id - ID of the event.
+   * Modifies a specified event to database using values in the request.
+   * The event must be present in the database; otherwise, the response will
+   * contain a 404 error.
+   * 
+   * @param req.body - Fields have the same names of the columns in the
+   *  `user_events` table. `id` will be ignored since an UUID will be generated.
    */
   public static async putEvent(req: Request, res: Response) {
     try {
@@ -88,7 +98,7 @@ export default class EventController {
 
   /**
    * Deletes a specified event.
-   * req.params.id - ID of the event.
+   * @param req.params.id ID of the event.
    */
   public static async deleteEvent(req: Request, res: Response) {
     try {

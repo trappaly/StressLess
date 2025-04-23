@@ -3,7 +3,18 @@ import prisma from '../config/prisma';
 
 export default class PreferenceController {
   /**
-   * Register all preferences for a user.
+   * Register all preferences for a user. The question ID will be searched based
+   * on the question text provided in the request.
+   * 
+   * @param req.body
+   *  An array of objects with the following fields:
+   *    - `question_text`:
+   *      Corresponds to a question in the `preference_questions` table with the
+   *      matching `question_text` value. This question must exist.
+   *    - `answer`:
+   *      The answer to the question specified in `req.body.question_text`.
+   * @param req.params.user_id
+   *  The user ID which is part of the URL.
    */
   public static async postPreferences(
     req: Request,
@@ -54,6 +65,8 @@ export default class PreferenceController {
 
   /**
    * Get all preferences of a user.
+   * @param req.params.user_id
+   *    The user ID which is part of the URL.
    */
   public static async getPreferencesByUserId(
     req: Request,
@@ -78,12 +91,19 @@ export default class PreferenceController {
   }
 
   /**
-   * Modifies a specified event with values in the request.
-   * req.params.user_id - ID of the user.
-   */
-  /**
-   * Modifies a specified event with values in the request.
-   * req.params.user_id - ID of the user.
+   * Modifies an array of specified user preferences with values in the request,
+   * or adds a new user preference to the database if no existing preference
+   * with the specified id is found in the database.
+   * 
+   * @param req.body
+   *  An array of objects with the following fields:
+   *    - `question_text`:
+   *      Corresponds to a question in the `preference_questions` table with the
+   *      matching `question_text` value. This question must exist.
+   *    - `answer`:
+   *      The answer to the question specified in `req.body.question_text`.
+   * @param req.params.user_id
+   *  The user ID which is part of the URL.
    */
   public static async putPreferenceByUserId(req: Request, res: Response) {
     try {
