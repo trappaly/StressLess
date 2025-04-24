@@ -5,6 +5,9 @@ import React from 'react';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/components/context/auth/AuthContext';
+import { Button } from "@/components/ui/button"
+
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
