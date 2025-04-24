@@ -167,7 +167,9 @@ export function UserPreferencesForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Work Duration</FormLabel>
-              <FormDescription>How long do you want to work?(in minutes)</FormDescription>
+              <FormDescription>
+                How long do you want to work?(in minutes)
+              </FormDescription>
               <FormControl>
                 <Input placeholder="e.g., 3" {...field} />
               </FormControl>
