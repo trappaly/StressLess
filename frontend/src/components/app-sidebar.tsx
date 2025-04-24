@@ -1,8 +1,8 @@
-import { Calendar, UserIcon } from 'lucide-react';
-
+import { Calendar, User2, UserIcon, LogOut, } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 // Menu items.
 const items = [
   {
@@ -46,6 +47,17 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      {/* Sign out */}
+      <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <LogOut /> Sign out
+                  </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
     </Sidebar>
   );
 }
