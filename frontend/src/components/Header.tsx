@@ -1,6 +1,6 @@
 // components/Header.tsx
 import { ModeToggle } from '@/components/ModeToggle';
-import { Help } from '@/components/Help'; // Import Help button
+import { Help } from '@/components/help'; // Import Help button
 import { Button } from '@/components/ui/button';
 
 export default function Header() {

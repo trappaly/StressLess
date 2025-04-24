@@ -7,8 +7,9 @@ export function Help() {
   return (
     <Link href="/help" passHref>
       <Button variant="ghost" size="icon" aria-label="Help">
-        <HelpCircle className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+        <HelpCircle className="w-8 h-8 text-muted-foreground hover:text-foreground" />
       </Button>
     </Link>
   );
 }
+
