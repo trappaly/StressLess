@@ -31,7 +31,7 @@ export default function SignIn() {
 
       // 5. Handle response from your API
       if (response.status === 201) {
-        window.location.href = '/calendar'; // Redirect after successful signup
+        window.location.href = '/dashboard'; // Redirect after successful signup
       } else {
         setErrorMessage(response.data.message);
       }
