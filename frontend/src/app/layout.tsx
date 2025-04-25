@@ -9,6 +9,7 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { HelpCircle } from 'lucide-react';
 
+import AppWrapper from '@/components/ui/AppWrapper';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -43,7 +44,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            <main>{children}</main>
+            <AppWrapper>{children}</AppWrapper>
           </ThemeProvider>
         </AuthProvider>
       </body>

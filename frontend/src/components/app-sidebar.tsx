@@ -1,5 +1,4 @@
 import { Calendar, UserIcon } from 'lucide-react';
-
 import {
   Sidebar,
   SidebarContent,
@@ -10,6 +9,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+
+import SignOut from './ui/auth/SignOut';
 // Menu items.
 const items = [
   {
@@ -46,6 +47,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* Sign out */}
+      <SignOut />
     </Sidebar>
   );
 }

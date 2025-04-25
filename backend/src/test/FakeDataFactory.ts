@@ -82,8 +82,8 @@ class FakeDataFactory {
       recurrence_end_date: null,
       is_generated: false,
       break_time: null,
-      is_completed: false,
-      created_at: Date.now(),
+      // is_completed: false,
+      created_at: new Date(),
     };
   }
 
@@ -102,7 +102,7 @@ class FakeDataFactory {
       description: faker.lorem.words(faker.number.int(256)),
       priority: null,
       projected_duration: faker.number.int(999),
-      created_at: Date.now(),
+      created_at: new Date(),
     };
   }
 
