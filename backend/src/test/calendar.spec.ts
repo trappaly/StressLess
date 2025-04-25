@@ -139,46 +139,46 @@ describe('Test calendar routes', () => {
   
       });
 
-//    // describe refers to a group of tests
-//    describe('Test updating an event', async () => {
-//     let dbEvent: any;
+   // describe refers to a group of tests
+    describe('Test updating an event', async () => {
+      let dbEvent: any;
 
-//     // add data to the database which lets us test the routes
-//     beforeAll(async () => {
-//       // Add an event to database
-//       dbEvent = await prisma.user_events.create({
-//           data: {
-//             id: 'TEST_USER_EVENT',
-//             user_id: 'TEST_USER',
-//             title: 'TEST_TITLE'
-//           }
-//         });
-//     });
+      // add data to the database which lets us test the routes
+      beforeAll(async () => {
+        // Add an event to database
+        dbEvent = await prisma.user_events.create({
+            data: {
+              id: 'TEST_USER_EVENT',
+              user_id: 'TEST_USER',
+              title: 'TEST_TITLE'
+            }
+          });
+      });
 
-//     // Test getting the event through its id using the route
-//     it('Updates an event', async () => {
-      
-//       let testEvent;
-//       testEvent = {
-//         id: 'TEST_USER_EVENT',
-//         // title: 'NEW_TEST_TITLE'
-//       };
-//       const res = await request(app)
-//       .put(`/api/calendar/events/id/${userEvent.id}`)
-//     //   .send([testEvent]);
-//       expect(res.statusCode).toBe(200);
-//     });
+      // Test getting the event through its id using the route
+      it('Updates an event', async () => {
+        
+        let testEvent;
+        testEvent = {
+          id: 'TEST_USER_EVENT',
+          title: 'NEW_TEST_TITLE'
+        };
+        const res = await request(app)
+          .put(`/api/calendar/events/id/${userEvent.id}`)
+          .send(testEvent);
+        expect(res.statusCode).toBe(200);
+      });
 
-//     // Comment this out if you don't want things to delete
-//     // Delete answers when done
-//     // afterAll(async () => {
-//     //   await prisma.user_events.deleteMany({
-//     //     where: {
-//     //       id: "TEST_USER_EVENT",
-//     //     },
-//     //   });
-//     // });
+      // Comment this out if you don't want things to delete
+      // Delete answers when done
+      // afterAll(async () => {
+      //   await prisma.user_events.deleteMany({
+      //     where: {
+      //       id: "TEST_USER_EVENT",
+      //     },
+      //   });
+      // });
 
-//   });
+    });
   
   });

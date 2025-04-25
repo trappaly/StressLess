@@ -62,7 +62,7 @@ export default class EventController {
    * Adds a new event to database using values in the request.
    */
   public static async postEvent(req: Request, res: Response) {
-    const values = this.getUserEventValues(req);
+    const values = EventController.getUserEventValues(req);
     const result = await prisma.user_events.create({
       data: { ...values },
     });
@@ -75,14 +75,15 @@ export default class EventController {
    */
   public static async putEvent(req: Request, res: Response) {
     try {
-      const values = this.getUserEventValues(req);
+      const values = EventController.getUserEventValues(req);
       const event = await prisma.user_events.update({
         where: { id: req.params.id }, // Ensure id is uuid
         data: { ...values },
       });
       res.json(event);
-    } catch {
-      res.status(404).json({ error: 'Not found' });
+    } catch (e) {
+      console.log((e as Error).message);
+      res.status(404).json({ error: 'Not found: ' + (e as Error).message });
     }
   }
 
