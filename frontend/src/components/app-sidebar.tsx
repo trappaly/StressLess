@@ -1,4 +1,4 @@
-import { Calendar, User2, UserIcon, LogOut } from 'lucide-react';
+import { Calendar, UserIcon } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
