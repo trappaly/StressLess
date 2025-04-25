@@ -27,17 +27,6 @@ export default function SignUpForm() {
         setErrorMessage('Creating your account...');
       }
 
-      // Update the user's display name
-      // TODO: this doesn't work because user is not yet authenticated. Maybe try
-      // TODO: to save displayName to cookie then update once user is authenticated
-      if (user) {
-        await updateProfile(user, {
-          displayName: displayName,
-        }).then(() => {
-          console.log('Display name updated: ', user.displayName);
-        });
-      }
-
       // 3. Get the Firebase ID token
       const idToken = await getAuth().currentUser?.getIdToken(true);
 
@@ -53,6 +42,13 @@ export default function SignUpForm() {
 
       // 5. Handle response from your API
       if (response.status === 201) {
+        if (user) {
+          await updateProfile(user, {
+            displayName: displayName,
+          }).then(() => {
+            console.log('Display name updated: ', user.displayName);
+          });
+        }
         window.location.href = '/preference'; // Redirect after successful signup
       } else {
         setErrorMessage('Cannot create new account');
