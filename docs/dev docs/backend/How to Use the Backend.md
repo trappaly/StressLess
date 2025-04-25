@@ -51,8 +51,8 @@ import axios from 'axios';
 const newEvent = {
   user_id: '1234',
   title: 'Study Session',
-  start_time: new Date().toISOString(),
-  end_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+  start_time: new Date(),
+  end_time: new Date(Date.now() + 2 * 60 * 60 * 1000),
   description: 'Math revision',
   location_place: 'Library',
   is_recurring: false,
@@ -74,8 +74,9 @@ You can test your Express routes using the `supertest` library, which lets you s
 
 Example test for `postEvent`:
 ```typescript
+import { /* vitest functions */ } from 'vitest';
 import request from 'supertest';
-import app from '../src/app'; // Your Express app instance
+import app from '../index'; // Your Express app instance
 
 describe('POST /api/calendar/events', () => {
   it('should create a new event', async () => {
@@ -84,7 +85,7 @@ describe('POST /api/calendar/events', () => {
       .send({
         user_id: 'test-user',
         title: 'Test Event',
-        start_time: new Date().toISOString(),
+        start_time: new Date(),
       });
 
     expect(response.status).toBe(200); // or 201, depending on your setup
