@@ -54,7 +54,7 @@ export default class Deadline {
   public static async postDeadline(req: Request, res: Response) {
     try {
       // Accesses all of the deadline variables in the request
-      const values = this.getUserDeadlineValues(req);
+      const values = Deadline.getUserDeadlineValues(req);
       // Creates a new deadline
       const result = await prisma.user_deadlines.create({
         data: { ...values },
@@ -73,7 +73,7 @@ export default class Deadline {
   public static async putDeadline(req: Request, res: Response) {
     try {
       // Accesses all of the deadline variables in the request
-      const values = this.getUserDeadlineValues(req);
+      const values = Deadline.getUserDeadlineValues(req);
       // Edits the current deadline
       const result = await prisma.user_deadlines.update({
         where: { id: req.params.id },

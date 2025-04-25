@@ -9,6 +9,10 @@ describe('Test preference routes', () => {
   let factory: FakeDataFactory;
   // declares a user object but does not assign anything to it
   let user: { id: any; email?: string; created_at?: Date; };
+  // declares a preference object but does not assign anything to it
+  let preference: { id: any; user_id: any; question_id: any; answer: string;};
+  // declares a preference object but does not assign anything to it
+  let preferenceQuestion: { id: any; question_text: any};
   // declaring an array of preference questions
   let preferenceQuestions: any[] = [];
 
@@ -18,6 +22,12 @@ describe('Test preference routes', () => {
     
     // Create random user, NOT stored in database
     user = factory.randomUser({ id: "TEST_USER" });
+
+    // Create random preference, NOT stored in database
+    preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE" });
+  
+    // Create random preference question, NOT stored in database
+    preferenceQuestion = factory.randomPreferenceQuestion({ id: "TEST_PREFERENCE_QUESTION"});
 
     // Create random questions, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -61,7 +71,100 @@ describe('Test preference routes', () => {
     });
   });
 
-  // describe('Test posting preference routes', async () => {
+  describe('Test posting preference routes', async () => {
+    beforeAll(async () => {
+      let dbPreferenceQuestion: any;
+      // Add a preference question to the database
+      // This addition is necessary as postPreferences retrieves a preference through a question_text
+      dbPreferenceQuestion = await prisma.preference_questions.create({
+        data: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+    });
+    it('Saves survey results to the database', async () => {
+      // defines testPreference
+      let testPreference;
+      testPreference = {
+        // defining an existing instance of question_text is necessary as preference is retrieved by question_text
+        question_text: 'TEST_QUESTION_TEXT',
+      };
+      const res = await request(app)
+      .post(`/api/user/surveyresults/${preference.user_id}`)
+      // send the test preference to the database
+      .send([testPreference]);
+      expect(res.statusCode).toBe(200);
+    });
+    afterAll(async () => {
+      // Delete many user preferences
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: preference.user_id,
+        },
+      });
+    
+      // Delete many preference questions
+      await prisma.preference_questions.deleteMany({
+        where: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+    });
+    
+  });
 
-  // });
+  describe('Test updating preference routes', async () => {
+    beforeAll(async () => {
+      let dbPreferenceQuestion: any;
+      let dbUserPreference: any;
+      // Add a preference question to the database
+      // This addition is necessary as postPreferences retrieves a preference through a question_text
+      dbPreferenceQuestion = await prisma.preference_questions.create({
+        data: {
+          id: preferenceQuestion.id,
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+      // Add a user preference to the database
+      // This addition is necessary as putPreference checks if there is an existing preference entry for a user by user_id
+      dbUserPreference = await prisma.user_preferences.create({
+        data: {
+          user_id: user.id,
+          question_id: preferenceQuestion.id,
+          answer: "This is a sample answer."
+        },
+      });
+    });
+    it('Updates survey results in the database', async () => {
+
+      let testPreference2;
+      testPreference2 = {
+        // defining an existing instance of question_text is necessary as preference is retrieved by question_text
+        question_text: 'TEST_QUESTION_TEXT',
+        answer: "This is a new sample answer.",
+      };
+      const res = await request(app)
+      .put(`/api/user/surveyresults/${user.id}`)
+      // send the updated test preference to the database
+      .send([testPreference2]);
+      expect(res.statusCode).toBe(200);
+    });
+    afterAll(async () => {
+      // Delete many user preferences
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: 'TEST_USER',
+        },
+      });
+    
+      // Delete many preference questions
+      await prisma.preference_questions.deleteMany({
+        where: {
+          question_text: 'TEST_QUESTION_TEXT',
+        },
+      });
+    });
+    
+  });
+
 });
