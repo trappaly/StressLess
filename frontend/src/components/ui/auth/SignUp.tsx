@@ -59,7 +59,9 @@ export default function SignUpForm() {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage('Cannot create your account right now. Please try again other time.');
+        setErrorMessage(
+          'Cannot create your account right now. Please try again other time.'
+        );
       }
     }
   };

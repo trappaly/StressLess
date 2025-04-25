@@ -1,15 +1,21 @@
 'use client';
-import React from 'react';
+import { React, useEffect } from 'react';
 // import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // import { Input } from '@/components/ui/input';
 import SignInSignUp from '@/components/ui/auth/SignInSignUp';
+import { useAuth } from './context/auth/AuthContext';
 
 const Home: React.FC = () => {
   // const router = useRouter();
-
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) {
+      console.log('User not signed in.');
+    }
+  }, [user]);
   const scrollToSignUp = () =>
     document
       .getElementById('signin-signup')
@@ -78,9 +84,26 @@ const Home: React.FC = () => {
       </section>
 
       {/* Sign-in */}
+      {/* Sign-in or Dashboard Redirect */}
       <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
-        <SignInSignUp />
+        {user ? (
+          <div className="text-center space-y-4">
+            <p className="text-xl font-medium">You're already signed in.</p>
+            <Button
+              onClick={() => (window.location.href = '/dashboard')} // or use router.push('/dashboard') if you uncomment useRouter
+              className="rounded-full px-6 py-3 text-lg font-semibold bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-md hover:scale-105 transition-all"
+            >
+              Go to Dashboard
+            </Button>
+          </div>
+        ) : (
+          <SignInSignUp />
+        )}
       </section>
+
+      {/* <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
+        <SignInSignUp />
+      </section> */}
       {/*<section id="signin" className="max-w-md mx-auto px-6 py-20">*/}
       {/*  <div className="bg-white/60 dark:bg-gray-900/50 backdrop-blur-lg p-8 rounded-3xl shadow-xl">*/}
       {/*    <h3 className="text-2xl font-semibold mb-6 text-center">Sign In</h3>*/}
