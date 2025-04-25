@@ -1,5 +1,3 @@
-'use client';
-
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../styles/globals.css';
@@ -7,12 +5,11 @@ import React from 'react';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/components/context/auth/AuthContext';
+import AppWrapper from '@/components/ui/AppWrapper';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
-import { useRouter, usePathname } from 'next/navigation';
-import ProtectedRoute from '@/components/ui/ProtectedRoutes';
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
@@ -30,10 +27,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
-  const isPublicRoute = pathname === '/'; // add more public routes here if needed
-
   return (
     <html lang="en">
       <body
@@ -47,13 +40,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            {isPublicRoute ? (
-              <main>{children}</main>
-            ) : (
-              <ProtectedRoute>
-                <main>{children}</main>
-              </ProtectedRoute>
-            )}
+            <AppWrapper>{children}</AppWrapper>
           </ThemeProvider>
         </AuthProvider>
       </body>
