@@ -1,5 +1,5 @@
 'use client';
-import { React, useEffect } from 'react';
+import React, { useEffect } from 'react';
 // import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
