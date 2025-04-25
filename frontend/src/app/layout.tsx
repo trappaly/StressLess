@@ -5,10 +5,9 @@ import React from 'react';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/components/context/auth/AuthContext';
-import { ChevronRight } from "lucide-react"
-import Link from "next/link";
-import { HelpCircle } from "lucide-react";
-
+import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { HelpCircle } from 'lucide-react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
