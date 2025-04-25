@@ -88,7 +88,9 @@ const Home: React.FC = () => {
       <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
         {user ? (
           <div className="text-center space-y-4">
-            <p className="text-xl font-medium">You&apos;re already signed in.</p>
+            <p className="text-xl font-medium">
+              You&apos;re already signed in.
+            </p>
             <Button
               onClick={() => (window.location.href = '/dashboard')} // or use router.push('/dashboard') if you uncomment useRouter
               className="rounded-full px-6 py-3 text-lg font-semibold bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-md hover:scale-105 transition-all"
