@@ -9,6 +9,8 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
+import { useRouter, usePathname } from 'next/navigation';
+import ProtectedRoute from '@/components/ui/ProtectedRoutes';
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
@@ -26,6 +28,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
+  const isPublicRoute = pathname === '/'; // add more public routes here if needed
+
   return (
     <html lang="en">
       <body
@@ -39,7 +45,13 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            <main>{children}</main>
+            {isPublicRoute ? (
+              <main>{children}</main>
+            ) : (
+              <ProtectedRoute>
+                <main>{children}</main>
+              </ProtectedRoute>
+            )}
           </ThemeProvider>
         </AuthProvider>
       </body>
