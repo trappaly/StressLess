@@ -24,8 +24,7 @@ export default function SignUpForm() {
       await signUp(email, password);
 
       if (!user) {
-        setErrorMessage('User not found');
-        return;
+        setErrorMessage('Creating your account...');
       }
 
       // Update the user's display name
@@ -60,7 +59,7 @@ export default function SignUpForm() {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage('Something went wrong.');
+        setErrorMessage('Cannot create your account right now. Please try again other time.');
       }
     }
   };
