@@ -40,11 +40,14 @@ Use these naming conventions:
 
 ---
 
-### CI Requirements
+### CI/CD Requirements
 
-CI will automatically run on:
+Continuous integration (CI) will automatically run on:
 - Pushes to `main` or `development`
 - Pull Requests targeting `main` or `development`
+
+Continuous deployment (CD) will automatically run on:
+- Pushes to `main`
 
 > PRs **must not** be approved or merged unless all checks pass.
 
@@ -54,4 +57,8 @@ CI will automatically run on:
 
 - Keep commits clean and meaningful.
 - Rebase or merge `development` regularly to resolve conflicts early.
+    - Remember to keep `development` up to date with remote.
+        - Use `git fetch origin development:development` to update the `development` branch from remote.
+    - The message `Your branch is up to date with 'origin/development'` may be misleading.
+        - Use `git fetch` (without anything afterwards) to update this message for all branches.
 - Don’t force-push to shared branches (`main`, `development`).

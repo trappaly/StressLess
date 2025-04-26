@@ -5,6 +5,8 @@ import React from 'react';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import { AuthProvider } from '@/components/context/auth/AuthContext';
+
+import AppWrapper from '@/components/ui/AppWrapper';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -39,7 +41,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            <main>{children}</main>
+            <AppWrapper>{children}</AppWrapper>
           </ThemeProvider>
         </AuthProvider>
       </body>

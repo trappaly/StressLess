@@ -5,6 +5,11 @@
  *
  */
 // Monthly default view
+/**
+ * TO DO: fix dragable event color in dark mode
+ * make a help button to link to help page
+ * make events editable in drag event area
+ */
 'use client';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -127,7 +132,7 @@ export default function Home() {
   return (
     <>
       <nav className="flex justify-between mb-12 border-b border-violet-100 p-4">
-        <h1 className="font-bold text-4xl text-black text-center">
+        <h1 className="font-bold text-4xl text-black dark:text-white text-center">
           StressLess
         </h1>
       </nav>
@@ -157,9 +162,10 @@ export default function Home() {
             className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50"
           >
             <h1 className="font-bold text-lg text-center">Drag Event</h1>
+
             {events.map((event) => (
               <div
-                className="fc-event border-2 p-1 m-2 w-full rounded-md ml-auto text-center bg-white"
+                className="fc-event border-2 p-1 m-2 w-full rounded-md ml-auto text-center bg-white dark:bg-black"
                 title={event.title}
                 key={event.id}
               >
