@@ -6,9 +6,12 @@
  */
 // Monthly default view
 /**
- * TO DO: fix dragable event color in dark mode
+ * TO DO: fix dragable event color in dark mode (done)
  * make a help button to link to help page
  * make events editable in drag event area
+ * add documentation and comments to each function
+ * sync event to backend to test out syntax
+ * send rest of attributes to backend everytime event in changed
  */
 'use client';
 import FullCalendar from '@fullcalendar/react';
@@ -22,6 +25,12 @@ import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
+import { useAuth } from '@/components/context/auth/AuthContext';
+import axios from 'axios';
+import { backendBaseUrl, minutesToTime } from '@/lib/utils';
+
+//imported from the backend user preferences
+const { user } = useAuth();
 
 interface Event {
   title: string;
@@ -33,6 +42,7 @@ interface Event {
 export default function Home() {
   const [events] = useState([
     //commented out setEvents(unused var)
+
     { title: 'event 1', id: '1' },
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
@@ -75,6 +85,25 @@ export default function Home() {
     setShowModal(true);
   }
 
+  /*
+//TO DO: send info on recurring data
+   //function updates the events into backend
+   //input: id, user_id, title, start_time, end_time
+   //output: console log that data was added sucessfully
+   function addToBackend(data: { event: { id: string } }){
+    const updateEvent = async (eventData) => {
+      try {
+        const response = await axios.put(
+          `http://your-backend-url.com/events/${eventData.id}`,
+        //  eventData
+        );
+        console.log("Event updated:", response.data);
+      } catch (error) {
+        console.error("Error updating event:", error);
+      }
+    };
+    }
+*/
   function addEvent(data: DropArg) {
     const event = {
       ...newEvent,
@@ -84,8 +113,23 @@ export default function Home() {
       id: new Date().getTime(),
     };
     setAllEvents([...allEvents, event]);
-  }
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
 
+    //added to test getting event name to the backend
+    axios
+      .post(backendBaseUrl + `/api/calendar/events/by-user/${user.uid}`, event)
+      .then((response) => {
+        console.log('Successfully saved event into backend: ', user!.uid);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  //TO DO:
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
     setIdToDelete(Number(data.event.id));
@@ -310,7 +354,7 @@ export default function Home() {
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
                               onChange={(e) => handleChange(e)}
-                              placeholder="Title"
+                              placeholder=" Title"
                             />
                           </div>
                           <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
