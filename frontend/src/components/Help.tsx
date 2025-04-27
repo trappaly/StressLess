@@ -12,8 +12,8 @@ export const Help = () => {
   useEffect(() => {
     // Determine the current page based on the URL
     const path = window.location.pathname;
-    console.log("Current path: ", path);
-  //  setCurrentPage(path === '/' ? 'Home' : path.replace('/', ''));
+    console.log('Current path: ', path);
+    //  setCurrentPage(path === '/' ? 'Home' : path.replace('/', ''));
     if (showHelp && !markdown) {
       fetch('/help.md')
         .then((res) => res.text())
@@ -23,10 +23,13 @@ export const Help = () => {
 
   // Extract the section based on custom tags
   const getSection = () => {
-    const regex = new RegExp(`<!-- Section: ${currentPage} -->(.*?)(?=<!-- Section:|$)`, 's');
-    console.log("current zection: ", regex);
+    const regex = new RegExp(
+      `<!-- Section: ${currentPage} -->(.*?)(?=<!-- Section:|$)`,
+      's'
+    );
+    console.log('current zection: ', regex);
     const match = markdown.match(regex);
-    console.log("match here: ", match);
+    console.log('match here: ', match);
     return match ? match[1].trim() : 'Section not found.';
   };
 
