@@ -29,9 +29,6 @@ import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl, minutesToTime } from '@/lib/utils';
 
-//imported from the backend user preferences
-const { user } = useAuth();
-
 interface Event {
   title: string;
   start: Date | string;
@@ -40,6 +37,8 @@ interface Event {
 }
 
 export default function Home() {
+  //imported from the backend user preferences
+  const { user } = useAuth();
   const [events] = useState([
     //commented out setEvents(unused var)
 
@@ -73,11 +72,12 @@ export default function Home() {
         },
       });
     }
-  }, []);
+  }, [newEvent]);
 
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
       ...newEvent,
+      //takes everything in newEvent
       start: arg.date,
       allDay: arg.allDay,
       id: new Date().getTime(),
@@ -107,6 +107,7 @@ export default function Home() {
   function addEvent(data: DropArg) {
     const event = {
       ...newEvent,
+      user_id: user!.uid,
       start: data.date.toISOString(),
       title: data.draggedEl.innerText,
       allDay: data.allDay,
@@ -120,7 +121,7 @@ export default function Home() {
 
     //added to test getting event name to the backend
     axios
-      .post(backendBaseUrl + `/api/calendar/events/by-user/${user.uid}`, event)
+      .post(backendBaseUrl + `/api/calendar/events`, event)
       .then((response) => {
         console.log('Successfully saved event into backend: ', user!.uid);
         console.log(response);
@@ -205,7 +206,7 @@ export default function Home() {
             id="draggable-el"
             className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50"
           >
-            <h1 className="font-bold text-lg text-center">Drag Event</h1>
+            <h1 className="font-bold text-lg text-center">Frequent Events</h1>
 
             {events.map((event) => (
               <div
