@@ -60,6 +60,26 @@ export default function Home() {
   });
 
   useEffect(() => {
+    async function fetchEvents() {
+      try {
+        if (!user) {
+          console.log("No user found");
+          return;
+        }
+        const response = await axios.get(
+          backendBaseUrl + `/api/calendar/events/by-user/${user.uid}`
+        );
+        console.log('Fetched events:', response.data);
+        setAllEvents(response.data); // assuming your backend sends an array
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
+
+    fetchEvents().then(() => console.log('Fetched'));
+  }, []);
+
+  useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
     let draggable: Draggable | null = null;
     if (draggableEl) {
