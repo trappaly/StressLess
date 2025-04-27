@@ -61,18 +61,22 @@ export default function Home() {
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
+    let draggable: Draggable | null = null;
     if (draggableEl) {
-      new Draggable(draggableEl, {
+      draggable = new Draggable(draggableEl, {
         itemSelector: '.fc-event',
-        eventData: function (eventEl) {
-          const title = eventEl.getAttribute('title');
-          const id = eventEl.getAttribute('data');
-          const start = eventEl.getAttribute('start');
-          return { title, id, start };
-        },
+        eventData: (eventEl) => ({
+          title: eventEl.getAttribute('title') || '',
+          id: eventEl.getAttribute('data') || '',
+          start: eventEl.getAttribute('start') || '',
+        }),
       });
     }
-  }, [newEvent]);
+    return () => {
+      // Clean up draggable instance
+      draggable?.destroy();
+    };
+  }, []); // empty dependency array -> only once on mount
 
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
@@ -105,19 +109,22 @@ export default function Home() {
     }
 */
   function addEvent(data: DropArg) {
+    console.log('addEvent called');
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
     const event = {
       ...newEvent,
-      user_id: user!.uid,
+      user_id: user.uid,
       start: data.date.toISOString(),
       title: data.draggedEl.innerText,
       allDay: data.allDay,
       id: new Date().getTime(),
     };
     setAllEvents([...allEvents, event]);
-    if (!user) {
-      console.log('no user found');
-      return;
-    }
 
     //added to test getting event name to the backend
     axios
@@ -156,6 +163,7 @@ export default function Home() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    console.log('handleChange called');
     setNewEvent({
       ...newEvent,
       title: e.target.value,
@@ -164,7 +172,25 @@ export default function Home() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAllEvents([...allEvents, newEvent]);
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+    const eventWithUser = {
+      ...newEvent,
+      user_id: user.uid,
+    };
+    setAllEvents([...allEvents, eventWithUser]);
+
+    axios
+      .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
+      .then((response) => {
+        console.log('Successfully saved event:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error saving event:', error);
+      });
+
     setShowModal(false);
     setNewEvent({
       title: '',
