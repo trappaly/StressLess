@@ -12,8 +12,8 @@ export const Help = () => {
   useEffect(() => {
     // Determine the current page based on the URL
     const path = window.location.pathname;
-    console.log('Current path: ', path);
-    //  setCurrentPage(path === '/' ? 'Home' : path.replace('/', ''));
+    setCurrentPage(path === '/' ? 'Home' : path.replace('/', ''));
+    console.log('Current path: ', currentPage);
     if (showHelp && !markdown) {
       fetch('/help.md')
         .then((res) => res.text())

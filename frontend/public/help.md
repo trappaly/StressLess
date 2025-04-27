@@ -1,15 +1,19 @@
-<!-- SECTION: Home -->
+<!-- Section: Home -->
 # Getting Started
 Welcome to the app! Here's how you get started...
 
-<!-- SECTION: dashboard/calendar-->
-# Account Settings
-Here’s how to change your settings...
+<!-- Section: dashboard/calendar -->
+# Calendar
+Here’s how to interact with the calendar
 
-<!-- Section: /dashboard/profilepage -->
-# profilepage
-Here’s how billing works...
+<!-- Section: dashboard -->
+# Dashboard
+How Do I Switch between Calendar and Profile?
 
-<!-- SECTION: preference -->
-# FAQ
-Questions and answers!
+<!-- Section: dashboard/profilepage -->
+# Profilepage
+ How Do I Edit My Preferences in the Survey?
+
+<!-- Section: preference -->
+# Preference form
+How Do I Use the User Preferences Survey?
