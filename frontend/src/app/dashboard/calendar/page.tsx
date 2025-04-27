@@ -32,7 +32,6 @@ import { backendBaseUrl } from '@/lib/utils';
 interface Event {
   id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
-  start_time: Date | string | null;
   end_time: Date | string | null;
   allDay: boolean;
   break_time: number | null;
@@ -69,7 +68,6 @@ export default function Home() {
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
   const example = {
     title: '',
-    start_time: '',
     end_time: null,
     allDay: false,
     id: '', // UUIDs are strings
@@ -104,7 +102,7 @@ export default function Home() {
         const extractedEvents = response.data.map((event: Event) => ({
           id: event.id,
           title: event.title,
-          start: event.start_time ? new Date(event.start_time) : undefined,
+          start: event.start ? new Date(event.start) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
           allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
@@ -179,6 +177,16 @@ export default function Home() {
       return;
     }
 
+    // const event = {
+    //   ...newEvent,
+    //   user_id: user.uid,
+    //   start_time: data.date.toISOString(),
+    //   start: data.date.toISOString(),
+    //   title: data.draggedEl.innerText,
+    //   allDay: data.allDay,
+    //   id: new Date().getTime(),
+    // };
+
     const event = {
       ...newEvent,
       user_id: user.uid,
@@ -216,7 +224,7 @@ export default function Home() {
   function handleCloseModal() {
     setShowModal(false);
     setNewEvent({
-      ...example
+      ...example,
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
@@ -253,7 +261,7 @@ export default function Home() {
 
     setShowModal(false);
     setNewEvent({
-      ...example
+      ...example,
     });
   }
 
