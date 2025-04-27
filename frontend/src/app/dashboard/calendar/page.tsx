@@ -30,11 +30,27 @@ import axios from 'axios';
 import { backendBaseUrl, minutesToTime } from '@/lib/utils';
 
 interface Event {
+  id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
-  start: Date | string;
+  start_time: Date | string | null;
+  end_time: Date | string | null;
   allDay: boolean;
-  id: number;
+  break_time: number | null;
+  created_at: string;
+  description: string | null;
+  is_generated: boolean;
+  is_recurring: boolean;
+  location_place?: string;
+  recurrence_end_date?: string | null;
+  recurrence_pattern?: string | null;
+  recurrence_start_date?: string | null;
+  user_id: string;
+
+  // frontend-only props (for FullCalendar)
+  start?: Date | string;
+  end?: Date | string;
 }
+
 
 export default function Home() {
   //imported from the backend user preferences
@@ -52,12 +68,27 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const [newEvent, setNewEvent] = useState<Event>({
+  const example = {
     title: '',
-    start: '',
+    start_time: '',
+    end_time: null,
     allDay: false,
-    id: 0,
+    id: '', // UUIDs are strings
+    break_time: null,
+    created_at: new Date().toISOString(),
+    description: null,
+    is_generated: false,
+    is_recurring: false,
+    user_id: '', // you'll want to fill this later when the user is logged in
+    location_place: undefined,
+    recurrence_end_date: undefined,
+    recurrence_pattern: undefined,
+    recurrence_start_date: undefined,
+  }
+  const [newEvent, setNewEvent] = useState<Event>({
+    example
   });
+
 
   useEffect(() => {
     async function fetchEvents() {
@@ -66,18 +97,31 @@ export default function Home() {
           console.log('No user found');
           return;
         }
+
         const response = await axios.get(
-          backendBaseUrl + `/api/calendar/events/by-user/${user.uid}`
+          `${backendBaseUrl}/api/calendar/events/by-user/${user.uid}`
         );
-        console.log('Fetched events:', response.data);
-        setAllEvents(response.data); // assuming your backend sends an array
+        console.log('Fetched raw events:', response.data);
+
+        const extractedEvents = response.data.map((event: Event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.start_time ? new Date(event.start_time) : undefined,
+          end: event.end_time ? new Date(event.end_time) : undefined,
+          allDay: event.allDay ?? false, // default to false if undefined
+          // Optional: You could add more fields here if FullCalendar needs
+        }));
+
+        console.log('Mapped events for calendar:', extractedEvents);
+        setAllEvents(extractedEvents);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     }
 
-    fetchEvents().then(() => console.log('Fetched'));
-  }, []);
+    fetchEvents().then(() => {console.log("Fetched events for user: ", user?.displayName)});
+  }, [user]);
+
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
@@ -302,7 +346,7 @@ export default function Home() {
                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">
                         <div
-                          className="mx-auto flex h-12 w-12 flex-shrink-0 items-center 
+                          className="mx-auto flex h-12 w-12 flex-shrink-0 items-center
                     justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
                         >
                           <ExclamationTriangleIcon
@@ -328,7 +372,7 @@ export default function Home() {
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm 
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
                     font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                         onClick={handleDelete}
                       >
@@ -336,7 +380,7 @@ export default function Home() {
                       </button>
                       <button
                         type="button"
-                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900
                     shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                         onClick={handleCloseModal}
                       >
@@ -394,10 +438,10 @@ export default function Home() {
                             <input
                               type="text"
                               name="title"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
-                          focus:ring-2 
-                          focus:ring-inset focus:ring-violet-600 
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
                               onChange={(e) => handleChange(e)}
