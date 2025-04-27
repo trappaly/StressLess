@@ -55,15 +55,15 @@ describe('Test preference routes', () => {
       });
     });
 
-    // Comment this out if you don't want things to delete
-    // Delete answers when done
-    afterAll(async () => {
-      await prisma.user_preferences.deleteMany({
-        where: {
-          user_id: "TEST_USER",
-        },
-      });
-    });
+    // // Comment this out if you don't want things to delete
+    // // Delete answers when done
+    // afterAll(async () => {
+    //   await prisma.user_preferences.deleteMany({
+    //     where: {
+    //       user_id: "TEST_USER",
+    //     },
+    //   });
+    // });
 
     it('Gets the preferences', async () => {
       const res = await request(app).get(`/api/user/surveyresults/${user.id}`);
@@ -95,21 +95,21 @@ describe('Test preference routes', () => {
       .send([testPreference]);
       expect(res.statusCode).toBe(200);
     });
-    afterAll(async () => {
-      // Delete many user preferences
-      await prisma.user_preferences.deleteMany({
-        where: {
-          user_id: preference.user_id,
-        },
-      });
+    // afterAll(async () => {
+    //   // Delete many user preferences
+    //   await prisma.user_preferences.deleteMany({
+    //     where: {
+    //       user_id: preference.user_id,
+    //     },
+    //   });
     
-      // Delete many preference questions
-      await prisma.preference_questions.deleteMany({
-        where: {
-          question_text: 'TEST_QUESTION_TEXT',
-        },
-      });
-    });
+    //   // Delete many preference questions
+    //   await prisma.preference_questions.deleteMany({
+    //     where: {
+    //       question_text: 'TEST_QUESTION_TEXT',
+    //     },
+    //   });
+    // });
     
   });
 
@@ -149,21 +149,21 @@ describe('Test preference routes', () => {
       .send([testPreference2]);
       expect(res.statusCode).toBe(200);
     });
-    afterAll(async () => {
-      // Delete many user preferences
-      await prisma.user_preferences.deleteMany({
-        where: {
-          user_id: 'TEST_USER',
-        },
-      });
+    // afterAll(async () => {
+    //   // Delete many user preferences
+    //   await prisma.user_preferences.deleteMany({
+    //     where: {
+    //       user_id: 'TEST_USER',
+    //     },
+    //   });
     
-      // Delete many preference questions
-      await prisma.preference_questions.deleteMany({
-        where: {
-          question_text: 'TEST_QUESTION_TEXT',
-        },
-      });
-    });
+    //   // Delete many preference questions
+    //   await prisma.preference_questions.deleteMany({
+    //     where: {
+    //       question_text: 'TEST_QUESTION_TEXT',
+    //     },
+    //   });
+    // });
     
   });
 
