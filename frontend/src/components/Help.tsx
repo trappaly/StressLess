@@ -14,7 +14,7 @@ export const Help = () => {
         .then((res) => res.text())
         .then((text) => setMarkdown(text));
     }
-  }, [showHelp]);
+  }, [showHelp, markdown]);
 
   return (
     <div className="relative">
