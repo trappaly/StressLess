@@ -1,14 +1,17 @@
 /**
- * followed a youtube tutorial on how to make calendar view with typscript
+ * followed a YouTube tutorial on how to make calendar view with TypeScript
  * link: https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3
  *
  *
  */
 // Monthly default view
 /**
- * TO DO: fix dragable event color in dark mode
+ * TO DO: fix draggable event color in dark mode (done)
  * make a help button to link to help page
  * make events editable in drag event area
+ * add documentation and comments to each function
+ * sync event to backend to test out syntax
+ * send rest of attributes to backend everytime event in changed
  */
 'use client';
 import FullCalendar from '@fullcalendar/react';
@@ -22,17 +25,38 @@ import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
+import { useAuth } from '@/components/context/auth/AuthContext';
+import axios from 'axios';
+import { backendBaseUrl } from '@/lib/utils';
 
 interface Event {
+  id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
-  start: Date | string;
+  start_time: Date | string | null;
+  end_time: Date | string | null;
   allDay: boolean;
-  id: number;
+  break_time: number | null;
+  created_at: string;
+  description: string | null;
+  is_generated: boolean;
+  is_recurring: boolean;
+  location_place?: string;
+  recurrence_end_date?: string | null;
+  recurrence_pattern?: string | null;
+  recurrence_start_date?: string | null;
+  user_id: string;
+
+  // frontend-only props (for FullCalendar)
+  start?: Date | string;
+  end?: Date | string;
 }
 
 export default function Home() {
+  //imported from the backend user preferences
+  const { user } = useAuth();
   const [events] = useState([
     //commented out setEvents(unused var)
+
     { title: 'event 1', id: '1' },
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
@@ -43,31 +67,84 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const [newEvent, setNewEvent] = useState<Event>({
+  const example = {
     title: '',
-    start: '',
+    start_time: '',
+    end_time: null,
     allDay: false,
-    id: 0,
+    id: '', // UUIDs are strings
+    break_time: null,
+    created_at: new Date().toISOString(),
+    description: null,
+    is_generated: false,
+    is_recurring: false,
+    user_id: '', // you'll want to fill this later when the user is logged in
+    location_place: undefined,
+    recurrence_end_date: undefined,
+    recurrence_pattern: undefined,
+    recurrence_start_date: undefined,
+  };
+  const [newEvent, setNewEvent] = useState<Event>({
+    ...example,
   });
 
   useEffect(() => {
+    async function fetchEvents() {
+      try {
+        if (!user) {
+          console.log('No user found');
+          return;
+        }
+
+        const response = await axios.get(
+          `${backendBaseUrl}/api/calendar/events/by-user/${user.uid}`
+        );
+        console.log('Fetched raw events:', response.data);
+
+        const extractedEvents = response.data.map((event: Event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.start_time ? new Date(event.start_time) : undefined,
+          end: event.end_time ? new Date(event.end_time) : undefined,
+          allDay: event.allDay ?? false, // default to false if undefined
+          // Optional: You could add more fields here if FullCalendar needs
+        }));
+
+        console.log('Mapped events for calendar:', extractedEvents);
+        setAllEvents(extractedEvents);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
+
+    fetchEvents().then(() => {
+      console.log('Fetched events for user: ', user?.displayName);
+    });
+  }, [user]);
+
+  useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
+    let draggable: Draggable | null = null;
     if (draggableEl) {
-      new Draggable(draggableEl, {
+      draggable = new Draggable(draggableEl, {
         itemSelector: '.fc-event',
-        eventData: function (eventEl) {
-          const title = eventEl.getAttribute('title');
-          const id = eventEl.getAttribute('data');
-          const start = eventEl.getAttribute('start');
-          return { title, id, start };
-        },
+        eventData: (eventEl) => ({
+          title: eventEl.getAttribute('title') || '',
+          id: eventEl.getAttribute('data') || '',
+          start: eventEl.getAttribute('start') || '',
+        }),
       });
     }
-  }, []);
+    return () => {
+      // Clean up draggable instance
+      draggable?.destroy();
+    };
+  }, []); // empty dependency array -> only once on mount
 
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
       ...newEvent,
+      //takes everything in newEvent
       start: arg.date,
       allDay: arg.allDay,
       id: new Date().getTime(),
@@ -75,17 +152,55 @@ export default function Home() {
     setShowModal(true);
   }
 
+  /*
+//TO DO: send info on recurring data
+   //function updates the events into backend
+   //input: id, user_id, title, start_time, end_time
+   //output: console log that data was added successfully
+   function addToBackend(data: { event: { id: string } }){
+    const updateEvent = async (eventData) => {
+      try {
+        const response = await axios.put(
+          `http://your-backend-url.com/events/${eventData.id}`,
+        //  eventData
+        );
+        console.log("Event updated:", response.data);
+      } catch (error) {
+        console.error("Error updating event:", error);
+      }
+    };
+    }
+*/
   function addEvent(data: DropArg) {
+    console.log('addEvent called');
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
     const event = {
       ...newEvent,
+      user_id: user.uid,
       start: data.date.toISOString(),
       title: data.draggedEl.innerText,
       allDay: data.allDay,
       id: new Date().getTime(),
     };
     setAllEvents([...allEvents, event]);
-  }
 
+    //added to test getting event name to the backend
+    axios
+      .post(backendBaseUrl + `/api/calendar/events`, event)
+      .then((response) => {
+        console.log('Successfully saved event into backend: ', user!.uid);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  //TO DO:
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
     setIdToDelete(Number(data.event.id));
@@ -101,16 +216,14 @@ export default function Home() {
   function handleCloseModal() {
     setShowModal(false);
     setNewEvent({
-      title: '',
-      start: '',
-      allDay: false,
-      id: 0,
+      ...example
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    console.log('handleChange called');
     setNewEvent({
       ...newEvent,
       title: e.target.value,
@@ -119,13 +232,28 @@ export default function Home() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAllEvents([...allEvents, newEvent]);
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+    const eventWithUser = {
+      ...newEvent,
+      user_id: user.uid,
+    };
+    setAllEvents([...allEvents, eventWithUser]);
+
+    axios
+      .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
+      .then((response) => {
+        console.log('Successfully saved event:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error saving event:', error);
+      });
+
     setShowModal(false);
     setNewEvent({
-      title: '',
-      start: '',
-      allDay: false,
-      id: 0,
+      ...example
     });
   }
 
@@ -161,7 +289,7 @@ export default function Home() {
             id="draggable-el"
             className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50"
           >
-            <h1 className="font-bold text-lg text-center">Drag Event</h1>
+            <h1 className="font-bold text-lg text-center">Frequent Events</h1>
 
             {events.map((event) => (
               <div
@@ -211,7 +339,7 @@ export default function Home() {
                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">
                         <div
-                          className="mx-auto flex h-12 w-12 flex-shrink-0 items-center 
+                          className="mx-auto flex h-12 w-12 flex-shrink-0 items-center
                     justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
                         >
                           <ExclamationTriangleIcon
@@ -237,7 +365,7 @@ export default function Home() {
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm 
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
                     font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                         onClick={handleDelete}
                       >
@@ -245,7 +373,7 @@ export default function Home() {
                       </button>
                       <button
                         type="button"
-                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900
                     shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                         onClick={handleCloseModal}
                       >
@@ -303,14 +431,14 @@ export default function Home() {
                             <input
                               type="text"
                               name="title"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
-                          focus:ring-2 
-                          focus:ring-inset focus:ring-violet-600 
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
                               onChange={(e) => handleChange(e)}
-                              placeholder="Title"
+                              placeholder=" Title"
                             />
                           </div>
                           <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
