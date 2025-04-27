@@ -1,12 +1,12 @@
 /**
- * followed a youtube tutorial on how to make calendar view with typscript
+ * followed a YouTube tutorial on how to make calendar view with TypeScript
  * link: https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3
  *
  *
  */
 // Monthly default view
 /**
- * TO DO: fix dragable event color in dark mode (done)
+ * TO DO: fix draggable event color in dark mode (done)
  * make a help button to link to help page
  * make events editable in drag event area
  * add documentation and comments to each function
@@ -27,7 +27,7 @@ import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
-import { backendBaseUrl, minutesToTime } from '@/lib/utils';
+import { backendBaseUrl } from '@/lib/utils';
 
 interface Event {
   id: number | string; // your backend sometimes uses uuid string, sometimes number
@@ -50,7 +50,6 @@ interface Event {
   start?: Date | string;
   end?: Date | string;
 }
-
 
 export default function Home() {
   //imported from the backend user preferences
@@ -84,11 +83,10 @@ export default function Home() {
     recurrence_end_date: undefined,
     recurrence_pattern: undefined,
     recurrence_start_date: undefined,
-  }
+  };
   const [newEvent, setNewEvent] = useState<Event>({
-    example
+    ...example,
   });
-
 
   useEffect(() => {
     async function fetchEvents() {
@@ -119,9 +117,10 @@ export default function Home() {
       }
     }
 
-    fetchEvents().then(() => {console.log("Fetched events for user: ", user?.displayName)});
+    fetchEvents().then(() => {
+      console.log('Fetched events for user: ', user?.displayName);
+    });
   }, [user]);
-
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
@@ -157,7 +156,7 @@ export default function Home() {
 //TO DO: send info on recurring data
    //function updates the events into backend
    //input: id, user_id, title, start_time, end_time
-   //output: console log that data was added sucessfully
+   //output: console log that data was added successfully
    function addToBackend(data: { event: { id: string } }){
     const updateEvent = async (eventData) => {
       try {
@@ -217,10 +216,7 @@ export default function Home() {
   function handleCloseModal() {
     setShowModal(false);
     setNewEvent({
-      title: '',
-      start: '',
-      allDay: false,
-      id: 0,
+      ...example
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
@@ -257,10 +253,7 @@ export default function Home() {
 
     setShowModal(false);
     setNewEvent({
-      title: '',
-      start: '',
-      allDay: false,
-      id: 0,
+      ...example
     });
   }
 
