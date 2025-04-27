@@ -255,9 +255,7 @@ Our system consists of several key software components that interact to provide 
 
 ### d) Diagram of StressLess system's architecture.
 
-[https://docs.google.com/presentation/d/1bnXGg1ByNbccVPqFxQus0D66CyCj5prQ6tJ-d1poBzU/edit?usp=sharing](https://docs.google.com/presentation/d/1bnXGg1ByNbccVPqFxQus0D66CyCj5prQ6tJ-d1poBzU/edit?usp=sharing)
-
-![image.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/image%202.png)
+![StressLess Demo.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/StressLess_Demo.png)
 
 ### e) Assumptions underpinning our chosen architecture
 
@@ -422,7 +420,7 @@ Find an optimal schedule which gives her enough time to attend her practicals, s
 
 ### **Trigger**
 
-Julie receives her practical and curriculum schedules at the beginning of the semester.
+Julie brainstorms productivity times as well as her start/end times for her workday.
 
 ### **Preconditions**
 
@@ -430,20 +428,19 @@ Julie has set blocks of times in which she knows she has to be at school or at t
 
 ### **Postconditions**
 
-Julie gets a custom schedule integrating all of her set responsibilities generated, which suggests available time for self-care and friends/family.
+Julie is able to take a survey accounting for her productivity times and work hour preferences.
 
 ### **Flow:**
 
 1. Julie opens the homepage of the app and completes the sign-up process.
-2. Julie takes the survey .
-3. Input major upcoming dates practical shifts and curriculum exams into the calendar (i.e. dates, locations, times)
-4. Calendar becomes populated, including major upcoming dates as well as suggested study blocks, practical shift preparation times, self-care hours, and days for family and friends
+2. Julie takes the survey.
+3. Julie saves her responses.
 
 ### **Alternative Flow:**
 
-1. Julie’s professor has an unexpected family emergency mid-semester, and thus, her curriculum schedule changes.
-2. Julie clicks the “Retake Survey” button in the profile page.
-3. She can update the old dates according to the new schedule, and the app will adjust to these changes by customizing her schedule again and developing new suggested times for other activities such as studying and hanging out with family and friends.
+1. While filling out the survey, Julie realizes she had input the wrong productivity times in her response.
+2. She drags the slider to edit her productivity times.
+3. Then, her changes are saved after she saves her responses.
 
 ## Use Case 4
 
