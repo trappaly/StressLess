@@ -63,7 +63,7 @@ export default function Home() {
     async function fetchEvents() {
       try {
         if (!user) {
-          console.log("No user found");
+          console.log('No user found');
           return;
         }
         const response = await axios.get(
