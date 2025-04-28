@@ -1,6 +1,6 @@
 <!-- Section: Home -->
 # Getting Started
-Welcome to the app! Here's how you get started...
+Welcome to StressLess! Here's how you get started...
 
 # How Do I Create an Account?
 
@@ -17,16 +17,13 @@ Welcome to the app! Here's how you get started...
 3. Click the sign in button above the sign up page to sign in
 4. Enter your email and password to sign in 
 
-# How Do I Sign Out?
-
-Unfortunately, this feature isn’t currently implemented
-
 # How Do I Change Visibility Settings?
 
 1. You can view the app in either dark or light mode 
 2. To change the mode, locate the icon is located in the upper right corner of the app that displays either a moon or sun and click on it
 3. If you click the sun icon, the app will change to light mode 
 4. If you click the moon icon, the app will change to dark mode
+
 
 <!-- Section: preference -->
 # User Preferences Survey
@@ -63,6 +60,12 @@ You can either edit your preferences in two ways
 
 1. If you are not on the user profile page, navigate to the user profile page by using the sidebar
 2. If you want to edit your name, click on the writing pencil icon and delete the studious student name and enter the name you want your profile to say instead.
+
+## How Do I Sign Out?
+1. Click on the sidebar icon on the upper lefthand corner on either the user profile or calendar page 
+2. Find the profile and calendar buttons on the left and look underneath those buttons in the bottom lefthand corner of the sidebar for the sign out button 
+3. Click on the sign out button to log out of your account
+
 
 <!-- Section: dashboard/calendar -->
 # Calendar
@@ -130,3 +133,8 @@ You can either edit your preferences in two ways
 1. You can delete an event by clicking on the event on the calendar. 
 2. If you click on the event, you can press the read delete button to delete the event
 3. If you don’t want to delete the event, you can press the cancel button
+
+## How Do I Sign Out?
+1. Click on the sidebar icon on the upper lefthand corner on either the user profile or calendar page 
+2. Find the profile and calendar buttons on the left and look underneath those buttons in the bottom lefthand corner of the sidebar for the sign out button 
+3. Click on the sign out button to log out of your account
