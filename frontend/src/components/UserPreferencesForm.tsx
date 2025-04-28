@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -65,11 +66,13 @@ export const formSchema = z
 type UserPreferencesFormProps = {
   onSave?: (values: z.infer<typeof formSchema>) => void;
   disableCard?: boolean; // check if preference registration or edit to add description
+  defaultValues?: Partial<z.infer<typeof formSchema>>; // If no default value given, preference registration prefill with default value
 };
 
 export function UserPreferencesForm({
   onSave,
   disableCard,
+  defaultValues,
 }: UserPreferencesFormProps) {
   const router = useRouter();
   const { user } = useAuth();
@@ -84,6 +87,13 @@ export function UserPreferencesForm({
       endTime: '17:00',
     },
   });
+
+  // Effect to reset the form when defaultValues change
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues); // Reset the form with new default values
+    }
+  }, [defaultValues, form]); // Re-run when defaultValues change
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -239,7 +249,7 @@ export function UserPreferencesForm({
     </Form>
   );
 
-  // 👇 Wrap in Card only if not disabled
+  // Wrap in Card only if not disabled
   return disableCard ? (
     content
   ) : (

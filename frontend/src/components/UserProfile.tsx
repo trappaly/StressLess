@@ -101,109 +101,122 @@ export default function ProfilePage() {
 
   return (
     <>
-    {/* Consistent Header with Calendar */}
+      {/* Consistent Header with Calendar */}
       <nav className="flex justify-between border-b border-violet-100 p-4">
         <h1 className="font-bold text-4xl text-black dark:text-white text-center">
           StressLess
         </h1>
       </nav>
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
-      {/* Background split: top pink, bottom white */}
-      <div className="absolute top-0 left-0 w-full h-1/2 bg-purple-50 dark:bg-[#1a1a2e] z-0" />
-      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-white dark:bg-[#1a1a2e] z-0" />
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
+        {/* Background split: top pink, bottom white */}
+        <div className="absolute top-0 left-0 w-full h-1/2 bg-purple-50 dark:bg-[#1a1a2e] z-0" />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-white dark:bg-[#1a1a2e] z-0" />
 
-      {/* Profile Card */}
-      <div className="relative z-10 max-w-3xl w-full mx-4 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-10 flex flex-col items-center gap-6 border dark:border-gray-700">
-        {/* User Icon */}
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg -mt-24">
-          <button onClick={() => console.log(user!.displayName)}>
-            <UserIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />
-          </button>
+        {/* Profile Card */}
+        <div className="relative z-10 max-w-3xl w-full mx-4 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-10 flex flex-col items-center gap-6 border dark:border-gray-700">
+          {/* User Icon */}
+          <div className="p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg -mt-24">
+            <button onClick={() => console.log(user!.displayName)}>
+              <UserIcon className="w-20 h-20 text-gray-700 dark:text-gray-200" />
+            </button>
+          </div>
+
+          {/* User Name */}
+          <div className="flex items-center space-x-2">
+            {editMode ? (
+              <input
+                type="text"
+                className="text-3xl font-bold bg-transparent border-b border-gray-400 dark:border-gray-600 focus:outline-none focus:border-pink-500 text-gray-900 dark:text-white"
+                value={displayName}
+                onChange={async (e) => {
+                  setDisplayName(e.target.value);
+                  await updateProfile(user!, {
+                    displayName: e.target.value,
+                  });
+                }}
+                onBlur={() => setEditMode(false)}
+                autoFocus
+              />
+            ) : (
+              <>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {displayName}
+                </h1>
+                <button
+                  onClick={() => setEditMode(true)}
+                  className="text-gray-500 hover:text-pink-500"
+                  aria-label="Edit Name"
+                >
+                  <EditIcon className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/*<h1 className="text-3xl font-bold text-gray-900 dark:text-white">*/}
+          {/*  {displayName}*/}
+          {/*</h1>*/}
+
+          {/* User Preferences */}
+          <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
+            <div>
+              <span className="font-semibold">Your most productive times:</span>{' '}
+              {formatTime(userPreferences.productiveTime[0])} –{' '}
+              {formatTime(userPreferences.productiveTime[1])}
+            </div>
+            <div>
+              <span className="font-semibold">
+                Your preference on work duration:
+              </span>{' '}
+              {userPreferences.workDuration} minutes
+            </div>
+            <div>
+              <span className="font-semibold">Sleep Hours:</span>{' '}
+              {userPreferences.sleepHours} hrs
+            </div>
+            <div>
+              <span className="font-semibold">Work Start Time:</span>{' '}
+              {userPreferences.startTime}
+            </div>
+            <div>
+              <span className="font-semibold">Work End Time:</span>{' '}
+              {userPreferences.endTime}
+            </div>
+          </div>
+
+          {/* Edit Button + Dialog */}
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-pink-400 hover:bg-pink-500 text-white">
+                Edit Preferences
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Edit Preferences</DialogTitle>
+                <DialogDescription>
+                  Make changes to your preferences here. Click save when
+                  you&apos;re done.
+                </DialogDescription>
+              </DialogHeader>
+              <UserPreferencesForm
+                onSave={handleSavePreferences}
+                disableCard
+                defaultValues={{
+                  productiveTime: userPreferences.productiveTime as [
+                    number,
+                    number,
+                  ], // Gotta assert that there's 2 digit
+                  workDuration: userPreferences.workDuration,
+                  sleepHours: userPreferences.sleepHours,
+                  startTime: userPreferences.startTime,
+                  endTime: userPreferences.endTime,
+                }}
+              />
+            </DialogContent>
+          </Dialog>
         </div>
-
-        {/* User Name */}
-        <div className="flex items-center space-x-2">
-          {editMode ? (
-            <input
-              type="text"
-              className="text-3xl font-bold bg-transparent border-b border-gray-400 dark:border-gray-600 focus:outline-none focus:border-pink-500 text-gray-900 dark:text-white"
-              value={displayName}
-              onChange={async (e) => {
-                setDisplayName(e.target.value);
-                await updateProfile(user!, {
-                  displayName: e.target.value,
-                });
-              }}
-              onBlur={() => setEditMode(false)}
-              autoFocus
-            />
-          ) : (
-            <>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {displayName}
-              </h1>
-              <button
-                onClick={() => setEditMode(true)}
-                className="text-gray-500 hover:text-pink-500"
-                aria-label="Edit Name"
-              >
-                <EditIcon className="w-4 h-4" />
-              </button>
-            </>
-          )}
-        </div>
-
-        {/*<h1 className="text-3xl font-bold text-gray-900 dark:text-white">*/}
-        {/*  {displayName}*/}
-        {/*</h1>*/}
-
-        {/* User Preferences */}
-        <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
-          <div>
-            <span className="font-semibold">Your most productive times:</span>{' '}
-            {formatTime(userPreferences.productiveTime[0])} –{' '}
-            {formatTime(userPreferences.productiveTime[1])}
-          </div>
-          <div>
-            <span className="font-semibold">
-              Your preference on work duration:
-            </span>{' '}
-            {userPreferences.workDuration} minutes
-          </div>
-          <div>
-            <span className="font-semibold">Sleep Hours:</span>{' '}
-            {userPreferences.sleepHours} hrs
-          </div>
-          <div>
-            <span className="font-semibold">Work Start Time:</span>{' '}
-            {userPreferences.startTime}
-          </div>
-          <div>
-            <span className="font-semibold">Work End Time:</span>{' '}
-            {userPreferences.endTime}
-          </div>
-        </div>
-
-        {/* Edit Button + Dialog */}
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-pink-400 hover:bg-pink-500 text-white">
-              Edit Preferences
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Preferences</DialogTitle>
-              <DialogDescription>
-                Make changes to your preferences here. Click save when
-                you&apos;re done.
-              </DialogDescription>
-            </DialogHeader>
-            <UserPreferencesForm onSave={handleSavePreferences} disableCard />
-          </DialogContent>
-        </Dialog>
       </div>
-    </div>
     </>
   );
 }
