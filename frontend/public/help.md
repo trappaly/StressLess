@@ -46,6 +46,7 @@ Welcome to StressLess! Here's how you get started...
 5. Save Preferences 
     1. Click on save preferences when you’re satisfied with your answers. These preferences don’t have to be perfect. You can always edit them later if you change your mind. 
 
+
 <!-- Section: dashboard/profilepage -->
 ## How Do I Edit My Preferences in the Survey?
 
