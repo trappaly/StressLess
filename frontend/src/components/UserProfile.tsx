@@ -100,6 +100,13 @@ export default function ProfilePage() {
   }
 
   return (
+    <>
+    {/* Consistent Header with Calendar */}
+      <nav className="flex justify-between border-b border-violet-100 p-4">
+        <h1 className="font-bold text-4xl text-black dark:text-white text-center">
+          StressLess
+        </h1>
+      </nav>
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
       {/* Background split: top pink, bottom white */}
       <div className="absolute top-0 left-0 w-full h-1/2 bg-purple-50 dark:bg-[#1a1a2e] z-0" />
@@ -197,5 +204,6 @@ export default function ProfilePage() {
         </Dialog>
       </div>
     </div>
+    </>
   );
 }
