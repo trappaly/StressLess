@@ -12,11 +12,11 @@ export const Help = () => {
   useEffect(() => {
     // Determine the current page based on the URL
     const path = window.location.pathname;
-    if(path === '/'){
+    if (path === '/') {
       setCurrentPage('Home'); // Landing page = Home
-    }else if(path === '/dashboard'){
+    } else if (path === '/dashboard') {
       setCurrentPage('dashboard/calendar'); // If route is dashboard default view is calendar
-    }else{
+    } else {
       setCurrentPage(path.replace('/', '')); // Remove '/' from currentpage name
     }
 
