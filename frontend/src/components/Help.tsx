@@ -12,8 +12,15 @@ export const Help = () => {
   useEffect(() => {
     // Determine the current page based on the URL
     const path = window.location.pathname;
-    setCurrentPage(path === '/' ? 'Home' : path.replace('/', ''));
-    console.log('Current path: ', currentPage);
+    if(path === '/'){
+      setCurrentPage('Home'); // Landing page = Home
+    }else if(path === '/dashboard'){
+      setCurrentPage('dashboard/calendar'); // If route is dashboard default view is calendar
+    }else{
+      setCurrentPage(path.replace('/', '')); // Remove '/' from currentpage name
+    }
+
+    // Fetch markdown file from /public
     if (showHelp && !markdown) {
       fetch('/help.md')
         .then((res) => res.text())
