@@ -189,7 +189,7 @@ export function UserPreferencesForm({
                 Roughly how many hours do you typically get?
               </FormDescription>
               <FormControl>
-                <Input type="number" step="0.5" placeholder="8" {...field} />
+                <Input type="number" step="1" placeholder="8" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
