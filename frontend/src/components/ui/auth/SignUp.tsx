@@ -6,10 +6,10 @@ import { backendBaseUrl } from '@/lib/utils';
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
-  const { signUp, user, loading } = useAuth();
+  const { signUp, displayName, user, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [displayNameText, setDisplayNameText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -21,7 +21,7 @@ export default function SignUpForm() {
     }
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, displayNameText);
 
       if (!user) {
         setErrorMessage('Creating your account...');
@@ -42,13 +42,6 @@ export default function SignUpForm() {
 
       // 5. Handle response from your API
       if (response.status === 201) {
-        if (user) {
-          await updateProfile(user, {
-            displayName: displayName,
-          }).then(() => {
-            console.log('Display name updated: ', user.displayName);
-          });
-        }
         window.location.href = '/preference'; // Redirect after successful signup
       } else {
         setErrorMessage('Cannot create new account');
@@ -95,7 +88,7 @@ export default function SignUpForm() {
           <input
             type="text"
             value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
+            onChange={(e) => setDisplayNameText(e.target.value)}
             placeholder="Display Name"
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
           />

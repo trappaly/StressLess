@@ -7,14 +7,20 @@ import {
   User,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth';
 
 type AuthContextType = {
   user: User | null;
+  displayName: string | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    displayName: string
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,8 +42,10 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   // Listen for authentication state changes
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       setUser(user);
@@ -47,14 +55,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      updateProfile(user, {
+        displayName: displayName,
+      }).then(() => {
+        console.log('Display name updated: ', user.displayName);
+      });
+    }
+  }, [displayName, user]);
+
   // SignIn function
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(firebaseAuth, email, password);
   };
 
   // SignUp function
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
     await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    setDisplayName(displayName);
   };
 
   // SignOut function
@@ -63,7 +86,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut, signUp }}>
+    <AuthContext.Provider
+      value={{ user, displayName, loading, signIn, signOut, signUp }}
+    >
       {children}
     </AuthContext.Provider>
   );
