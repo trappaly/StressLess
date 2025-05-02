@@ -8,6 +8,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 
 type AuthContextType = {
@@ -21,6 +23,7 @@ type AuthContextType = {
     password: string,
     displayName: string
   ) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,7 +79,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string,
     displayName: string
   ) => {
-    await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    setLoading(true);
+    await createUserWithEmailAndPassword(firebaseAuth, email, password)
+      .then(async () => {
+        if (user)
+          await sendEmailVerification(user).then(() =>
+            console.log('Email verification sent.')
+          );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     setDisplayName(displayName);
   };
 
@@ -85,9 +98,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await firebaseAuth.signOut();
   };
 
+  // ForgotPassword function
+  const forgotPassword = async (email: string) => {
+    await sendPasswordResetEmail(firebaseAuth, email);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, displayName, loading, signIn, signOut, signUp }}
+      value={{
+        user,
+        displayName,
+        loading,
+        signIn,
+        signOut,
+        signUp,
+        forgotPassword,
+      }}
     >
       {children}
     </AuthContext.Provider>

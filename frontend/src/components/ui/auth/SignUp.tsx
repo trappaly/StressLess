@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
-import { getAuth, updateProfile } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
-  const { signUp, displayName, user, loading } = useAuth();
+  const { signUp, user, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayNameText, setDisplayNameText] = useState('');
@@ -48,7 +48,15 @@ export default function SignUpForm() {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setErrorMessage(error.message);
+        if (error.message === 'Firebase: Error (auth/invalid-email).') {
+          setErrorMessage('Please provide a valid email address!');
+        } else if (
+          error.message === 'Firebase: Error (auth/missing-password).'
+        ) {
+          setErrorMessage('Please fill out your password!');
+        } else {
+          setErrorMessage(error.message);
+        }
       } else {
         setErrorMessage(
           'Cannot create your account right now. Please try again other time.'
@@ -87,7 +95,7 @@ export default function SignUpForm() {
           />
           <input
             type="text"
-            value={displayName}
+            value={displayNameText ? displayNameText : ''}
             onChange={(e) => setDisplayNameText(e.target.value)}
             placeholder="Display Name"
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"

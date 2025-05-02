@@ -83,7 +83,6 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Sign-in */}
       {/* Sign-in or Dashboard Redirect */}
       <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
         {user ? (
@@ -102,33 +101,6 @@ const Home: React.FC = () => {
           <SignInSignUp />
         )}
       </section>
-
-      {/* <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
-        <SignInSignUp />
-      </section> */}
-      {/*<section id="signin" className="max-w-md mx-auto px-6 py-20">*/}
-      {/*  <div className="bg-white/60 dark:bg-gray-900/50 backdrop-blur-lg p-8 rounded-3xl shadow-xl">*/}
-      {/*    <h3 className="text-2xl font-semibold mb-6 text-center">Sign In</h3>*/}
-      {/*    <div className="space-y-4">*/}
-      {/*      <Input*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Username"*/}
-      {/*        className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"*/}
-      {/*      />*/}
-      {/*      <Input*/}
-      {/*        type="password"*/}
-      {/*        placeholder="Password"*/}
-      {/*        className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"*/}
-      {/*      />*/}
-      {/*      <Button*/}
-      {/*        onClick={() => router.push('/dashboard')}*/}
-      {/*        className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition"*/}
-      {/*      >*/}
-      {/*        Sign In*/}
-      {/*      </Button>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</section>*/}
     </div>
   );
 };
