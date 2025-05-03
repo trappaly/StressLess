@@ -58,8 +58,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
-    await signInWithEmailAndPassword(firebaseAuth, email, password);
-    setLoading(false);
+    await signInWithEmailAndPassword(firebaseAuth, email, password).finally(
+      () => setLoading(false)
+    );
   };
 
   const signUp = async (

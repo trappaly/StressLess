@@ -3,6 +3,7 @@ import { useAuth } from '@/components/context/auth/AuthContext';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -77,8 +78,6 @@ export default function SignIn() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <section id="signin" className="max-w-md mx-auto px-6 py-20">
       <div className="bg-white/60 dark:bg-gray-900/50 backdrop-blur-lg p-8 rounded-3xl shadow-xl">
@@ -91,6 +90,7 @@ export default function SignIn() {
             placeholder="Email"
             required
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+            disabled={loading}
           />
           <input
             type="password"
@@ -99,6 +99,7 @@ export default function SignIn() {
             placeholder="Password"
             required
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+            disabled={loading}
           />
           {errorMessage && (
             <p className="text-red-500 text-center">{errorMessage}</p>
@@ -106,16 +107,29 @@ export default function SignIn() {
           <div className="justify-between gap-4">
             <button
               onClick={handleSignIn}
-              className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer"
+              className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer flex items-center justify-center"
+              disabled={loading}
             >
-              Sign In
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin text-white/50" />
+                  <span className="text-white/90">Signing you in...</span>
+                </>
+              ) : (
+                'Sign In'
+              )}
             </button>
             <button
               onClick={handleForgotPassword}
               className="mt-3 text-sm font-semibold text-indigo-600 hover:underline hover:text-indigo-800 transition cursor-pointer"
               type="button"
+              disabled={loading}
             >
-              Forgot Password?
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin text-white/50" />
+              ) : (
+                'Forgot Password?'
+              )}
             </button>
           </div>
         </div>
