@@ -1,21 +1,14 @@
 'use client';
-import React, { useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
 import SignInSignUp from '@/components/ui/auth/SignInSignUp';
 import { useAuth } from './context/auth/AuthContext';
 
 const Home: React.FC = () => {
-  // const router = useRouter();
-  const { user } = useAuth();
-  useEffect(() => {
-    if (!user) {
-      console.log('User not signed in.');
-    }
-  }, [user]);
+  const { verified } = useAuth();
+
   const scrollToSignUp = () =>
     document
       .getElementById('signin-signup')
@@ -85,7 +78,7 @@ const Home: React.FC = () => {
 
       {/* Sign-in or Dashboard Redirect */}
       <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
-        {user ? (
+        {verified ? (
           <div className="text-center space-y-4">
             <p className="text-xl font-medium">
               You&apos;re already signed in.

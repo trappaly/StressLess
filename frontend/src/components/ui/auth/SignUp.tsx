@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
@@ -6,12 +6,59 @@ import { backendBaseUrl } from '@/lib/utils';
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
-  const { signUp, user, loading } = useAuth();
+  const { signUp, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayNameText, setDisplayNameText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [polling, setPolling] = useState(false);
 
+  useEffect(() => {
+    if (authenticated) {
+      window.location.href = '/preference';
+    }
+  }, [authenticated]);
+
+  // Purpose: check for email verification and send token
+  const startVerificationPolling = () => {
+    if (polling) return;
+    setPolling(true);
+
+    const interval = setInterval(async () => {
+      const currentUser = getAuth().currentUser;
+      if (!currentUser) return;
+
+      await currentUser.reload(); // refreshes auth info
+
+      if (currentUser.emailVerified) {
+        clearInterval(interval);
+        setPolling(false);
+
+        try {
+          const idToken = await currentUser.getIdToken(true);
+
+          const response = await axios.post(
+            backendBaseUrl + '/api/auth/signup',
+            { idToken }
+          );
+
+          if (response.status === 201) {
+            setAuthenticated(true);
+          } else {
+            setErrorMessage('Could not complete signup with backend.');
+          }
+        } catch (err) {
+          console.error(err);
+          setErrorMessage(
+            'Something went wrong communicating with the server.'
+          );
+        }
+      }
+    }, 3000); // check every 3 seconds
+  };
+
+  // Handling clicking Sign Up button
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -21,31 +68,13 @@ export default function SignUpForm() {
     }
 
     try {
-      await signUp(email, password, displayNameText);
+      await signUp(email, password, displayNameText).then(() =>
+        setErrorMessage(
+          'Please verify your account by following the instructions emailed to you!'
+        )
+      );
 
-      if (!user) {
-        setErrorMessage('Creating your account...');
-      }
-
-      // 3. Get the Firebase ID token
-      const idToken = await getAuth().currentUser?.getIdToken(true);
-
-      if (!idToken) {
-        console.log(`${idToken} not found`);
-        throw new Error('Failed to retrieve ID token');
-      }
-
-      // 4. Send the ID token to the backend API for user creation
-      const response = await axios.post(backendBaseUrl + '/api/auth/signup', {
-        idToken,
-      });
-
-      // 5. Handle response from your API
-      if (response.status === 201) {
-        window.location.href = '/preference'; // Redirect after successful signup
-      } else {
-        setErrorMessage('Cannot create new account');
-      }
+      startVerificationPolling();
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.message === 'Firebase: Error (auth/invalid-email).') {

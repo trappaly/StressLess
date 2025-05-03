@@ -15,6 +15,7 @@ import {
 type AuthContextType = {
   user: User | null;
   displayName: string | null;
+  verified: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -28,7 +29,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook to use authentication context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -37,68 +37,55 @@ export const useAuth = () => {
   return context;
 };
 
-// Define the type for children prop
 interface AuthProviderProps {
-  children: React.ReactNode; // This ensures the AuthProvider can accept any valid React child
+  children: React.ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [displayName, setDisplayName] = useState<string | null>(null);
-
-  // Listen for authentication state changes
+  const [verified, setVerified] = useState<boolean>(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
+      setUser(currentUser);
+      setVerified(currentUser?.emailVerified ?? false);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      updateProfile(user, {
-        displayName: displayName,
-      }).then(() => {
-        console.log('Display name updated: ', user.displayName);
-      });
-    }
-  }, [displayName, user]);
-
-  // SignIn function
   const signIn = async (email: string, password: string) => {
+    setLoading(true);
     await signInWithEmailAndPassword(firebaseAuth, email, password);
+    setLoading(false);
   };
 
-  // SignUp function
   const signUp = async (
     email: string,
     password: string,
     displayName: string
   ) => {
     setLoading(true);
-    await createUserWithEmailAndPassword(firebaseAuth, email, password)
-      .then(async () => {
-        if (user)
-          await sendEmailVerification(user).then(() =>
-            console.log('Email verification sent.')
-          );
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    setDisplayName(displayName);
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        firebaseAuth,
+        email,
+        password
+      );
+
+      await updateProfile(user, { displayName });
+      await sendEmailVerification(user);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // SignOut function
   const signOut = async () => {
     await firebaseAuth.signOut();
   };
 
-  // ForgotPassword function
   const forgotPassword = async (email: string) => {
     await sendPasswordResetEmail(firebaseAuth, email);
   };
@@ -107,7 +94,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        displayName,
+        displayName: user?.displayName ?? null,
+        verified,
         loading,
         signIn,
         signOut,

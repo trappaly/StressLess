@@ -5,18 +5,18 @@ import { useEffect } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
+  const { verified, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     // Only redirect if not loading and no user
-    if (!loading && !user && pathname !== '/') {
+    if (!loading && !verified && pathname !== '/') {
       router.push('/');
     }
-  }, [user, loading, pathname, router]);
+  }, [verified, loading, pathname, router]);
 
-  if (loading || (!user && pathname !== '/')) {
+  if (loading || (!verified && pathname !== '/')) {
     return <div className="text-center p-8">Loading...</div>;
   }
 
