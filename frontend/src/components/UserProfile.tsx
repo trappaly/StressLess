@@ -68,7 +68,20 @@ export default function ProfilePage() {
 
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
-    console.log('Updated preferences:', values);
+    console.log(
+      'handleSavePreferences',
+      values as ReturnType<typeof getPreferenceExtractData>
+    );
+    console.log('current: ', userPreferences);
+    console.log(values === userPreferences);
+    console.log(JSON.stringify(values) === JSON.stringify(userPreferences));
+
+    if (JSON.stringify(values) === JSON.stringify(userPreferences)) {
+      window.alert("You didn't make any changes!");
+      setOpen(false);
+      return;
+    }
+
     const outputs = [];
     for (const question in values) {
       outputs.push({
@@ -76,23 +89,26 @@ export default function ProfilePage() {
         answer: String(values[question as keyof z.infer<typeof formSchema>]),
       });
     }
-    console.log(outputs);
+
     // Send the data to our backend
     if (!user?.uid) return;
 
     axios
       .put(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
       .then((response) => {
+        // Update state of user preference
+        setUserPreferences(values);
+
         console.log('Successfully updated answers for user: ', user!.uid);
         console.log(response);
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        // Close the dialog after save
+        setOpen(false);
       });
-    // Update state of user preference
-    setUserPreferences(values);
-    // Close the dialog after save
-    setOpen(false);
   }
 
   if (loading || !userPreferences) {
@@ -152,10 +168,6 @@ export default function ProfilePage() {
               </>
             )}
           </div>
-
-          {/*<h1 className="text-3xl font-bold text-gray-900 dark:text-white">*/}
-          {/*  {displayName}*/}
-          {/*</h1>*/}
 
           {/* User Preferences */}
           <div className="w-full space-y-4 text-gray-700 dark:text-gray-300 text-lg">
