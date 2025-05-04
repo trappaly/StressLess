@@ -4,10 +4,16 @@ import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+library.add(faEye, faEyeSlash);
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
   const { signUp, loading } = useAuth();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [visibleConfirm, setVisibleConfirm] = useState<boolean>(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayNameText, setDisplayNameText] = useState('');
@@ -108,22 +114,50 @@ export default function SignUpForm() {
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
             disabled={loading}
           />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-            disabled={loading}
-          />
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-            disabled={loading}
-          />
+          <div className="relative">
+            <input
+              type={visible ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+              disabled={loading}
+            />
+            <span>
+              {
+                <FontAwesomeIcon
+                  icon={visible ? 'eye-slash' : 'eye'}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  onClick={() => {
+                    setVisible(!visible);
+                  }}
+                />
+              }
+            </span>
+          </div>
+
+          <div className="relative">
+            <input
+              type={visibleConfirm ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+              disabled={loading}
+            />
+            <span>
+              {
+                <FontAwesomeIcon
+                  icon={visibleConfirm ? 'eye-slash' : 'eye'}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  onClick={() => {
+                    setVisibleConfirm(!visibleConfirm);
+                  }}
+                />
+              }
+            </span>
+          </div>
+
           <input
             type="text"
             value={displayNameText ? displayNameText : ''}

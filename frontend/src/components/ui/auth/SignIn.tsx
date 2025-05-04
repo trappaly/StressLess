@@ -4,9 +4,11 @@ import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
+  const [visible, setVisible] = useState(false);
   const { signIn, forgotPassword, loading } = useAuth();
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -92,15 +94,28 @@ export default function SignIn() {
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
             disabled={loading}
           />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-            disabled={loading}
-          />
+
+          <div className="relative">
+            <input
+              type={visible ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+              disabled={loading}
+            />
+            <span>
+              <FontAwesomeIcon
+                icon={visible ? 'eye-slash' : 'eye'}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                onClick={() => {
+                  setVisible(!visible);
+                }}
+              />
+            </span>
+          </div>
+
           {errorMessage && (
             <p className="text-red-500 text-center">{errorMessage}</p>
           )}
