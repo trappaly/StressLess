@@ -20,7 +20,6 @@ import { updateProfile } from 'firebase/auth';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
-  const [loadingSave, setLoadingSave] = useState<boolean>(false);
   // Using state to hold user preferences
   const [userPreferences, setUserPreferences] = useState<ReturnType<
     typeof getPreferenceExtractData
@@ -69,7 +68,20 @@ export default function ProfilePage() {
 
   // Handle the save preference logic
   function handleSavePreferences(values: z.infer<typeof formSchema>): void {
-    setLoadingSave(true);
+    console.log(
+      'handleSavePreferences',
+      values as ReturnType<typeof getPreferenceExtractData>
+    );
+    console.log('current: ', userPreferences);
+    console.log(values === userPreferences);
+    console.log(JSON.stringify(values) === JSON.stringify(userPreferences));
+
+    if (JSON.stringify(values) === JSON.stringify(userPreferences)) {
+      window.alert("You didn't make any changes!");
+      setOpen(false);
+      return;
+    }
+
     const outputs = [];
     for (const question in values) {
       outputs.push({
@@ -86,14 +98,16 @@ export default function ProfilePage() {
       .then((response) => {
         // Update state of user preference
         setUserPreferences(values);
-        setLoadingSave(false);
-        // Close the dialog after save
-        setOpen(false);
+
         console.log('Successfully updated answers for user: ', user!.uid);
         console.log(response);
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        // Close the dialog after save
+        setOpen(false);
       });
   }
 
