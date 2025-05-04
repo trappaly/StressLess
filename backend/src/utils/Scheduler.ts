@@ -88,14 +88,27 @@ export default class Scheduler {
   }
 
   /**
-   * Check if current time is free.
+   * Check if current time is free. Returns true if time is free.
    */
   private static timeIsFree(
     events: Prisma.user_eventsCreateInput[],
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): boolean {
-    return true;
+    return !(this.eventsAtTime(events, time).length === 0);
+  }
+
+  /**
+   * Returns all events occurring at a given time.
+   */
+  private static eventsAtTime(
+    events: Prisma.user_eventsCreateInput[],
+    time: Date = new Date(Date.now()),
+  ): Prisma.user_eventsCreateInput[] {
+    return events.filter(event =>
+      (event.start_time == undefined || event.end_time == undefined) ||
+      (event.start_time <= time && event.end_time > time)
+    );
   }
 
   /**
@@ -107,6 +120,14 @@ export default class Scheduler {
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): number {
+    // Filter events that start after given time and before end of work day
+    // TODO: Convert endTime to only hours and minutes?
+    events.filter(event =>
+      (event.start_time !== undefined && event.end_time !== undefined) &&
+      (event.start_time >= time && event.start_time < userPreferences.endTime)
+    );
+    // Then, sort events by start time.
+    // Calculate minutes to next event, rounded down (to prevent conflicts).
     return 0;
   }
 }
