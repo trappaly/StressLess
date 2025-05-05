@@ -22,6 +22,8 @@ type DeadlineRemainder = {
  * `unscheduledDeadlines` is an array of deadlines that are not fully scheduled.
  * `unscheduledDeadlines` is an array  contain the number of hours that remain unscheduled,
  * in addition to all fields of a deadline object.
+ * 
+ * TODO: Determine if `unscheduledDeadlines` contains deadlines that are fully scheduled
  */
 type SchedulerOutput = {
   scheduledEvents: UserEvent[],
