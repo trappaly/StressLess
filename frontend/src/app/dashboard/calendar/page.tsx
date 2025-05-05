@@ -30,6 +30,7 @@ import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 
 interface Event {
+  start_time?: Date | string;
   id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
   end_time: Date | string | null;
@@ -102,7 +103,7 @@ export default function Home() {
         const extractedEvents = response.data.map((event: Event) => ({
           id: event.id,
           title: event.title,
-          start: event.start ? new Date(event.start) : undefined,
+          start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
           allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
