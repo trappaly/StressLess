@@ -1,21 +1,14 @@
 'use client';
-import React, { useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
 import SignInSignUp from '@/components/ui/auth/SignInSignUp';
 import { useAuth } from './context/auth/AuthContext';
 
 const Home: React.FC = () => {
-  // const router = useRouter();
-  const { user } = useAuth();
-  useEffect(() => {
-    if (!user) {
-      console.log('User not signed in.');
-    }
-  }, [user]);
+  const { verified } = useAuth();
+
   const scrollToSignUp = () =>
     document
       .getElementById('signin-signup')
@@ -83,10 +76,9 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Sign-in */}
       {/* Sign-in or Dashboard Redirect */}
       <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
-        {user ? (
+        {verified ? (
           <div className="text-center space-y-4">
             <p className="text-xl font-medium">
               You&apos;re already signed in.
@@ -102,33 +94,6 @@ const Home: React.FC = () => {
           <SignInSignUp />
         )}
       </section>
-
-      {/* <section id="signin-signup" className="max-w-md mx-auto px-6 py-20">
-        <SignInSignUp />
-      </section> */}
-      {/*<section id="signin" className="max-w-md mx-auto px-6 py-20">*/}
-      {/*  <div className="bg-white/60 dark:bg-gray-900/50 backdrop-blur-lg p-8 rounded-3xl shadow-xl">*/}
-      {/*    <h3 className="text-2xl font-semibold mb-6 text-center">Sign In</h3>*/}
-      {/*    <div className="space-y-4">*/}
-      {/*      <Input*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Username"*/}
-      {/*        className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"*/}
-      {/*      />*/}
-      {/*      <Input*/}
-      {/*        type="password"*/}
-      {/*        placeholder="Password"*/}
-      {/*        className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"*/}
-      {/*      />*/}
-      {/*      <Button*/}
-      {/*        onClick={() => router.push('/dashboard')}*/}
-      {/*        className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition"*/}
-      {/*      >*/}
-      {/*        Sign In*/}
-      {/*      </Button>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</section>*/}
     </div>
   );
 };

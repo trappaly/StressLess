@@ -43,6 +43,7 @@ export const Help = () => {
   return (
     <div className="relative">
       <Button
+        className="cursor-pointer"
         variant="ghost"
         size="icon"
         aria-label="Help"

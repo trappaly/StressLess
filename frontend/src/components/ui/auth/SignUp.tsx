@@ -1,17 +1,71 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/context/auth/AuthContext';
-import { getAuth, updateProfile } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+library.add(faEye, faEyeSlash);
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
-  const { signUp, user, loading } = useAuth();
+  const { signUp, loading } = useAuth();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [visibleConfirm, setVisibleConfirm] = useState<boolean>(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [displayNameText, setDisplayNameText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [polling, setPolling] = useState(false);
 
+  useEffect(() => {
+    if (authenticated) {
+      window.location.href = '/preference';
+    }
+  }, [authenticated]);
+
+  // Purpose: check for email verification and send token
+  const startVerificationPolling = () => {
+    if (polling) return;
+    setPolling(true);
+
+    const interval = setInterval(async () => {
+      const currentUser = getAuth().currentUser;
+      if (!currentUser) return;
+
+      await currentUser.reload(); // refreshes auth info
+
+      if (currentUser.emailVerified) {
+        clearInterval(interval);
+        setPolling(false);
+
+        try {
+          const idToken = await currentUser.getIdToken(true);
+
+          const response = await axios.post(
+            backendBaseUrl + '/api/auth/signup',
+            { idToken }
+          );
+
+          if (response.status === 201) {
+            setAuthenticated(true);
+          } else {
+            setErrorMessage('Could not complete signup with backend.');
+          }
+        } catch (err) {
+          console.error(err);
+          setErrorMessage(
+            'Something went wrong communicating with the server.'
+          );
+        }
+      }
+    }, 3000); // check every 3 seconds
+  };
+
+  // Handling clicking Sign Up button
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -21,41 +75,24 @@ export default function SignUpForm() {
     }
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, displayNameText).then(() =>
+        setErrorMessage(
+          'Please verify your account by following the instructions emailed to you!'
+        )
+      );
 
-      if (!user) {
-        setErrorMessage('Creating your account...');
-      }
-
-      // 3. Get the Firebase ID token
-      const idToken = await getAuth().currentUser?.getIdToken(true);
-
-      if (!idToken) {
-        console.log(`${idToken} not found`);
-        throw new Error('Failed to retrieve ID token');
-      }
-
-      // 4. Send the ID token to the backend API for user creation
-      const response = await axios.post(backendBaseUrl + '/api/auth/signup', {
-        idToken,
-      });
-
-      // 5. Handle response from your API
-      if (response.status === 201) {
-        if (user) {
-          await updateProfile(user, {
-            displayName: displayName,
-          }).then(() => {
-            console.log('Display name updated: ', user.displayName);
-          });
-        }
-        window.location.href = '/preference'; // Redirect after successful signup
-      } else {
-        setErrorMessage('Cannot create new account');
-      }
+      startVerificationPolling();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setErrorMessage(error.message);
+        if (error.message === 'Firebase: Error (auth/invalid-email).') {
+          setErrorMessage('Please provide a valid email address!');
+        } else if (
+          error.message === 'Firebase: Error (auth/missing-password).'
+        ) {
+          setErrorMessage('Please fill out your password!');
+        } else {
+          setErrorMessage(error.message);
+        }
       } else {
         setErrorMessage(
           'Cannot create your account right now. Please try again other time.'
@@ -63,8 +100,6 @@ export default function SignUpForm() {
       }
     }
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <section id="signup" className="max-w-md mx-auto px-6 py-20">
@@ -77,36 +112,76 @@ export default function SignUpForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+            disabled={loading}
           />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-          />
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-          />
+          <div className="relative">
+            <input
+              type={visible ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+              disabled={loading}
+            />
+            <span>
+              {
+                <FontAwesomeIcon
+                  icon={visible ? 'eye-slash' : 'eye'}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  onClick={() => {
+                    setVisible(!visible);
+                  }}
+                />
+              }
+            </span>
+          </div>
+
+          <div className="relative">
+            <input
+              type={visibleConfirm ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+              disabled={loading}
+            />
+            <span>
+              {
+                <FontAwesomeIcon
+                  icon={visibleConfirm ? 'eye-slash' : 'eye'}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  onClick={() => {
+                    setVisibleConfirm(!visibleConfirm);
+                  }}
+                />
+              }
+            </span>
+          </div>
+
           <input
             type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
+            value={displayNameText ? displayNameText : ''}
+            onChange={(e) => setDisplayNameText(e.target.value)}
             placeholder="Display Name"
             className="w-full p-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+            disabled={loading}
           />
           {errorMessage && (
             <p className="text-red-500 text-center">{errorMessage}</p>
           )}
           <button
             onClick={handleSignUp}
-            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer"
+            className="w-full rounded-full py-3 font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-400 hover:to-indigo-400 transition cursor-pointer flex items-center justify-center"
+            disabled={loading}
           >
-            Sign Up
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin text-white/50" />
+                <span className="text-white/90">Creating your account...</span>
+              </>
+            ) : (
+              'Sign Up'
+            )}
           </button>
         </div>
       </div>
