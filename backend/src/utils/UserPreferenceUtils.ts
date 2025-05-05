@@ -18,4 +18,8 @@ export default class UserPreferenceUtils {
       UserPreferenceUtils.minuteNumberToMinute(m),
     ];
   }
+
+  public static dateToMinuteNumber(d: Date): number {
+    return d.getHours() * 60 + d.getMinutes();
+  }
 }

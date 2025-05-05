@@ -1,11 +1,16 @@
 import UserPreferences from "./UserPreferences";
-import { Prisma } from "@prisma/client";
+import UserPreferenceUtils from "./UserPreferenceUtils";
+import prisma from "../config/prisma";
+
+// Types based on the database schema.
+type UserDeadline = Awaited<ReturnType<typeof prisma.user_deadlines.findFirst>>;
+type UserEvent = Awaited<ReturnType<typeof prisma.user_events.findFirst>>;
 
 /**
  * An object containing a deadline object as well as the number of unscheduled minutes.
  */
 type DeadlineRemainder = {
-  deadline: Prisma.user_deadlinesCreateInput,
+  deadline: UserDeadline,
   unscheduledMinutes: number,
 }
 
@@ -19,7 +24,7 @@ type DeadlineRemainder = {
  * in addition to all fields of a deadline object.
  */
 type SchedulerOutput = {
-  scheduledEvents: Prisma.user_eventsCreateInput[],
+  scheduledEvents: UserEvent[],
   unscheduledDeadlines: DeadlineRemainder[],
 }
 
@@ -34,8 +39,8 @@ export default class Scheduler {
    * @returns A SchedulerOutput object.
    */
   static scheduleDeadlines(
-    events: Prisma.user_eventsCreateInput[],
-    deadlines: Prisma.user_deadlinesCreateInput[],
+    events: UserEvent[],
+    deadlines: UserDeadline[],
     userPreferences: UserPreferences
   ): SchedulerOutput {
     return {
@@ -51,8 +56,8 @@ export default class Scheduler {
    * @returns An array of deadline remainders, the deadline and the unscheduled minutes.
    */
   static calculateDeadlineRemainders(
-    events: Prisma.user_eventsCreateInput[],
-    deadlines: Prisma.user_deadlinesCreateInput[],
+    events: UserEvent[],
+    deadlines: UserDeadline[],
   ): DeadlineRemainder[] {
     return [];
   }
@@ -68,7 +73,7 @@ export default class Scheduler {
    *  Returns 
    */
   static nextFreeTimeBlock(
-    events: Prisma.user_eventsCreateInput[],
+    events: UserEvent[],
     userPreferences: UserPreferences,
     startSearchTime: Date = new Date(Date.now()),
   ): { time: Date, minutes: number } | null {
@@ -91,7 +96,7 @@ export default class Scheduler {
    * Check if current time is free. Returns true if time is free.
    */
   private static timeIsFree(
-    events: Prisma.user_eventsCreateInput[],
+    events: UserEvent[],
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): boolean {
@@ -102,12 +107,15 @@ export default class Scheduler {
    * Returns all events occurring at a given time.
    */
   private static eventsAtTime(
-    events: Prisma.user_eventsCreateInput[],
+    events: UserEvent[],
     time: Date = new Date(Date.now()),
-  ): Prisma.user_eventsCreateInput[] {
+  ): UserEvent[] {
     return events.filter(event =>
-      (event.start_time == undefined || event.end_time == undefined) ||
-      (event.start_time <= time && event.end_time > time)
+      event &&
+      (
+        (event.start_time == undefined || event.end_time == undefined) ||
+        (event.start_time <= time && event.end_time > time)
+      )
     );
   }
 
@@ -116,15 +124,15 @@ export default class Scheduler {
    * from the given time.
    */
   private static minutesToNextEvent(
-    events: Prisma.user_eventsCreateInput[],
+    events: UserEvent[],
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): number {
     // Filter events that start after given time and before end of work day
     // TODO: Convert endTime to only hours and minutes?
     events.filter(event =>
-      (event.start_time !== undefined && event.end_time !== undefined) &&
-      (event.start_time >= time && event.start_time < userPreferences.endTime)
+      event &&
+      (event.start_time >= time && UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime)
     );
     // Then, sort events by start time.
     // Calculate minutes to next event, rounded down (to prevent conflicts).
