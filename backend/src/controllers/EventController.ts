@@ -130,6 +130,7 @@ export default class EventController {
       recurrence_end_date,
       is_generated,
       break_time,
+      deadline_id,
     } = req.body;
     return {
       user_id,
@@ -144,6 +145,7 @@ export default class EventController {
       recurrence_end_date,
       is_generated,
       break_time,
+      deadline_id,
     };
   }
 }

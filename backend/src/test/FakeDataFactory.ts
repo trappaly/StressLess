@@ -5,6 +5,7 @@ interface FakeDataFactoryOptions {
   userId?: string;
   questionId?: string;
   eventId?: string;
+  deadlineId?: string;
 }
 
 /**
@@ -84,6 +85,7 @@ class FakeDataFactory {
       break_time: null,
       // is_completed: false,
       created_at: new Date(),
+      deadline_id: options.deadlineId || null,
     };
   }
 
@@ -96,7 +98,7 @@ class FakeDataFactory {
     return {
       id: this.generateId(options.id),
       user_id: options.userId || faker.string.uuid(),
-      event_id: options.eventId || faker.string.uuid(),
+      event_id: options.eventId || null,
       title: faker.company.catchPhrase(),
       due_time: faker.date.soon({ days: 30 }),
       description: faker.lorem.words(faker.number.int(256)),
