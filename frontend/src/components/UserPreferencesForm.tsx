@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -20,6 +21,7 @@ import { Card, CardHeader, CardContent } from './ui/card';
 import axios from 'axios';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import { backendBaseUrl, minutesToTime } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 //Define form shema
 export const formSchema = z
   .object({
@@ -65,13 +67,16 @@ export const formSchema = z
 type UserPreferencesFormProps = {
   onSave?: (values: z.infer<typeof formSchema>) => void;
   disableCard?: boolean; // check if preference registration or edit to add description
+  defaultValues?: Partial<z.infer<typeof formSchema>>; // If no default value given, preference registration prefill with default value
 };
 
 export function UserPreferencesForm({
   onSave,
   disableCard,
+  defaultValues,
 }: UserPreferencesFormProps) {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const { user } = useAuth();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -85,8 +90,16 @@ export function UserPreferencesForm({
     },
   });
 
+  // Effect to reset the form when defaultValues change
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues); // Reset the form with new default values
+    }
+  }, [defaultValues, form]); // Re-run when defaultValues change
+
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
@@ -108,6 +121,7 @@ export function UserPreferencesForm({
       axios
         .post(backendBaseUrl + `/api/user/surveyresults/${user.uid}`, outputs)
         .then((response) => {
+          setLoading(false);
           console.log('Successfully posted answers for user: ', user!.uid);
           console.log(response);
           router.push('/dashboard');
@@ -189,7 +203,7 @@ export function UserPreferencesForm({
                 Roughly how many hours do you typically get?
               </FormDescription>
               <FormControl>
-                <Input type="number" step="0.5" placeholder="8" {...field} />
+                <Input type="number" step="1" placeholder="8" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -232,14 +246,27 @@ export function UserPreferencesForm({
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Save Preferences
+        <Button
+          type="submit"
+          className="w-full flex items-center justify-center"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin text-white/50" />
+              <span className="text-white/90">
+                Updating your preferences...
+              </span>
+            </>
+          ) : (
+            'Save Preferences'
+          )}
         </Button>
       </form>
     </Form>
   );
 
-  // 👇 Wrap in Card only if not disabled
+  // Wrap in Card only if not disabled
   return disableCard ? (
     content
   ) : (

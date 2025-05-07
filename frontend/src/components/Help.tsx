@@ -7,8 +7,20 @@ import ReactMarkdown from 'react-markdown';
 export const Help = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [markdown, setMarkdown] = useState('');
+  const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
+    // Determine the current page based on the URL
+    const path = window.location.pathname;
+    if (path === '/') {
+      setCurrentPage('Home'); // Landing page = Home
+    } else if (path === '/dashboard') {
+      setCurrentPage('dashboard/calendar'); // If route is dashboard default view is calendar
+    } else {
+      setCurrentPage(path.replace('/', '')); // Remove '/' from currentpage name
+    }
+
+    // Fetch markdown file from /public
     if (showHelp && !markdown) {
       fetch('/help.md')
         .then((res) => res.text())
@@ -16,9 +28,22 @@ export const Help = () => {
     }
   }, [showHelp, markdown]);
 
+  // Extract the section based on custom tags
+  const getSection = () => {
+    const regex = new RegExp(
+      `<!-- Section: ${currentPage} -->(.*?)(?=<!-- Section:|$)`,
+      's'
+    );
+    console.log('current zection: ', regex);
+    const match = markdown.match(regex);
+    console.log('match here: ', match);
+    return match ? match[1].trim() : 'Section not found.';
+  };
+
   return (
     <div className="relative">
       <Button
+        className="cursor-pointer"
         variant="ghost"
         size="icon"
         aria-label="Help"
@@ -29,7 +54,7 @@ export const Help = () => {
 
       {showHelp && (
         <div className="absolute right-0 mt-2 w-[400px] max-h-[400px] overflow-auto bg-white dark:bg-zinc-900 text-sm p-4 shadow-xl border rounded-lg z-50 prose prose-sm dark:prose-invert">
-          <ReactMarkdown>{markdown}</ReactMarkdown>
+          <ReactMarkdown>{getSection()}</ReactMarkdown>
         </div>
       )}
     </div>

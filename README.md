@@ -305,9 +305,9 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 - [x] Milestone 4 - Feedback & Iteration
 - [x] Milestone 5 - Design & Architecture
 - [x] Milestone 6 - Testing & CI
-- [ ] Milestone 7 - Release 1 and demo
-- [ ] Milestone 8 - Documentation
-- [ ] Milestone 9 - Code Review and demo
+- [x] Milestone 7 - Release 1 and demo
+- [x] Milestone 8 - Documentation
+- [x] Milestone 9 - Code Review and demo
 - [ ] Milestone 10 - Bug logging
 - [ ] Milestone 11 - Final Presentation
 - [ ] Milestone 12 - Final Release

@@ -31,6 +31,7 @@ import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 
+
 interface Event {
   id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
@@ -52,41 +53,45 @@ interface Event {
   end?: Date | string;
 }
 
+import { UserEvent } from '@/lib/types';
+
+
 export default function Home() {
   //imported from the backend user preferences
   const { user } = useAuth();
   const [events] = useState([
+
     //commented out setEvents(unused var)
 
     { title: 'event 1', id: '1' }, //creates events in the draggable box and names them
+
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
     { title: 'event 4', id: '4' },
     { title: 'event 5', id: '5' },
   ]);
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
-  const [showModal, setShowModal] = useState(false); 
-  const [showDeleteModal, setShowDeleteModal] = useState(false); //pop up box for deletion
-  const [idToDelete, setIdToDelete] = useState<number | null>(null); //id of event that was selected for deletion
 
-  const example = {
+  const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const example: UserEvent = {
     title: '',
     end_time: null,
-    start_time: '',
-    allDay: false,
     id: '', // UUIDs are strings
     break_time: null,
+    start_time: new Date().toISOString(),
     created_at: new Date().toISOString(),
     description: null,
     is_generated: false,
     is_recurring: false,
     user_id: '', // you'll want to fill this later when the user is logged in
-    location_place: undefined,
-    recurrence_end_date: undefined,
-    recurrence_pattern: undefined,
-    recurrence_start_date: undefined,
+    location_place: null,
+    recurrence_end_date: null,
+    recurrence_pattern: null,
+    recurrence_start_date: null,
   };
-  const [newEvent, setNewEvent] = useState<Event>({
+  const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
 
@@ -103,12 +108,11 @@ export default function Home() {
         );
         console.log('Fetched raw events:', response.data);
 
-        const extractedEvents = response.data.map((event: Event) => ({
+        const extractedEvents = response.data.map((event: UserEvent) => ({
           id: event.id,
           title: event.title,
           start: event.start ? new Date(event.start) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
-          allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
         }));
 
@@ -148,9 +152,8 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start: arg.date,
-      allDay: arg.allDay,
-      id: new Date().getTime(),
+      start_time: arg.date.toISOString(),
+      id: new Date().getTime().toString(),
     });
     setShowModal(true);
   }
@@ -184,15 +187,15 @@ export default function Home() {
       return;
     }
 
-    
 
-    const event = {
+    const event: UserEvent & { start: Date; end?: Date } = {
+
       ...newEvent,
       user_id: user.uid,
-      start: data.date.toISOString(),
+      start_time: data.date.toISOString(),
       title: data.draggedEl.innerText,
-      allDay: data.allDay,
-      id: new Date().getTime(),
+      id: new Date().getTime().toString(),
+      start: data.date, // <-- necessary for FullCalendar
     };
     setAllEvents([...allEvents, event]);
 
@@ -225,8 +228,10 @@ export default function Home() {
 
 //closes any modal opened and puts events back on display
   function handleCloseModal() {
-    setShowModal(false); //stop showing modal
-    setNewEvent({ //puts everything back in cal
+
+    setShowModal(false);
+    setNewEvent({
+
       ...example,
     });
     setShowDeleteModal(false);
@@ -251,9 +256,11 @@ export default function Home() {
       console.log('no user found');
       return;
     }
-    const eventWithUser = {
+    const eventWithUser: UserEvent & { start: Date; end?: Date } = {
       ...newEvent,
       user_id: user.uid,
+      start: new Date(newEvent.start_time), // <-- ensure start is there
+      end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
     };
     setAllEvents([...allEvents, eventWithUser]); //shows all other events and newly added event
 
@@ -266,8 +273,10 @@ export default function Home() {
         console.error('Error saving event:', error);
       });
 
-    setShowModal(false); //closes modal
-    setNewEvent({ //sets back to orginal state
+
+    setShowModal(false);
+    setNewEvent({
+
       ...example,
     });
   }

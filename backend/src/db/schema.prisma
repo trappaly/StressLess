@@ -49,12 +49,13 @@ model user_events {
   is_generated           Boolean   @default(false)
   break_time             String?
   created_at             DateTime  @default(now())
+  deadline_id            String?
 }
 
 model user_deadlines {
   id                     String    @id @default(uuid())
   user_id                String
-  event_id               String
+  event_id               String?
   title                  String    @db.VarChar(255)
   due_time               DateTime?
   description            String?

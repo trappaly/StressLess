@@ -25,7 +25,9 @@ export default [
         React: 'readonly',
         exports: 'readonly',
         HTMLInputElement: "readonly",
-        HTMLFormElement: "readonly"
+        HTMLFormElement: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
       },
     },
     plugins: {
