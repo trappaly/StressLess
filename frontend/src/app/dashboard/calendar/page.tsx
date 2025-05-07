@@ -116,14 +116,6 @@ export default function Home() {
     };
   }, []); // empty dependency array -> only once on mount
 
-  function toCalendarEvent(event: UserEvent) {
-    return {
-      ...event,
-      start: new Date(event.start_time),
-      end: event.end_time ? new Date(event.end_time) : undefined,
-    };
-  }
-
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
       ...newEvent,
