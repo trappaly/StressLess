@@ -97,7 +97,8 @@ export default class Scheduler {
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): boolean {
-    return !(this.eventsAtTime(events, time).length === 0);
+    // Current time is free when there's no event at this time
+    return this.eventsAtTime(events, time).length === 0;
   }
 
   /**
