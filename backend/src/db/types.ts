@@ -1,9 +1,18 @@
+import {Prisma} from "./generated/client";
+
+// Basic model types with no relations
+export type User = Prisma.usersGetPayload<{}>;
+export type UserEvent = Prisma.user_eventsGetPayload<{}>;
+export type UserDeadline = Prisma.user_deadlinesGetPayload<{}>;
+export type UserPreference = Prisma.user_preferencesGetPayload<{}>;
+export type PreferenceQuestion = Prisma.preference_questionsGetPayload<{}>;
+
 /**
  * Type that represents user preference input for scheduler.
  */
-type UserPreferences = {
+export type UserPreferences = {
   /**
-   * productiveTime is stored in the database as an string of two comma-separated 
+   * productiveTime is stored in the database as an string of two comma-separated
    * numbers, which are the minute numbers. This is because of the unwanted components
    * of the Date type, which leads to comparison issues.
    */
@@ -33,5 +42,3 @@ type UserPreferences = {
    */
   endTime: number,
 };
-
-export default UserPreferences;

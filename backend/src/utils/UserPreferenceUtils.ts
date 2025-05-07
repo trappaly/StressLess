@@ -1,4 +1,4 @@
-import UserPreferences from "./UserPreferences";
+import { UserPreferences } from '../db/types';
 
 /**
  * Functions for converting user preference response strings to other types.

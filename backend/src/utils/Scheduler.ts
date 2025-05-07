@@ -1,10 +1,5 @@
-import UserPreferences from "./UserPreferences";
 import UserPreferenceUtils from "./UserPreferenceUtils";
-import prisma from "../config/prisma";
-
-// Types based on the database schema.
-type UserDeadline = Awaited<ReturnType<typeof prisma.user_deadlines.findFirst>>;
-type UserEvent = Awaited<ReturnType<typeof prisma.user_events.findFirst>>;
+import { UserDeadline, UserEvent, UserPreferences } from '../db/types.ts';
 
 /**
  * An object containing a deadline object as well as the number of unscheduled minutes.
