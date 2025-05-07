@@ -28,62 +28,39 @@ import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
-
-interface Event {
-  start_time?: Date | string;
-  id: number | string; // your backend sometimes uses uuid string, sometimes number
-  title: string;
-  end_time: Date | string | null;
-  allDay: boolean;
-  break_time: number | null;
-  created_at: string;
-  description: string | null;
-  is_generated: boolean;
-  is_recurring: boolean;
-  location_place?: string;
-  recurrence_end_date?: string | null;
-  recurrence_pattern?: string | null;
-  recurrence_start_date?: string | null;
-  user_id: string;
-
-  // frontend-only props (for FullCalendar)
-  start?: Date | string;
-  end?: Date | string;
-}
+import { UserEvent } from '@/lib/types';
 
 export default function Home() {
   //imported from the backend user preferences
   const { user } = useAuth();
   const [events] = useState([
-    //commented out setEvents(unused var)
-
     { title: 'event 1', id: '1' },
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
     { title: 'event 4', id: '4' },
     { title: 'event 5', id: '5' },
   ]);
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const example = {
+  const example: UserEvent = {
     title: '',
     end_time: null,
-    allDay: false,
     id: '', // UUIDs are strings
     break_time: null,
+    start_time: new Date().toISOString(),
     created_at: new Date().toISOString(),
     description: null,
     is_generated: false,
     is_recurring: false,
     user_id: '', // you'll want to fill this later when the user is logged in
-    location_place: undefined,
-    recurrence_end_date: undefined,
-    recurrence_pattern: undefined,
-    recurrence_start_date: undefined,
+    location_place: null,
+    recurrence_end_date: null,
+    recurrence_pattern: null,
+    recurrence_start_date: null,
   };
-  const [newEvent, setNewEvent] = useState<Event>({
+  const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
 
@@ -100,12 +77,11 @@ export default function Home() {
         );
         console.log('Fetched raw events:', response.data);
 
-        const extractedEvents = response.data.map((event: Event) => ({
+        const extractedEvents = response.data.map((event: UserEvent) => ({
           id: event.id,
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
-          allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
         }));
 
@@ -140,13 +116,20 @@ export default function Home() {
     };
   }, []); // empty dependency array -> only once on mount
 
+  function toCalendarEvent(event: UserEvent) {
+    return {
+      ...event,
+      start: new Date(event.start_time),
+      end: event.end_time ? new Date(event.end_time) : undefined,
+    };
+  }
+
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start: arg.date,
-      allDay: arg.allDay,
-      id: new Date().getTime(),
+      start_time: arg.date.toISOString(),
+      id: new Date().getTime().toString(),
     });
     setShowModal(true);
   }
@@ -178,23 +161,13 @@ export default function Home() {
       return;
     }
 
-    // const event = {
-    //   ...newEvent,
-    //   user_id: user.uid,
-    //   start_time: data.date.toISOString(),
-    //   start: data.date.toISOString(),
-    //   title: data.draggedEl.innerText,
-    //   allDay: data.allDay,
-    //   id: new Date().getTime(),
-    // };
-
-    const event = {
+    const event: UserEvent & { start: Date; end?: Date } = {
       ...newEvent,
       user_id: user.uid,
-      start: data.date.toISOString(),
+      start_time: data.date.toISOString(),
       title: data.draggedEl.innerText,
-      allDay: data.allDay,
-      id: new Date().getTime(),
+      id: new Date().getTime().toString(),
+      start: data.date, // <-- necessary for FullCalendar
     };
     setAllEvents([...allEvents, event]);
 
@@ -245,9 +218,11 @@ export default function Home() {
       console.log('no user found');
       return;
     }
-    const eventWithUser = {
+    const eventWithUser: UserEvent & { start: Date; end?: Date } = {
       ...newEvent,
       user_id: user.uid,
+      start: new Date(newEvent.start_time), // <-- ensure start is there
+      end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
     };
     setAllEvents([...allEvents, eventWithUser]);
 
