@@ -1,6 +1,5 @@
 import { UserPreference, UserPreferences } from '../db/types.ts';
 import { faker } from '@faker-js/faker';
-import user from '../routes/user.ts';
 import UserPreferenceUtils from '../utils/UserPreferenceUtils.ts';
 
 describe('Test the transform method of user preference utils', () => {
