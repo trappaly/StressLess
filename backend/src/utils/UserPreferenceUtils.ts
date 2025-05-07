@@ -1,9 +1,19 @@
-import { UserPreferences } from '../db/types';
+import { UserPreference, UserPreferences } from '../db/types';
 
 /**
  * Functions for converting user preference response strings to other types.
  */
 export default class UserPreferenceUtils {
+  public static transform(object: UserPreference[]): UserPreferences {
+    // TODO: apply actual logic, not this placeholder
+    return {
+      productiveTime: [10, 60],
+      workDuration: 40,
+      sleepHours: 8,
+      startTime: 9,
+      endTime: 17,
+    };
+  }
   public static minuteNumberToHour(m: number): number {
     return Math.floor(m / 60);
   }
