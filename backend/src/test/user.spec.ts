@@ -3,31 +3,32 @@ import app from '../index';
 import request from 'supertest';
 import FakeDataFactory from './FakeDataFactory';
 import prisma from '../config/prisma';
+import { PreferenceQuestion, User, UserPreference } from '../db/types.ts';
 
 describe('Test preference routes', () => {
   // generate fake data
   let factory: FakeDataFactory;
   // declares a user object but does not assign anything to it
-  let user: { id: any; email?: string; created_at?: Date; };
+  let user: User;
   // declares a preference object but does not assign anything to it
-  let preference: { id: any; user_id: any; question_id: any; answer: string;};
+  let preference: UserPreference;
   // declares a preference object but does not assign anything to it
-  let preferenceQuestion: { id: any; question_text: any};
+  let preferenceQuestion: PreferenceQuestion;
   // declaring an array of preference questions
-  let preferenceQuestions: any[] = [];
+  let preferenceQuestions: PreferenceQuestion[] = [];
 
   // before all the tests are run, run this chunk of code once
   beforeAll(() => {
     factory = new FakeDataFactory;
     
     // Create random user, NOT stored in database
-    user = factory.randomUser({ id: "TEST_USER" });
+    user = factory.randomUser();
 
     // Create random preference, NOT stored in database
-    preference = factory.randomUserPreference({ userId: "TEST_USER_PREFERENCE" });
+    preference = factory.randomUserPreference({ userId: user.id });
   
     // Create random preference question, NOT stored in database
-    preferenceQuestion = factory.randomPreferenceQuestion({ id: "TEST_PREFERENCE_QUESTION"});
+    preferenceQuestion = factory.randomPreferenceQuestion();
 
     // Create random questions, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -37,15 +38,14 @@ describe('Test preference routes', () => {
   
   // describe refers to a group of tests
   describe('Test getting preference routes', async () => {
-    let preferences;
-    let dbPreferences: any[];
+    let preferences: UserPreference[];
+    let dbPreferences: UserPreference[];
 
     // add data to the database which lets us test the routes
     beforeAll(async () => {
       // Add some answers to preference questions
       preferences = preferenceQuestions.map(question =>
         factory.randomUserPreference({
-          id: false,
           userId: user.id,
           questionId: question.id,
         }));
@@ -60,7 +60,7 @@ describe('Test preference routes', () => {
     afterAll(async () => {
       await prisma.user_preferences.deleteMany({
         where: {
-          user_id: "TEST_USER",
+          user_id: user.id,
         },
       });
     });
@@ -153,7 +153,7 @@ describe('Test preference routes', () => {
       // Delete many user preferences
       await prisma.user_preferences.deleteMany({
         where: {
-          user_id: 'TEST_USER',
+          user_id: user.id,
         },
       });
     
@@ -164,7 +164,5 @@ describe('Test preference routes', () => {
         },
       });
     });
-    
   });
-
 });
