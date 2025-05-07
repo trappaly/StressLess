@@ -97,8 +97,20 @@ export default class Scheduler {
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): boolean {
+    // checks whether the current time is within work hours
+    const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
+    const isWithinWorkHours = (
+      currentMinutes >= userPreferences.startTime &&
+        currentMinutes + userPreferences.workDuration <= userPreferences.endTime
+    );
+
+    if (!isWithinWorkHours) return false;
+
+    // checks whether any events overlap at the current time
+    const hasConflict = this.eventsAtTime(events, time).length > 0;
+
     // Current time is free when there's no event at this time
-    return this.eventsAtTime(events, time).length === 0;
+    return !hasConflict;
   }
 
   /**
@@ -127,7 +139,7 @@ export default class Scheduler {
     time: Date = new Date(Date.now()),
   ): number {
     // Filter events that start after given time and before end of work day
-    const currentMinute = UserPreferenceUtils.dateToMinuteNumber(time);
+    const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
     const dayEnd = userPreferences.endTime;
     const futureEvents = events
       .filter(event =>
@@ -139,9 +151,9 @@ export default class Scheduler {
         UserPreferenceUtils.dateToMinuteNumber(b.start_time)));
 
     if (futureEvents.length > 0) {
-      return UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) - currentMinute;
+      return UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) - currentMinutes;
     }
 
-    return dayEnd - currentMinute;
+    return dayEnd - currentMinutes;
   }
 }
