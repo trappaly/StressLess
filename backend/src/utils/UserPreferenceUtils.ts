@@ -43,20 +43,20 @@ export default class UserPreferenceUtils {
     return returnedData;
   }
 
-  // public static minuteNumberToHour(m: number): number {
-  //   return Math.floor(m / 60);
-  // }
-  //
-  // public static minuteNumberToMinute(m: number): number {
-  //   return m % 60;
-  // }
-  //
-  // public static minuteNumberToHourAndMinute(m: number): [number, number] {
-  //   return [
-  //     UserPreferenceUtils.minuteNumberToHour(m),
-  //     UserPreferenceUtils.minuteNumberToMinute(m),
-  //   ];
-  // }
+  public static minuteNumberToHour(m: number): number {
+    return Math.floor(m / 60);
+  }
+
+  public static minuteNumberToMinute(m: number): number {
+    return m % 60;
+  }
+
+  public static minuteNumberToHourAndMinute(m: number): [number, number] {
+    return [
+      UserPreferenceUtils.minuteNumberToHour(m),
+      UserPreferenceUtils.minuteNumberToMinute(m),
+    ];
+  }
 
   public static dateToMinuteNumber(d: Date): number {
     return d.getHours() * 60 + d.getMinutes();

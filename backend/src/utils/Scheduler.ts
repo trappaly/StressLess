@@ -127,13 +127,21 @@ export default class Scheduler {
     time: Date = new Date(Date.now()),
   ): number {
     // Filter events that start after given time and before end of work day
-    // TODO: Convert endTime to only hours and minutes?
-    events.filter(event =>
-      event &&
-      (event.start_time >= time && UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime)
-    );
-    // Then, sort events by start time.
-    // Calculate minutes to next event, rounded down (to prevent conflicts).
-    return 0;
+    const currentMinute = UserPreferenceUtils.dateToMinuteNumber(time);
+    const dayEnd = userPreferences.endTime;
+    const futureEvents = events
+      .filter(event =>
+        event &&
+        (event.start_time >= time &&
+          UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime))
+      .sort((a, b) => (
+        UserPreferenceUtils.dateToMinuteNumber(a.start_time) -
+        UserPreferenceUtils.dateToMinuteNumber(b.start_time)));
+
+    if (futureEvents.length > 0) {
+      return UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) - currentMinute;
+    }
+
+    return dayEnd - currentMinute;
   }
 }
