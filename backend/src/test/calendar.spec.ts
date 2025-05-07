@@ -3,33 +3,35 @@ import app from '../index';
 import request from 'supertest';
 import FakeDataFactory from './FakeDataFactory';
 import prisma from '../config/prisma';
+import { User, UserDeadline, UserEvent } from '../db/types.ts';
+import { faker } from '@faker-js/faker';
 
 describe('Test calendar routes', () => {
   // generate fake data
   let factory: FakeDataFactory;
   // declares a user object but does not assign anything to it
-  let user: { id: any; email?: string; created_at?: Date; };
+  let user: User;
   // declares a user event object but does not assign anything to it
-  let userEvent: { id: any; user_id: any; title: any; start_time: Date; is_recurring: any; is_generated: any; created_at: Date; };
+  let userEvent: UserEvent;
   // declares a user event object but does not assign anything to it
-  let userDeadline: { id: any; user_id: any; event_id: any; title: any; due_time: Date; description: any; priority: any; projected_duration: any; created_at: Date; };
+  let userDeadline: UserDeadline;
   // declaring an array of events
-  let userEvents: any[] = [];
+  let userEvents: UserEvent[] = [];
   // declaring an array of events
-  let userDeadlines: any[] = [];
+  let userDeadlines: UserDeadline[] = [];
   
   // before all the tests are run, run this chunk of code once
   beforeAll(() => {
     factory = new FakeDataFactory;
     
     // Create random user, NOT stored in database
-    user = factory.randomUser({ id: "TEST_USER" });
+    user = factory.randomUser();
     
     // Create random event, NOT stored in database
-    userEvent = factory.randomUserEvent({ id: "TEST_USER_EVENT", userId: "TEST_USER" });
+    userEvent = factory.randomUserEvent({ userId: user.id });
     
     // Create random deadline, NOT stored in database
-    userDeadline = factory.randomUserDeadline({ id: "TEST_USER_DEADLINE", userId: "TEST_USER" });
+    userDeadline = factory.randomUserDeadline({ userId: user.id });
     
     // Create random events, NOT stored in database
     for (let i = 0; i < 10; i++) {
@@ -46,14 +48,13 @@ describe('Test calendar routes', () => {
   // describe refers to a group of tests
   describe('Test getting events', async () => {
     let events;
-    let dbEvents: any[];
+    let dbEvents: UserEvent[];
     
     // add data to the database which lets us test the routes
     beforeAll(async () => {
       // Map generated user events to their user ID
       events = userEvents.map(event =>
         factory.randomUserEvent({
-          id: false,
           userId: user.id,
         }));
       // Add events to database
@@ -73,7 +74,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_events.deleteMany({
         where: {
-          user_id: "TEST_USER",
+          user_id: user.id,
         },
       });
     });
@@ -85,12 +86,8 @@ describe('Test calendar routes', () => {
     
     // Test adding an event through the route
     it('Adds an event', async () => {
-      let testEvent;
-      testEvent = {
-        id: 'TEST_USER_EVENT',
-        user_id: 'TEST_USER',
-        title: 'TEST_TITLE', 
-      };
+      let testEvent : UserEvent;
+      testEvent = factory.randomUserEvent({ userId: user.id });
       const res = await request(app)
       .post(`/api/calendar/events`)
       .send(testEvent);
@@ -101,14 +98,13 @@ describe('Test calendar routes', () => {
   // describe refers to a group of tests
   describe('Test getting events', async () => {
     let events;
-    let dbEvents: any[];
+    let dbEvents: UserEvent[];
     
     // add data to the database which lets us test the routes
     beforeAll(async () => {
       // Map generated user events to their user ID
       events = userEvents.map(event =>
         factory.randomUserEvent({
-          id: false,
           userId: user.id,
         }));
       // Add events to database
@@ -128,7 +124,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_events.deleteMany({
         where: {
-          user_id: "TEST_USER",
+          user_id: user.id,
         },
       });
     });
@@ -144,9 +140,9 @@ describe('Test calendar routes', () => {
       // Add an event to database
       dbEvent = await prisma.user_events.create({
         data: {
-          id: 'TEST_USER_EVENT',
-          user_id: 'TEST_USER',
-          title: 'TEST_TITLE'
+          id: userEvent.id,
+          user_id: user.id,
+          title: faker.lorem.sentence(),
         }
       });
     });
@@ -162,7 +158,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_events.deleteMany({
         where: {
-          id: "TEST_USER_EVENT",
+          id: userEvent.id,
         },
       });
     });
@@ -178,21 +174,17 @@ describe('Test calendar routes', () => {
       // Add an event to database
       dbEvent = await prisma.user_events.create({
         data: {
-          id: 'TEST_USER_EVENT',
-          user_id: 'TEST_USER',
-          title: 'TEST_TITLE'
+          id: userEvent.id,
+          user_id: user.id,
+          title: faker.lorem.sentence(),
         }
       });
     });
     
     // Test getting the event through its id using the route
     it('Updates an event', async () => {
-      
-      let testEvent;
-      testEvent = {
-        id: 'TEST_USER_EVENT',
-        title: 'NEW_TEST_TITLE'
-      };
+
+      const testEvent = factory.randomUserEvent({ userId: user.id });
       const res = await request(app)
       .put(`/api/calendar/events/id/${userEvent.id}`)
       .send(testEvent);
@@ -204,7 +196,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_events.deleteMany({
         where: {
-          id: "TEST_USER_EVENT",
+          id: userEvent.id,
         },
       });
     });
@@ -220,9 +212,9 @@ describe('Test calendar routes', () => {
       // Add an event to database
       dbEvent = await prisma.user_events.create({
         data: {
-          id: 'TEST_USER_EVENT',
-          user_id: 'TEST_USER',
-          title: 'TEST_TITLE'
+          id: userEvent.id,
+          user_id: user.id,
+          title: faker.lorem.sentence(),
         }
       });
     });
@@ -244,7 +236,6 @@ describe('Test calendar routes', () => {
       // Map generated user deadlines to their user ID
       deadlines = userEvents.map(deadline =>
         factory.randomUserDeadline({
-          id: false,
           userId: user.id,
         }));
         // Add events to database
@@ -264,7 +255,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_deadlines.deleteMany({
         where: {
-          user_id: "TEST_USER",
+          user_id: user.id,
         },
       });
     });
@@ -276,14 +267,9 @@ describe('Test calendar routes', () => {
     
     // Test adding a deadline through the route
     it('Adds a deadline', async () => {
-      let testDeadline;
-      testDeadline = {
-        id: 'TEST_USER_DEADLINE',
-        user_id: 'TEST_USER',
-        event_id: 'TEST_EVENT',
-        title: 'TEST_TITLE',
-        created_at: new Date()
-      };
+      const testDeadline = factory.randomUserDeadline({
+        id: userDeadline.id,
+        userId: user.id });
       const res = await request(app)
       .post(`/api/calendar/deadlines`)
       .send(testDeadline);
@@ -301,10 +287,10 @@ describe('Test calendar routes', () => {
       // Add an event to database
       dbDeadline = await prisma.user_deadlines.create({
         data: {
-          id: 'TEST_USER_DEADLINE',
-          user_id: 'TEST_USER',
-          event_id: 'TEST_EVENT',
-          title: 'TEST_TITLE',
+          id: userDeadline.id,
+          user_id: user.id,
+          event_id: userEvent.id,
+          title: faker.lorem.sentence(),
           created_at: new Date()
         }
       });
@@ -321,7 +307,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_deadlines.deleteMany({
         where: {
-          user_id: "TEST_USER",
+          user_id: user.id,
         },
       });
     });
@@ -337,10 +323,10 @@ describe('Test calendar routes', () => {
       // Add an event to database
       dbDeadline = await prisma.user_deadlines.create({
         data: {
-          id: 'TEST_USER_DEADLINE',
-          user_id: 'TEST_USER',
-          event_id: 'TEST_EVENT',
-          title: 'TEST_TITLE',
+          id: userDeadline.id,
+          user_id: user.id,
+          event_id: userEvent.id,
+          title: faker.lorem.sentence(),
           created_at: new Date()
         }
       });
@@ -348,12 +334,7 @@ describe('Test calendar routes', () => {
     
     // Test getting the event through its id using the route
     it('Updates a deadline', async () => {
-      
-      let testDeadline;
-      testDeadline = {
-        id: 'TEST_USER_DEADLINE',
-        title: 'NEW_TEST_TITLE'
-      };
+      const testDeadline = factory.randomUserDeadline({id: userDeadline.id});
       const res = await request(app)
       .put(`/api/calendar/deadlines/id/${userDeadline.id}`)
       .send(testDeadline);
@@ -365,7 +346,7 @@ describe('Test calendar routes', () => {
     afterAll(async () => {
       await prisma.user_deadlines.deleteMany({
         where: {
-          id: "TEST_USER_DEADLINE",
+          id: userDeadline.id,
         },
       });
     });
@@ -381,10 +362,10 @@ describe('Test calendar routes', () => {
       // Add a deadline to database
       dbDeadline = await prisma.user_deadlines.create({
         data: {
-          id: 'TEST_USER_DEADLINE',
-          user_id: 'TEST_USER',
-          event_id: 'TEST_EVENT',
-          title: 'TEST_TITLE',
+          id: userDeadline.id,
+          user_id: user.id,
+          event_id: userEvent.id,
+          title: faker.lorem.sentence(),
           created_at: new Date()
         }
       });
