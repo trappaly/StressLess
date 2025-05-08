@@ -1,6 +1,13 @@
 import UserPreferenceUtils from "./UserPreferenceUtils";
-import { DeadlineRemainder, UserDeadline, UserEvent, UserPreferences } from '../db/types.ts';
-import prisma from '../config/prisma.ts';
+import { UserDeadline, UserEvent, UserPreferences } from '../db/types.ts';
+import * as crypto from 'node:crypto';
+/**
+ * An object containing a deadline object as well as the number of unscheduled minutes.
+ */
+type DeadlineRemainder = {
+  deadline: UserDeadline,
+  unscheduledMinutes: number,
+}
 
 /**
  * The output of the scheduler.
@@ -10,7 +17,7 @@ import prisma from '../config/prisma.ts';
  * `unscheduledDeadlines` is an array of deadlines that are not fully scheduled.
  * `unscheduledDeadlines` is an array  contain the number of hours that remain unscheduled,
  * in addition to all fields of a deadline object.
- * 
+ *
  * TODO: Determine if `unscheduledDeadlines` contains deadlines that are fully scheduled
  */
 type SchedulerOutput = {
@@ -33,9 +40,63 @@ export default class Scheduler {
     deadlines: UserDeadline[],
     userPreferences: UserPreferences
   ): SchedulerOutput {
+    const scheduledEvents: UserEvent[] = [];
+    const deadlineRemainders = this.calculateDeadlineRemainders(events, deadlines);
+
+    for (const remainder of deadlineRemainders) {
+      const {deadline, unscheduledMinutes} = remainder;
+      let minutesLeft = unscheduledMinutes;
+
+      // skip fully scheduled events
+      if (minutesLeft <= 0) {
+        continue;
+      }
+
+      let currentTime = new Date();
+      while (minutesLeft > 0) {
+        const freeBlock = this.nextFreeTimeBlock([...events, ...scheduledEvents], userPreferences, currentTime);
+
+        // No available block left today
+        if (!freeBlock) break;
+
+        const scheduleMinutes = Math.min(freeBlock.minutes, minutesLeft);
+
+        // Create a new event
+        const newEvent : UserEvent = {
+          id: crypto.randomUUID().toString(),
+          user_id: deadline.user_id,
+          title: `Work on ${deadline.title}`,
+          start_time: freeBlock.time,
+          end_time: new Date(freeBlock.time.getTime() + scheduleMinutes * 60000),
+          deadline_id: deadline.id,
+          description: null,
+          created_at: new Date(),
+          location_place: null,
+          is_recurring: false,
+          is_generated: true,
+          recurrence_pattern: '',
+          recurrence_end_date: null,
+          recurrence_start_date: null,
+          break_time: null,
+        };
+
+        scheduledEvents.push(newEvent);
+        minutesLeft -= scheduleMinutes;
+
+        // Move search forward
+        // TODO: end_time might be null
+        currentTime = new Date(newEvent.end_time!.getTime() + 60000); // +1 min buffer
+      }
+      // Update unscheduledMinutes in remainder
+      remainder.unscheduledMinutes = minutesLeft;
+    }
+
+    // Only return deadlines that still need scheduling
+    const unscheduledDeadlines = deadlineRemainders.filter(d => d.unscheduledMinutes > 0);
+
     return {
-      scheduledEvents: [],
-      unscheduledDeadlines: [],
+      scheduledEvents,
+      unscheduledDeadlines,
     };
   }
 

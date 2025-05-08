@@ -73,14 +73,15 @@ export default class ScheduleController {
       });
 
       // feed information to our scheduler logic
+      // TODO: what to do with unscheduledDeadlines
       const {scheduledEvents} = Scheduler.scheduleDeadlines(userEvents, userDeadlines, processedPreferences);
 
       // loop through the returned events and add them to the database
       for (const event of scheduledEvents) {
+        // not passing id in prisma create so that prisma can handle generating uuid
+        const {id, ...eventDataWithoutId} = event;
         await prisma.user_events.create({
-          data: {
-            ...event
-          },
+          data: eventDataWithoutId,
         });
       }
 
