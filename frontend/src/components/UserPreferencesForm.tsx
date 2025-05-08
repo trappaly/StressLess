@@ -182,7 +182,8 @@ export function UserPreferencesForm({
             <FormItem>
               <FormLabel>Work Duration</FormLabel>
               <FormDescription>
-                How long do you want each of your study/work session to be?(in minutes)
+                How long do you want each of your study/work session to be?(in
+                minutes)
               </FormDescription>
               <FormControl>
                 <Input placeholder="e.g., 3" {...field} />
