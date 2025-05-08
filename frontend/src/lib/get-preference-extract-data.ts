@@ -1,11 +1,6 @@
-interface UserPreferenceData {
-  id: string;
-  user_id: string;
-  question_id: string;
-  answer: string;
-}
+import { UserPreference } from '@/lib/types';
 
-export function getPreferenceExtractData(data: UserPreferenceData[]) {
+export function getPreferenceExtractData(data: UserPreference[]) {
   const returnedData = {
     productiveTime: [0, 0],
     workDuration: 0,
@@ -14,9 +9,12 @@ export function getPreferenceExtractData(data: UserPreferenceData[]) {
     endTime: '',
   };
 
-  data.forEach((item: UserPreferenceData) => {
+  data.forEach((item: UserPreference) => {
     const { question_id, answer } = item;
-
+    if (!answer) {
+      console.log('No answer given to: ', question_id);
+      return;
+    }
     switch (question_id) {
       case 'pt': {
         const times = answer.split(',').map((t: string) => parseInt(t, 10));

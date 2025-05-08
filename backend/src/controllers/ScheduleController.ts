@@ -67,6 +67,8 @@ export default class ScheduleController {
       const userDeadlines = await prisma.user_deadlines.findMany({
         where: {
           user_id: req.params.user_id,
+          projected_duration: {not: null},
+          due_time: {not: null},
         },
       });
 
