@@ -44,7 +44,7 @@ interface Event {
   recurrence_end_date?: string | null;
   is_generated: boolean;
   break_time?: string | null;
-  created_at: Date;
+  created_at: string | Date;
   deadline_id?: string | null;
   allDay?: boolean | null;
 }
