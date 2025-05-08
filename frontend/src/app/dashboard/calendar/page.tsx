@@ -28,39 +28,61 @@ import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
-import { UserEvent } from '@/lib/types';
+
+interface Event {
+  id: number | string; // your backend sometimes uses uuid string, sometimes number
+  title: string;
+  end_time: Date | string | null;
+  allDay: boolean;
+  break_time: number | null;
+  created_at: string;
+  description: string | null;
+  is_generated: boolean;
+  is_recurring: boolean;
+  location_place?: string;
+  recurrence_end_date?: string | null;
+  recurrence_pattern?: string | null;
+  recurrence_start_date?: string | null;
+  user_id: string;
+
+  // frontend-only props (for FullCalendar)
+  start?: Date | string;
+  end?: Date | string;
+}
 
 export default function Home() {
   //imported from the backend user preferences
   const { user } = useAuth();
   const [events] = useState([
+    //commented out setEvents(unused var)
+
     { title: 'event 1', id: '1' },
     { title: 'event 2', id: '2' },
     { title: 'event 3', id: '3' },
     { title: 'event 4', id: '4' },
     { title: 'event 5', id: '5' },
   ]);
-  const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const example: UserEvent = {
+  const example = {
     title: '',
     end_time: null,
+    allDay: false,
     id: '', // UUIDs are strings
     break_time: null,
-    start_time: new Date().toISOString(),
     created_at: new Date().toISOString(),
     description: null,
     is_generated: false,
     is_recurring: false,
     user_id: '', // you'll want to fill this later when the user is logged in
-    location_place: null,
-    recurrence_end_date: null,
-    recurrence_pattern: null,
-    recurrence_start_date: null,
+    location_place: undefined,
+    recurrence_end_date: undefined,
+    recurrence_pattern: undefined,
+    recurrence_start_date: undefined,
   };
-  const [newEvent, setNewEvent] = useState<UserEvent>({
+  const [newEvent, setNewEvent] = useState<Event>({
     ...example,
   });
 
@@ -77,11 +99,12 @@ export default function Home() {
         );
         console.log('Fetched raw events:', response.data);
 
-        const extractedEvents = response.data.map((event: UserEvent) => ({
+        const extractedEvents = response.data.map((event: Event) => ({
           id: event.id,
           title: event.title,
-          start: event.start_time ? new Date(event.start_time) : undefined,
+          start: event.start ? new Date(event.start) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
+          allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
         }));
 
@@ -120,8 +143,9 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start_time: arg.date.toISOString(),
-      id: new Date().getTime().toString(),
+      start: arg.date,
+      allDay: arg.allDay,
+      id: new Date().getTime(),
     });
     setShowModal(true);
   }
@@ -153,13 +177,32 @@ export default function Home() {
       return;
     }
 
-    const event: UserEvent & { start: Date; end?: Date } = {
+    // const event = {
+    //   ...newEvent,
+    //   user_id: user.uid,
+    //   start_time: data.date.toISOString(),
+    //   start: data.date.toISOString(),
+    //   title: data.draggedEl.innerText,
+    //   allDay: data.allDay,
+    //   id: new Date().getTime(),
+    // };
+
+    const event = {
       ...newEvent,
       user_id: user.uid,
-      start_time: data.date.toISOString(),
+      start: data.date.toISOString(),
       title: data.draggedEl.innerText,
-      id: new Date().getTime().toString(),
-      start: data.date, // <-- necessary for FullCalendar
+      allDay: data.allDay,
+      id: new Date().getTime(),
+      end_time: data.date.toISOString(),  
+      created_at: new Date().toISOString(),
+      description: null,  
+      is_generated: false,
+      is_recurring: false,
+      location_place: undefined,
+      recurrence_end_date: undefined,
+      recurrence_pattern: undefined,  
+      recurrence_start_date: undefined,
     };
     setAllEvents([...allEvents, event]);
 
@@ -201,6 +244,15 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       title: e.target.value,
+      description: e.target.value, 
+      location_place: e.target.value,
+      start: e.target.value,
+      end_time: e.target.value,
+      is_recurring: e.target.checked,
+      recurrence_start_date: e.target.value,
+      recurrence_end_date: e.target.value,
+      recurrence_pattern: e.target.value,
+      is_generated: e.target.checked,
     });
   };
 
@@ -210,11 +262,9 @@ export default function Home() {
       console.log('no user found');
       return;
     }
-    const eventWithUser: UserEvent & { start: Date; end?: Date } = {
+    const eventWithUser = {
       ...newEvent,
       user_id: user.uid,
-      start: new Date(newEvent.start_time), // <-- ensure start is there
-      end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
     };
     setAllEvents([...allEvents, eventWithUser]);
 
@@ -413,10 +463,217 @@ export default function Home() {
                           focus:ring-inset focus:ring-violet-600
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
-                              onChange={(e) => handleChange(e)}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  title: e.target.value,
+                                })
+                              }
                               placeholder=" Title"
                             />
+                            <input
+                              type="text"
+                              name="description"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600
+                          sm:text-sm sm:leading-6"
+                              value={newEvent.description || ''}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  description: e.target.value,
+                                })
+                              }
+                              placeholder=" Description"
+                            />
+                            <input
+                              type="text"
+                              name="location"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600
+                          sm:text-sm sm:leading-6"
+                              value={newEvent.location_place || ''}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  location_place: e.target.value,
+                                })
+                              }
+                              placeholder=" Location"
+                            />
+
+                            <input
+                              type="time"
+                              name="start_time"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-center
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600"
+                              value={
+                                newEvent.start instanceof Date
+                                ? newEvent.start.toISOString().split("T")[1].slice(0,5)  // Extracts HH:mm
+                                  : newEvent.start
+                              }
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  start: e.target.value,
+                                })
+                              }
+                              placeholder="Start Time"
+                            />
+                            <input
+                              type="time"
+                              name="end_time"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600"
+                              value={
+                                newEvent.end_time instanceof Date
+                                ? newEvent.end_time.toISOString().split("T")[1].slice(0,5)  // Extracts HH:mm
+                                  : newEvent.end_time || ''
+                              }
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  end_time: e.target.value,
+                                })
+                              }
+                              placeholder=" End Time" // Does not work
+                            />
+                            <input
+                              type="checkbox"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600"
+                              name="is_recurring"
+                              checked={newEvent.is_recurring}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  is_recurring: e.target.checked,
+                                })
+                              }
+                              placeholder=" Recurring"
+                            />
+                            <label
+                              htmlFor="is_recurring"
+                              className="text-sm text-gray-500"
+                            >
+                              Reocurring
+                            </label>
+                            {newEvent.is_recurring && (
+                              <input
+                                type="date"
+                                name="recurrence_start_date"
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2    
+                          focus:ring-inset focus:ring-violet-600"
+                                value={newEvent.recurrence_start_date || ''}
+                                onChange={(e) =>
+                                  setNewEvent({
+                                    ...newEvent,
+                                    recurrence_start_date: e.target.value,
+                                  })
+                                }
+                                placeholder=" Recurrence Start Date"
+                              />
+                            )}
+                            {newEvent.is_recurring && (
+                              <input
+                                type="date"
+                                name="recurrence_end_date"
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                        shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                        focus:ring-2    
+                        focus:ring-inset focus:ring-violet-600"
+                                value={newEvent.recurrence_end_date || ''}
+                                onChange={(e) =>
+                                  setNewEvent({
+                                    ...newEvent,
+                                    recurrence_end_date: e.target.value,
+                                  })
+                                }
+                                placeholder=" Recurrence End Date"
+                              />
+                            )}
+                            {newEvent.is_recurring && (
+                              <>
+                                <label>
+                                  <input
+                                    type="radio"
+                                    name="recurrence_pattern"
+                                    value="daily"
+                                    onChange={(e) =>
+                                      setNewEvent({
+                                        ...newEvent,
+                                        recurrence_pattern: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  Daily
+                                </label>
+                                <label>
+                                  <input
+                                    type="radio"
+                                    name="recurrence_pattern"
+                                    value="weekly"
+                                    onChange={(e) =>
+                                      setNewEvent({
+                                        ...newEvent,
+                                        recurrence_pattern: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  Weekly
+                                </label>
+                                <label>
+                                  <input
+                                    type="radio"
+                                    name="recurrence_pattern"
+                                    value="monthly"
+                                    onChange={(e) =>
+                                      setNewEvent({
+                                        ...newEvent,
+                                        recurrence_pattern: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  Monthly
+                                </label>
+                              </>
+                            )}
+                            <input
+                              type="checkbox"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900    
+                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                          focus:ring-2
+                          focus:ring-inset focus:ring-violet-600"
+                              name="is_generated"
+                              checked={newEvent.is_generated}   
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  is_generated: e.target.checked,
+                                })
+                              }
+                              placeholder=" Would you like to Generate your event?"
+                            />
+                            <label
+                              htmlFor="is_generated"
+                              className="text-sm text-gray-500"
+                            >
+                               Would you like to Generate your event?
+                            </label>
                           </div>
+
                           <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                             <button
                               type="submit"
