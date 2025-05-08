@@ -194,14 +194,14 @@ export default function Home() {
       title: data.draggedEl.innerText,
       allDay: data.allDay,
       id: new Date().getTime(),
-      end_time: data.date.toISOString(),  
+      end_time: data.date.toISOString(),
       created_at: new Date().toISOString(),
-      description: null,  
+      description: null,
       is_generated: false,
       is_recurring: false,
       location_place: undefined,
       recurrence_end_date: undefined,
-      recurrence_pattern: undefined,  
+      recurrence_pattern: undefined,
       recurrence_start_date: undefined,
     };
     setAllEvents([...allEvents, event]);
@@ -244,7 +244,7 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       title: e.target.value,
-      description: e.target.value, 
+      description: e.target.value,
       location_place: e.target.value,
       start_time: e.target.value,
       end_time: e.target.value,
@@ -514,14 +514,18 @@ export default function Home() {
                           focus:ring-2
                           focus:ring-inset focus:ring-violet-600"
                               value={
-                                newEvent.start_time 
-                                ? new Date(newEvent.start_time).toLocaleString('sv-SE').replace(' ', 'T')
+                                newEvent.start_time
+                                  ? new Date(newEvent.start_time)
+                                      .toLocaleString('sv-SE')
+                                      .replace(' ', 'T')
                                   : newEvent.start_time
                               }
                               onChange={(e) =>
                                 setNewEvent({
                                   ...newEvent,
-                                  start_time: new Date(e.target.value).toISOString(),
+                                  start_time: new Date(
+                                    e.target.value
+                                  ).toISOString(),
                                 })
                               }
                               placeholder="Start Time"
@@ -534,14 +538,18 @@ export default function Home() {
                           focus:ring-2
                           focus:ring-inset focus:ring-violet-600"
                               value={
-                                newEvent.end_time 
-                                ? new Date(newEvent.end_time).toLocaleString('sv-SE').replace(' ', 'T')
+                                newEvent.end_time
+                                  ? new Date(newEvent.end_time)
+                                      .toLocaleString('sv-SE')
+                                      .replace(' ', 'T')
                                   : newEvent.end_time || ''
                               }
                               onChange={(e) =>
                                 setNewEvent({
                                   ...newEvent,
-                                  end_time: new Date(e.target.value).toISOString(),
+                                  end_time: new Date(
+                                    e.target.value
+                                  ).toISOString(),
                                 })
                               }
                               placeholder=" End Time" // Does not work
@@ -577,14 +585,18 @@ export default function Home() {
                           focus:ring-2    
                           focus:ring-inset focus:ring-violet-600"
                                 value={
-                                  newEvent.recurrence_start_date 
-                                  ? new Date(newEvent.recurrence_start_date).toLocaleString('sv-SE').replace(' ', 'T')
+                                  newEvent.recurrence_start_date
+                                    ? new Date(newEvent.recurrence_start_date)
+                                        .toLocaleString('sv-SE')
+                                        .replace(' ', 'T')
                                     : newEvent.recurrence_start_date || ''
                                 }
                                 onChange={(e) =>
                                   setNewEvent({
                                     ...newEvent,
-                                    recurrence_start_date: new Date(e.target.value).toISOString(),
+                                    recurrence_start_date: new Date(
+                                      e.target.value
+                                    ).toISOString(),
                                   })
                                 }
                                 placeholder=" Recurrence Start Date"
@@ -599,14 +611,18 @@ export default function Home() {
                         focus:ring-2    
                         focus:ring-inset focus:ring-violet-600"
                                 value={
-                                  newEvent.recurrence_end_date 
-                                  ? new Date(newEvent.recurrence_end_date).toLocaleString('sv-SE').replace(' ', 'T')
+                                  newEvent.recurrence_end_date
+                                    ? new Date(newEvent.recurrence_end_date)
+                                        .toLocaleString('sv-SE')
+                                        .replace(' ', 'T')
                                     : newEvent.recurrence_end_date || ''
                                 }
                                 onChange={(e) =>
                                   setNewEvent({
                                     ...newEvent,
-                                    recurrence_end_date: new Date(e.target.value).toISOString(),
+                                    recurrence_end_date: new Date(
+                                      e.target.value
+                                    ).toISOString(),
                                   })
                                 }
                                 placeholder=" Recurrence End Date"
@@ -619,7 +635,9 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="daily"
-    checked={newEvent.recurrence_pattern === "daily"} // Explicitly control the checked state
+                                    checked={
+                                      newEvent.recurrence_pattern === 'daily'
+                                    } // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
@@ -634,7 +652,9 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="weekly"
-                                    checked={newEvent.recurrence_pattern === "weekly"} // Explicitly control the checked state
+                                    checked={
+                                      newEvent.recurrence_pattern === 'weekly'
+                                    } // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
@@ -649,7 +669,9 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="monthly"
-                                    checked={newEvent.recurrence_pattern === "monthly"} // Explicitly control the checked state
+                                    checked={
+                                      newEvent.recurrence_pattern === 'monthly'
+                                    } // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
