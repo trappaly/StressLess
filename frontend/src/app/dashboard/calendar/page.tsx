@@ -30,6 +30,25 @@ import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
 import { UserEvent } from '@/lib/types';
 
+interface Event {
+  id: number | string;
+  user_id: string;
+  title: string;
+  start_time: Date | string;
+  end_time?: Date | string | null;
+  description?: string | null;
+  location_place?: string | null;
+  is_recurring: boolean;
+  recurrence_pattern?: string | null;
+  recurrence_start_date?: string | null;
+  recurrence_end_date?: string | null;
+  is_generated: boolean;
+  break_time?: string | null;
+  created_at: Date;
+  deadline_id?: string | null;
+  allDay?: boolean | null;
+}
+
 export default function Home() {
   //imported from the backend user preferences
   const { user } = useAuth();
@@ -42,17 +61,17 @@ export default function Home() {
     { title: 'event 4', id: '4' },
     { title: 'event 5', id: '5' },
   ]);
-  const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const example : UserEvent = {
+  const example: Event = {
     title: '',
-    end_time: null,
-    start_time: new Date().toISOString(),
-    id: '', // UUIDs are strings
+    end_time: undefined,
+    start_time: new Date(),
+    id: 0,
     break_time: null,
-    created_at: new Date().toISOString(),
+    created_at: new Date(),
     description: null,
     is_generated: false,
     is_recurring: false,
@@ -62,7 +81,7 @@ export default function Home() {
     recurrence_pattern: undefined,
     recurrence_start_date: undefined,
   };
-  const [newEvent, setNewEvent] = useState<UserEvent>({
+  const [newEvent, setNewEvent] = useState<Event>({
     ...example,
   });
 
@@ -84,7 +103,7 @@ export default function Home() {
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
-          // TODO: add all_day to data schema allDay: event.allDay ?? false, // default to false if undefined
+          allDay: false, // default to false if undefined
           description: event.description,
           // Optional: You could add more fields here if FullCalendar needs
         }));
@@ -124,9 +143,12 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start_time: arg.date.toISOString(),
+      start_time: arg.date,
       //allDay: arg.allDay,
-      id: new Date().getTime().toString(),
+      id: new Date().getTime(),
+      end_time: arg.date ?? null,
+      created_at: new Date(arg.date),
+      allDay: arg.allDay,
     });
     setShowModal(true);
   }
@@ -168,15 +190,15 @@ export default function Home() {
     //   id: new Date().getTime(),
     // };
 
-    const event : UserEvent = {
+    const event: Event = {
       ...newEvent,
       user_id: user.uid,
-      start_time: data.date.toISOString(),
+      start_time: data.date,
       title: data.draggedEl.innerText,
-      //allDay: data.allDay,
-      id: new Date().getTime().toString(),
-      end_time: data.date.toISOString(),
-      created_at: new Date().toISOString(),
+      allDay: data.allDay,
+      id: new Date().getTime(),
+      end_time: data.date,
+      created_at: new Date(),
       description: null,
       is_generated: false,
       is_recurring: false,
@@ -227,8 +249,8 @@ export default function Home() {
       title: e.target.value,
       description: e.target.value,
       location_place: e.target.value,
-      start_time: e.target.value,
-      end_time: e.target.value,
+      start_time: e.target.value ? new Date(e.target.value) : new Date(),
+      end_time: e.target.value ? new Date(e.target.value) : undefined,
       is_recurring: e.target.checked,
       recurrence_start_date: e.target.value,
       recurrence_end_date: e.target.value,
