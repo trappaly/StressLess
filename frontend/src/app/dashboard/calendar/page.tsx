@@ -28,6 +28,7 @@ import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Event {
   id: number | string; // your backend sometimes uses uuid string, sometimes number
@@ -281,6 +282,13 @@ export default function Home() {
     setNewEvent({
       ...example,
     });
+  }
+
+  function generatePerfectSchedule() {
+    console.log('Generate perfect schedule clicked');
+    // Add your logic to generate the perfect schedule here
+    // For example, you can call an API endpoint or perform some calculations
+    // and then update the state accordingly.
   }
 
   return (
@@ -710,6 +718,20 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
+        <div className="fixed bottom-20 right-8 z-50 flex flex-col items-center space-y-2">
+          <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-md shadow-md text-center">
+            <span className="text-sm text-gray-700 dark:text-gray-300 break-words text-center">
+              Generate Your Perfect Schedule
+            </span>
+          </div>
+          <button
+            onClick={generatePerfectSchedule}
+            className="flex items-center justify-center w-16 h-16 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200"
+            aria-label="Generate Your Perfect Schedule"
+          >
+            <span className="text-xs text-center">Gen</span>
+          </button>
+        </div>
       </main>
     </>
   );
