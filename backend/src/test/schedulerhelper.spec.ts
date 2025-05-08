@@ -90,7 +90,7 @@ describe ("test minute number to hour and minute", () => {
   * dateToMinuteNumber
   */
 describe ("test date to minutes", () => {
-    // Testing for 0
+    // Testing for 0 
     it("00:00 => 0", () => {
         const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-05-08T00:00:00'));
         expect(result).toBe(0);
@@ -102,8 +102,7 @@ describe ("test date to minutes", () => {
       });
       // Testing for hours and no minutes
       it ("4:00 -> 240", () => {
-        // Checks for ____
-        const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-08-21-T04:00:00'));
+        const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-05-08-T04:00:00'));
         expect(result).toBe(680);
 });
 // Testing for both hours and minutes
@@ -113,8 +112,12 @@ it ("10:30 -> 630", () => {
     expect(result).toBe(630);
 });
 
-// Checks for future dates
-})
+it ("05:05 -> 305", () => {
+    // Checks for future dates
+    const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-08-20T05:05:00'));
+    expect(result).toBe(305);
+});
+});
 
 /*
  * Tests converting a string to minutes : timeStringToMinuteNumber
@@ -138,4 +141,3 @@ describe ("string to minute", () => {
     }); 
 });
     
-// }
