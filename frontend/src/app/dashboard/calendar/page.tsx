@@ -284,7 +284,7 @@ export default function Home() {
     });
   }
 
-  function generatePerfectSchedule(){
+  function generatePerfectSchedule() {
     console.log('Generate perfect schedule clicked');
     // Add your logic to generate the perfect schedule here
     // For example, you can call an API endpoint or perform some calculations
