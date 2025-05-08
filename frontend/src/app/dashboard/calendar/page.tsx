@@ -32,7 +32,7 @@ import { backendBaseUrl } from '@/lib/utils';
 interface Event {
   id: number | string; // your backend sometimes uses uuid string, sometimes number
   title: string;
-  end_time: Date | string | null;
+  end_time?: Date | string | null;
   allDay: boolean;
   break_time: number | null;
   created_at: string;
@@ -46,8 +46,7 @@ interface Event {
   user_id: string;
 
   // frontend-only props (for FullCalendar)
-  start?: Date | string;
-  end?: Date | string;
+  start_time?: Date | string;
 }
 
 export default function Home() {
@@ -102,7 +101,7 @@ export default function Home() {
         const extractedEvents = response.data.map((event: Event) => ({
           id: event.id,
           title: event.title,
-          start: event.start ? new Date(event.start) : undefined,
+          start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
           allDay: event.allDay ?? false, // default to false if undefined
           // Optional: You could add more fields here if FullCalendar needs
@@ -143,7 +142,7 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start: arg.date,
+      start_time: arg.date,
       allDay: arg.allDay,
       id: new Date().getTime(),
     });
@@ -246,7 +245,7 @@ export default function Home() {
       title: e.target.value,
       description: e.target.value, 
       location_place: e.target.value,
-      start: e.target.value,
+      start_time: e.target.value,
       end_time: e.target.value,
       is_recurring: e.target.checked,
       recurrence_start_date: e.target.value,
@@ -507,41 +506,41 @@ export default function Home() {
                             />
 
                             <input
-                              type="time"
+                              type="Date-time-local"
                               name="start_time"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900
                           shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-center
                           focus:ring-2
                           focus:ring-inset focus:ring-violet-600"
                               value={
-                                newEvent.start instanceof Date
-                                ? newEvent.start.toISOString().split("T")[1].slice(0,5)  // Extracts HH:mm
-                                  : newEvent.start
+                                newEvent.start_time 
+                                ? new Date(newEvent.start_time).toISOString().slice(0,16)  // Extracts yyyy-MM-ddTHH:mm
+                                  : newEvent.start_time
                               }
                               onChange={(e) =>
                                 setNewEvent({
                                   ...newEvent,
-                                  start: e.target.value,
+                                  start_time: new Date(e.target.value).toISOString(),
                                 })
                               }
                               placeholder="Start Time"
                             />
                             <input
-                              type="time"
+                              type="Date-time-local"
                               name="end_time"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900
                           shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                           focus:ring-2
                           focus:ring-inset focus:ring-violet-600"
                               value={
-                                newEvent.end_time instanceof Date
-                                ? newEvent.end_time.toISOString().split("T")[1].slice(0,5)  // Extracts HH:mm
+                                newEvent.end_time 
+                                ? new Date(newEvent.end_time).toISOString().slice(0,16)  // Extracts yyyy-MM-ddTHH:mm
                                   : newEvent.end_time || ''
                               }
                               onChange={(e) =>
                                 setNewEvent({
                                   ...newEvent,
-                                  end_time: e.target.value,
+                                  end_time: new Date(e.target.value).toISOString(),
                                 })
                               }
                               placeholder=" End Time" // Does not work
