@@ -8,6 +8,14 @@ export type UserPreference = Prisma.user_preferencesGetPayload<{}>;
 export type PreferenceQuestion = Prisma.preference_questionsGetPayload<{}>;
 
 /**
+ * An object containing a deadline object as well as the number of unscheduled minutes.
+ */
+export type DeadlineRemainder = {
+  deadline: UserDeadline,
+  unscheduledMinutes: number,
+}
+
+/**
  * Type that represents user preference input for scheduler.
  */
 export type UserPreferences = {

@@ -1,13 +1,6 @@
 import UserPreferenceUtils from "./UserPreferenceUtils";
-import { UserDeadline, UserEvent, UserPreferences } from '../db/types.ts';
-
-/**
- * An object containing a deadline object as well as the number of unscheduled minutes.
- */
-type DeadlineRemainder = {
-  deadline: UserDeadline,
-  unscheduledMinutes: number,
-}
+import { DeadlineRemainder, UserDeadline, UserEvent, UserPreferences } from '../db/types.ts';
+import prisma from '../config/prisma.ts';
 
 /**
  * The output of the scheduler.
@@ -29,7 +22,7 @@ export default class Scheduler {
   /**
    * Creates a schedule for all deadlines for a single user by returning the
    * events scheduled so that the user can complete all deadlines without conflict.
-   * 
+   *
    * @param events An array of all event objects for a user.
    * @param deadlines An array of all deadline objects for a user.
    * @param userPreferences An object containing user preferences.
@@ -47,6 +40,28 @@ export default class Scheduler {
   }
 
   /**
+   * Helper method that search an array of events, return an array of event that match deadlineId
+   *  and has an end_time
+   * @param events An array of all event objects for a user.
+   * @param deadlineId A deadline_id to match to event
+   * @private
+   */
+  private static getEventByDeadlineId(events: UserEvent[], deadlineId: string) {
+    let res : UserEvent[] = [];
+    for (const event of events) {
+      if (!event.end_time) {
+        console.warn("This event does not have end time, eventId: " + event.id);
+        continue;
+      }
+
+      if (event.deadline_id === deadlineId) {
+        res.push(event);
+      }
+    }
+    return res;
+  }
+
+  /**
    * Calculates the remaining hours left for each deadline.
    * @param events An array of all event objects for a user.
    * @param deadlines An array of all deadline objects for a user.
@@ -54,38 +69,78 @@ export default class Scheduler {
    */
   static calculateDeadlineRemainders(
     events: UserEvent[],
-    deadlines: UserDeadline[],
+    deadlines: UserDeadline[]
   ): DeadlineRemainder[] {
-    return [];
+    let res : DeadlineRemainder[] = [];
+
+    // process each deadline and find its remaining unscheduled minutes
+    for (const deadline of deadlines) {
+      if (!deadline.projected_duration) {
+        console.warn("No projected duration for deadline: ", deadline.id);
+        continue;
+      }
+      const deadlineId = deadline.id;
+      let total_events_duration_for_a_deadline = 0;
+
+      // search for events with the deadline_id
+      const eventsFound = Scheduler.getEventByDeadlineId(events, deadlineId);
+
+      // for each event found, make sure it has an end_time
+      // then calculate the duration and add it to total duration
+      for (const event of eventsFound) {
+        if (!event.end_time) {
+          console.warn("This event does not have end time, eventId: " + event.id);
+          continue;
+        }
+        total_events_duration_for_a_deadline += UserPreferenceUtils.dateToMinuteNumber(event.end_time) - UserPreferenceUtils.dateToMinuteNumber(event.start_time);
+      }
+
+      // calculate minutes left for a deadline and add it to the result
+      const unscheduledMinutes = deadline.projected_duration - total_events_duration_for_a_deadline;
+      res.push({
+        deadline:deadline,
+        unscheduledMinutes:unscheduledMinutes,
+      });
+    }
+    return res;
   }
 
   /**
    * Returns the next free time block where a user is available for working.
    * Search bounded by end of work day.
-   * 
+   *
    * @param events An array of all event objects for a user.
    * @param userPreferences The user preferences.
    * @param startSearchTime The start time for searching the next free time block.
    * @returns an object containing the time and date for the next free time block;
-   *  Returns 
+   *  Returns
    */
   static nextFreeTimeBlock(
     events: UserEvent[],
     userPreferences: UserPreferences,
-    startSearchTime: Date = new Date(Date.now()),
-  ): { time: Date, minutes: number } | null {
-    // Determine if current time is free
-    const startTimeIsFree = this.timeIsFree(events, userPreferences, startSearchTime); 
-    if (startTimeIsFree) {
-      // If start time is free, then check how soon until next event.
-      const availableMinutes = this.minutesToNextEvent(events, userPreferences, startSearchTime);
-      return {
-        time: startSearchTime,
-        minutes: availableMinutes < userPreferences.workDuration ? availableMinutes : userPreferences.workDuration,
-      };
-    } else {
-      // Otherwise, check when is the next time block.
+    startSearchTime: Date = new Date(Date.now())
+  ): { time: Date; minutes: number } | null {
+    let checkTime = new Date(startSearchTime);
+
+    const dayEnd = userPreferences.endTime;
+    const minIncrement = 5;
+
+    while (UserPreferenceUtils.dateToMinuteNumber(checkTime) <= dayEnd) {
+      if (this.timeIsFree(events, userPreferences, startSearchTime)) {
+        const availableMinutes = this.minutesToNextEvent(
+          events,
+          userPreferences,
+          checkTime
+        );
+        return {
+          time: checkTime,
+          minutes: Math.min(availableMinutes, userPreferences.workDuration),
+        };
+      }
+
+      checkTime = new Date(checkTime.getTime() + minIncrement * 60000);
     }
+
     return null;
   }
 
@@ -95,14 +150,13 @@ export default class Scheduler {
   private static timeIsFree(
     events: UserEvent[],
     userPreferences: UserPreferences,
-    time: Date = new Date(Date.now()),
+    time: Date = new Date(Date.now())
   ): boolean {
     // checks whether the current time is within work hours
     const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
-    const isWithinWorkHours = (
+    const isWithinWorkHours =
       currentMinutes >= userPreferences.startTime &&
-        currentMinutes + userPreferences.workDuration <= userPreferences.endTime
-    );
+      currentMinutes + userPreferences.workDuration <= userPreferences.endTime;
 
     if (!isWithinWorkHours) return false;
 
@@ -118,14 +172,14 @@ export default class Scheduler {
    */
   private static eventsAtTime(
     events: UserEvent[],
-    time: Date = new Date(Date.now()),
+    time: Date = new Date(Date.now())
   ): UserEvent[] {
-    return events.filter(event =>
-      event &&
-      (
-        (event.start_time == undefined || event.end_time == undefined) ||
-        (event.start_time <= time && event.end_time > time)
-      )
+    return events.filter(
+      (event) =>
+        event &&
+        (event.start_time == undefined ||
+          event.end_time == undefined ||
+          (event.start_time <= time && event.end_time > time))
     );
   }
 
@@ -136,22 +190,30 @@ export default class Scheduler {
   private static minutesToNextEvent(
     events: UserEvent[],
     userPreferences: UserPreferences,
-    time: Date = new Date(Date.now()),
+    time: Date = new Date(Date.now())
   ): number {
     // Filter events that start after given time and before end of work day
     const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
     const dayEnd = userPreferences.endTime;
     const futureEvents = events
-      .filter(event =>
-        event &&
-        (event.start_time >= time &&
-          UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime))
-      .sort((a, b) => (
-        UserPreferenceUtils.dateToMinuteNumber(a.start_time) -
-        UserPreferenceUtils.dateToMinuteNumber(b.start_time)));
+      .filter(
+        (event) =>
+          event &&
+          event.start_time >= time &&
+          UserPreferenceUtils.dateToMinuteNumber(event.start_time) <
+            userPreferences.endTime
+      )
+      .sort(
+        (a, b) =>
+          UserPreferenceUtils.dateToMinuteNumber(a.start_time) -
+          UserPreferenceUtils.dateToMinuteNumber(b.start_time)
+      );
 
     if (futureEvents.length > 0) {
-      return UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) - currentMinutes;
+      return (
+        UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) -
+        currentMinutes
+      );
     }
 
     return dayEnd - currentMinutes;
