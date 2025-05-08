@@ -42,6 +42,7 @@ export default class Scheduler {
   ): SchedulerOutput {
     const scheduledEvents: UserEvent[] = [];
     const deadlineRemainders = this.calculateDeadlineRemainders(events, deadlines);
+    // TODO: sort deadlines by priority
 
     for (const remainder of deadlineRemainders) {
       const {deadline, unscheduledMinutes} = remainder;
@@ -52,12 +53,47 @@ export default class Scheduler {
         continue;
       }
 
-      let currentTime = new Date();
-      while (minutesLeft > 0) {
-        const freeBlock = this.nextFreeTimeBlock([...events, ...scheduledEvents], userPreferences, currentTime);
+      let currentSearchedTime = new Date();
+      findTimesLoop: while (minutesLeft > 0) {
 
-        // No available block left today
-        if (!freeBlock) break;
+        let freeBlock: { time: Date, minutes: number } | null;
+
+        // Search for the day with next free time block
+        do {
+          // Get the next time block
+          freeBlock = this.nextFreeTimeBlock([...events, ...scheduledEvents], userPreferences, currentSearchedTime);
+
+          // when free block not found, find next day
+          if (!freeBlock) {
+            // move current time to start of next time block
+            const workTimeStart = UserPreferenceUtils.minuteNumberToHourAndMinute(userPreferences.startTime);
+            currentSearchedTime.setDate(currentSearchedTime.getDate() + 1);
+            currentSearchedTime.setHours(workTimeStart[0]);
+            currentSearchedTime.setMinutes(workTimeStart[1]);
+
+            // if free block search occurs after deadline, stop searching
+            if (deadline.due_time != null && currentSearchedTime > deadline.due_time) {
+              // break out of the while loop called `findTimesLoop`
+              break findTimesLoop;
+            }
+          }
+
+          // if free block ends after deadline
+          if (
+            freeBlock &&
+            deadline.due_time != null &&
+            new Date(freeBlock.time.getTime() + freeBlock.minutes * 60000) > deadline.due_time
+          ) {
+            // if free block starts after deadline, stop searching
+            if (freeBlock.time > deadline.due_time) {
+              break findTimesLoop;
+            } else {
+              // if free block starts before deadline and ends after deadline,
+              // adjust length of free block so it ends before deadline.
+              freeBlock.minutes = Math.floor((deadline.due_time.getTime() - freeBlock.time.getTime()) / 60000);
+            }
+          }
+        } while (!freeBlock);
 
         const scheduleMinutes = Math.min(freeBlock.minutes, minutesLeft);
 
@@ -85,7 +121,7 @@ export default class Scheduler {
 
         // Move search forward
         // TODO: end_time might be null
-        currentTime = new Date(newEvent.end_time!.getTime() + 60000); // +1 min buffer
+        currentSearchedTime = new Date(newEvent.end_time!.getTime() + 60000); // +1 min buffer
       }
       // Update unscheduledMinutes in remainder
       remainder.unscheduledMinutes = minutesLeft;
@@ -107,7 +143,7 @@ export default class Scheduler {
    * @param deadlineId A deadline_id to match to event
    * @private
    */
-  private static getEventByDeadlineId(events: UserEvent[], deadlineId: string) {
+  private static getEventsByDeadlineId(events: UserEvent[], deadlineId: string): UserEvent[] {
     let res : UserEvent[] = [];
     for (const event of events) {
       if (!event.end_time) {
@@ -141,10 +177,10 @@ export default class Scheduler {
         continue;
       }
       const deadlineId = deadline.id;
-      let total_events_duration_for_a_deadline = 0;
+      let totalEventsDurationForADeadline = 0;
 
       // search for events with the deadline_id
-      const eventsFound = Scheduler.getEventByDeadlineId(events, deadlineId);
+      const eventsFound = Scheduler.getEventsByDeadlineId(events, deadlineId);
 
       // for each event found, make sure it has an end_time
       // then calculate the duration and add it to total duration
@@ -153,11 +189,16 @@ export default class Scheduler {
           console.warn("This event does not have end time, eventId: " + event.id);
           continue;
         }
-        total_events_duration_for_a_deadline += UserPreferenceUtils.dateToMinuteNumber(event.end_time) - UserPreferenceUtils.dateToMinuteNumber(event.start_time);
+        // Calculate elapsed time in milliseconds
+        const timeElapsedMs = event.end_time.getTime() - event.start_time.getTime();
+        // Convert from ms to minute
+        const timeElapsedMin = timeElapsedMs / 60000;
+
+        totalEventsDurationForADeadline += timeElapsedMin;
       }
 
       // calculate minutes left for a deadline and add it to the result
-      const unscheduledMinutes = deadline.projected_duration - total_events_duration_for_a_deadline;
+      const unscheduledMinutes = deadline.projected_duration - totalEventsDurationForADeadline;
       res.push({
         deadline:deadline,
         unscheduledMinutes:unscheduledMinutes,
@@ -181,12 +222,15 @@ export default class Scheduler {
     userPreferences: UserPreferences,
     startSearchTime: Date = new Date(Date.now())
   ): { time: Date; minutes: number } | null {
-    let checkTime = new Date(startSearchTime);
 
     const dayEnd = userPreferences.endTime;
     const minIncrement = 5;
 
-    while (UserPreferenceUtils.dateToMinuteNumber(checkTime) <= dayEnd) {
+    for (
+      let checkTime = new Date(startSearchTime);
+      UserPreferenceUtils.dateToMinuteNumber(checkTime) <= dayEnd;
+      checkTime = new Date(checkTime.getTime() + minIncrement * 60000)
+    ) {
       if (this.timeIsFree(events, userPreferences, startSearchTime)) {
         const availableMinutes = this.minutesToNextEvent(
           events,
@@ -199,7 +243,6 @@ export default class Scheduler {
         };
       }
 
-      checkTime = new Date(checkTime.getTime() + minIncrement * 60000);
     }
 
     return null;
@@ -217,7 +260,7 @@ export default class Scheduler {
     const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
     const isWithinWorkHours =
       currentMinutes >= userPreferences.startTime &&
-      currentMinutes + userPreferences.workDuration <= userPreferences.endTime;
+      currentMinutes <= userPreferences.endTime;
 
     if (!isWithinWorkHours) return false;
 
@@ -238,9 +281,8 @@ export default class Scheduler {
     return events.filter(
       (event) =>
         event &&
-        (event.start_time == undefined ||
-          event.end_time == undefined ||
-          (event.start_time <= time && event.end_time > time))
+        (event.start_time != undefined && event.end_time != undefined) &&
+        (event.start_time <= time && event.end_time > time)
     );
   }
 
@@ -261,6 +303,7 @@ export default class Scheduler {
         (event) =>
           event &&
           event.start_time >= time &&
+          event.start_time < new Date(time.getDate() + 1) &&
           UserPreferenceUtils.dateToMinuteNumber(event.start_time) <
             userPreferences.endTime
       )
