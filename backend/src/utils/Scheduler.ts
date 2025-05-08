@@ -97,7 +97,20 @@ export default class Scheduler {
     userPreferences: UserPreferences,
     time: Date = new Date(Date.now()),
   ): boolean {
-    return !(this.eventsAtTime(events, time).length === 0);
+    // checks whether the current time is within work hours
+    const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
+    const isWithinWorkHours = (
+      currentMinutes >= userPreferences.startTime &&
+        currentMinutes + userPreferences.workDuration <= userPreferences.endTime
+    );
+
+    if (!isWithinWorkHours) return false;
+
+    // checks whether any events overlap at the current time
+    const hasConflict = this.eventsAtTime(events, time).length > 0;
+
+    // Current time is free when there's no event at this time
+    return !hasConflict;
   }
 
   /**
@@ -126,13 +139,21 @@ export default class Scheduler {
     time: Date = new Date(Date.now()),
   ): number {
     // Filter events that start after given time and before end of work day
-    // TODO: Convert endTime to only hours and minutes?
-    events.filter(event =>
-      event &&
-      (event.start_time >= time && UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime)
-    );
-    // Then, sort events by start time.
-    // Calculate minutes to next event, rounded down (to prevent conflicts).
-    return 0;
+    const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
+    const dayEnd = userPreferences.endTime;
+    const futureEvents = events
+      .filter(event =>
+        event &&
+        (event.start_time >= time &&
+          UserPreferenceUtils.dateToMinuteNumber(event.start_time) < userPreferences.endTime))
+      .sort((a, b) => (
+        UserPreferenceUtils.dateToMinuteNumber(a.start_time) -
+        UserPreferenceUtils.dateToMinuteNumber(b.start_time)));
+
+    if (futureEvents.length > 0) {
+      return UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) - currentMinutes;
+    }
+
+    return dayEnd - currentMinutes;
   }
 }
