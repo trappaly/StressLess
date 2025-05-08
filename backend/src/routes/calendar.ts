@@ -6,7 +6,7 @@ import DeadlineController from '../controllers/DeadlineController';
 const router = Router();
 
 // Get all events for a particular user
-router.get('/events/by-user/:user', EventController.getUserEvents);
+router.get('/events/by-user/:user_id', EventController.getUserEvents);
 
 // Add an event
 router.post('/events', EventController.postEvent);
@@ -21,7 +21,7 @@ router.put('/events/id/:id', EventController.putEvent);
 router.delete('/events/id/:id', EventController.deleteEvent);
 
 // Get all deadlines for a particular user
-router.get('/deadlines/by-user/:user', DeadlineController.getUserDeadlines);
+router.get('/deadlines/by-user/:user_id', DeadlineController.getUserDeadlines);
 
 // Add a deadline
 router.post('/deadlines', DeadlineController.postDeadline);
