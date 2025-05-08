@@ -160,17 +160,16 @@ export default function Home() {
       title: data.draggedEl.innerText,
       id: new Date().getTime().toString(),
       start: data.date, // <-- necessary for FullCalendar
-    end_time: newEvent.end_time,
-    break_time: newEvent.break_time,
-    created_at: newEvent.created_at,
-    description: newEvent.description,
-    is_generated: false,
-    is_recurring: newEvent.is_recurring,
-    location_place: newEvent.location_place,
-    recurrence_end_date: newEvent.recurrence_end_date,
-    recurrence_pattern: newEvent.recurrence_pattern,
-    recurrence_start_date: newEvent.recurrence_start_date,
-
+      end_time: newEvent.end_time,
+      break_time: newEvent.break_time,
+      created_at: newEvent.created_at,
+      description: newEvent.description,
+      is_generated: false,
+      is_recurring: newEvent.is_recurring,
+      location_place: newEvent.location_place,
+      recurrence_end_date: newEvent.recurrence_end_date,
+      recurrence_pattern: newEvent.recurrence_pattern,
+      recurrence_start_date: newEvent.recurrence_start_date,
     };
     setAllEvents([...allEvents, event]);
 
@@ -226,19 +225,19 @@ export default function Home() {
       user_id: user.uid,
       start: new Date(newEvent.start_time), // <-- ensure start is there
       end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
-    title: newEvent.title,
+      title: newEvent.title,
 
-    id: newEvent.id, // UUIDs are strings
-    break_time: newEvent.break_time,
-    start_time: newEvent.start_time,
-    created_at: new Date().toISOString(),
-    description: newEvent.description,
-    is_generated: false,
-    is_recurring: newEvent.is_recurring,
-    location_place: newEvent.location_place,
-    recurrence_end_date: newEvent.recurrence_end_date,
-    recurrence_pattern: newEvent.recurrence_pattern,
-    recurrence_start_date: newEvent.recurrence_start_date,
+      id: newEvent.id, // UUIDs are strings
+      break_time: newEvent.break_time,
+      start_time: newEvent.start_time,
+      created_at: new Date().toISOString(),
+      description: newEvent.description,
+      is_generated: false,
+      is_recurring: newEvent.is_recurring,
+      location_place: newEvent.location_place,
+      recurrence_end_date: newEvent.recurrence_end_date,
+      recurrence_pattern: newEvent.recurrence_pattern,
+      recurrence_start_date: newEvent.recurrence_start_date,
     };
     setAllEvents([...allEvents, eventWithUser]);
 
@@ -256,6 +255,14 @@ export default function Home() {
       ...example,
     });
   }
+
+  function generatePerfectSchedule() {
+    console.log('Generate perfect schedule clicked');
+    // Add your logic to generate the perfect schedule here
+    // For example, you can call an API endpoint or perform some calculations
+    // and then update the state accordingly.
+  }
+
 
   return (
     <>
@@ -440,7 +447,7 @@ export default function Home() {
                               onChange={(e) => handleChange(e)}
                               placeholder=" Title"
                             />
-                            
+
                             <input
                               type="text"
                               name="description"
@@ -458,7 +465,7 @@ export default function Home() {
                               }
                               placeholder=" Description"
                             />
-                            
+
                             <input
                               type="text"
                               name="location"
@@ -476,7 +483,7 @@ export default function Home() {
                               }
                               placeholder=" Location"
                             />
-                          <input
+                            <input
                               type="DateTime-local"
                               name="start_time"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900
@@ -499,7 +506,7 @@ export default function Home() {
                                 })
                               }
                               placeholder="Start Time"
-                            />  
+                            />
                             <input
                               type="DateTime-local"
                               name="end_time"
@@ -679,7 +686,20 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-        
+        <div className="fixed bottom-20 right-8 z-50 flex flex-col items-center space-y-2">
+          <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-md shadow-md text-center">
+            <span className="text-sm text-gray-700 dark:text-gray-300 break-words text-center">
+              Generate Your Perfect Schedule
+            </span>
+          </div>
+          <button
+            onClick={generatePerfectSchedule}
+            className="flex items-center justify-center w-16 h-16 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200"
+            aria-label="Generate Your Perfect Schedule"
+          >
+            <span className="text-xs text-center">Gen</span>
+          </button>
+        </div>
       </main>
     </>
   );
