@@ -104,6 +104,7 @@ export default function Home() {
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
           allDay: event.allDay ?? false, // default to false if undefined
+          description: event.description,
           // Optional: You could add more fields here if FullCalendar needs
         }));
 
@@ -128,7 +129,7 @@ export default function Home() {
         eventData: (eventEl) => ({
           title: eventEl.getAttribute('title') || '',
           id: eventEl.getAttribute('data') || '',
-          start: eventEl.getAttribute('start') || '',
+          start_time: eventEl.getAttribute('start') || '',
         }),
       });
     }
@@ -189,7 +190,7 @@ export default function Home() {
     const event = {
       ...newEvent,
       user_id: user.uid,
-      start: data.date.toISOString(),
+      start_time: data.date.toISOString(),
       title: data.draggedEl.innerText,
       allDay: data.allDay,
       id: new Date().getTime(),
@@ -506,7 +507,7 @@ export default function Home() {
                             />
 
                             <input
-                              type="Date-time-local"
+                              type="DateTime-local"
                               name="start_time"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900
                           shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-center
@@ -514,7 +515,7 @@ export default function Home() {
                           focus:ring-inset focus:ring-violet-600"
                               value={
                                 newEvent.start_time 
-                                ? new Date(newEvent.start_time).toISOString().slice(0,16)  // Extracts yyyy-MM-ddTHH:mm
+                                ? new Date(newEvent.start_time).toLocaleString('sv-SE').replace(' ', 'T')
                                   : newEvent.start_time
                               }
                               onChange={(e) =>
@@ -526,7 +527,7 @@ export default function Home() {
                               placeholder="Start Time"
                             />
                             <input
-                              type="Date-time-local"
+                              type="DateTime-local"
                               name="end_time"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900
                           shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
@@ -534,7 +535,7 @@ export default function Home() {
                           focus:ring-inset focus:ring-violet-600"
                               value={
                                 newEvent.end_time 
-                                ? new Date(newEvent.end_time).toISOString().slice(0,16)  // Extracts yyyy-MM-ddTHH:mm
+                                ? new Date(newEvent.end_time).toLocaleString('sv-SE').replace(' ', 'T')
                                   : newEvent.end_time || ''
                               }
                               onChange={(e) =>
@@ -569,17 +570,21 @@ export default function Home() {
                             </label>
                             {newEvent.is_recurring && (
                               <input
-                                type="date"
+                                type="DateTime-local"
                                 name="recurrence_start_date"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900
                           shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                           focus:ring-2    
                           focus:ring-inset focus:ring-violet-600"
-                                value={newEvent.recurrence_start_date || ''}
+                                value={
+                                  newEvent.recurrence_start_date 
+                                  ? new Date(newEvent.recurrence_start_date).toLocaleString('sv-SE').replace(' ', 'T')
+                                    : newEvent.recurrence_start_date || ''
+                                }
                                 onChange={(e) =>
                                   setNewEvent({
                                     ...newEvent,
-                                    recurrence_start_date: e.target.value,
+                                    recurrence_start_date: new Date(e.target.value).toISOString(),
                                   })
                                 }
                                 placeholder=" Recurrence Start Date"
@@ -587,17 +592,21 @@ export default function Home() {
                             )}
                             {newEvent.is_recurring && (
                               <input
-                                type="date"
+                                type="DateTime-local"
                                 name="recurrence_end_date"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900
                         shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                         focus:ring-2    
                         focus:ring-inset focus:ring-violet-600"
-                                value={newEvent.recurrence_end_date || ''}
+                                value={
+                                  newEvent.recurrence_end_date 
+                                  ? new Date(newEvent.recurrence_end_date).toLocaleString('sv-SE').replace(' ', 'T')
+                                    : newEvent.recurrence_end_date || ''
+                                }
                                 onChange={(e) =>
                                   setNewEvent({
                                     ...newEvent,
-                                    recurrence_end_date: e.target.value,
+                                    recurrence_end_date: new Date(e.target.value).toISOString(),
                                   })
                                 }
                                 placeholder=" Recurrence End Date"
@@ -610,6 +619,7 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="daily"
+    checked={newEvent.recurrence_pattern === "daily"} // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
@@ -624,6 +634,7 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="weekly"
+                                    checked={newEvent.recurrence_pattern === "weekly"} // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
@@ -638,6 +649,7 @@ export default function Home() {
                                     type="radio"
                                     name="recurrence_pattern"
                                     value="monthly"
+                                    checked={newEvent.recurrence_pattern === "monthly"} // Explicitly control the checked state
                                     onChange={(e) =>
                                       setNewEvent({
                                         ...newEvent,
@@ -649,28 +661,6 @@ export default function Home() {
                                 </label>
                               </>
                             )}
-                            <input
-                              type="checkbox"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900    
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                          focus:ring-2
-                          focus:ring-inset focus:ring-violet-600"
-                              name="is_generated"
-                              checked={newEvent.is_generated}   
-                              onChange={(e) =>
-                                setNewEvent({
-                                  ...newEvent,
-                                  is_generated: e.target.checked,
-                                })
-                              }
-                              placeholder=" Would you like to Generate your event?"
-                            />
-                            <label
-                              htmlFor="is_generated"
-                              className="text-sm text-gray-500"
-                            >
-                               Would you like to Generate your event?
-                            </label>
                           </div>
 
                           <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
