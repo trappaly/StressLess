@@ -82,16 +82,39 @@ describe ("test minute number to hour and minute", () => {
     });
     // Tests for both hours and minutes having a number
     it ("400 min ->  6 hr, 40 min", () => {
-        expect (UserPreferenceUtils.minuteNumberToHourAndMinute(400)).toEqual([6, 40]);
+        expect(UserPreferenceUtils.minuteNumberToHourAndMinute(400)).toEqual([6, 40]);
     });
 });
 
  /*
   * dateToMinuteNumber
   */
-//describe ("test date to minute", () =>) {
-    
-//}
+describe ("test date to minutes", () => {
+    // Testing for 0
+    it("00:00 => 0", () => {
+        const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-05-08T00:00:00'));
+        expect(result).toBe(0);
+      });
+    // Testing for minutes and no hours 
+    it("00:35 => 0", () => {
+        const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-05-08T00:35:00'));
+        expect(result).toBe(35);
+      });
+      // Testing for hours and no minutes
+      it ("4:00 -> 240", () => {
+        // Checks for ____
+        const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-08-21-T04:00:00'));
+        expect(result).toBe(680);
+});
+// Testing for both hours and minutes
+it ("10:30 -> 630", () => {
+    // Checks for both
+    const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-05-08-T10:30:00'));
+    expect(result).toBe(630);
+});
+
+// Checks for future dates
+})
 
 /*
  * Tests converting a string to minutes : timeStringToMinuteNumber
