@@ -21,7 +21,7 @@ router.put('/events/id/:id', EventController.putEvent);
 router.delete('/events/id/:id', EventController.deleteEvent);
 
 // Get all deadlines for a particular user
-router.get('/deadlines/by-user/:user', DeadlineController.getUserDeadlines);
+router.get('/deadlines/by-user/:user_id', DeadlineController.getUserDeadlines);
 
 // Add a deadline
 router.post('/deadlines', DeadlineController.postDeadline);
