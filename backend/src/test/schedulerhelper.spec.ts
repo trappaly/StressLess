@@ -48,19 +48,19 @@ describe ("test minute number to minute", () => {
     // Test for remaining minutes 
     it ("70 min -> 10 min", () => {
         expect (UserPreferenceUtils.minuteNumberToMinute(70)).toBe(10);
-    })
+    });
     // Edge case of one up
     it ("121 min -> 1 min", () => {
         expect (UserPreferenceUtils.minuteNumberToMinute(121)).toBe(1);
-    })
+    });
     // Edge case of one down
     it ("179 min -> 59 min", () => {
         expect (UserPreferenceUtils.minuteNumberToMinute(179)).toBe(59);
-    })
+    });
     // Returns 0 for multiples of 60
     it ("600 min -> 0 min", () => {
         expect (UserPreferenceUtils.minuteNumberToMinute(179)).toBe(59);
-    })
+    });
 
 });
 
@@ -71,20 +71,20 @@ describe ("test minute number to hour and minute", () => {
     // Tests for 0 edge case
     it ("0 min -> 0 hr, 0 min,", () => {
         expect (UserPreferenceUtils.minuteNumberToHourAndMinute(0)).toEqual([0, 0]);
-    })
+    });
     // Tests for minutes having a number, but hour having 0
     it ("20 min -> 0 hr, 20 min", () => {
         expect (UserPreferenceUtils.minuteNumberToHourAndMinute(20)).toEqual([0, 20]);
-    })
+    });
     // Tests for hour having a number, but minutes having 0
     it ("120 min -> 2 hr, 0 min", () => {
         expect (UserPreferenceUtils.minuteNumberToHourAndMinute(120)).toEqual([2, 0]);
-    })
+    });
     // Tests for both hours and minutes having a number
     it ("400 min ->  6 hr, 40 min", () => {
         expect (UserPreferenceUtils.minuteNumberToHourAndMinute(400)).toEqual([6, 40]);
-    })
-})
+    });
+});
 
  /*
   * dateToMinuteNumber
@@ -100,19 +100,19 @@ describe ("string to minute", () => {
       // Tests for 0 edge case
       it ("0 min -> 0 min,", () => {
         expect (UserPreferenceUtils.timeStringToMinuteNumber("0:0")).toEqual(0);
-    })
+    });
     // Tests for only minutes and no hours
     it ("45 min -> 45 min", () => {
         expect (UserPreferenceUtils.timeStringToMinuteNumber("0:45")).toEqual(45);
-    }) 
+    }); 
     // Tests for both hours and minutes
     it ("1 hr and 30 min -> 90 min", () => {
         expect (UserPreferenceUtils.timeStringToMinuteNumber("1:30")).toEqual(90);
-    }) 
+    }); 
     // Tests for only hours converted into minutes
     it ("5 hrs and 0 min -> 300 min", () => {
         expect (UserPreferenceUtils.timeStringToMinuteNumber("5:0")).toEqual(300);
-    }) 
-})
+    }); 
+});
     
 // }
