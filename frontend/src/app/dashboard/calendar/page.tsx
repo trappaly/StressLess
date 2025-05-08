@@ -28,27 +28,7 @@ import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-
-interface Event {
-  id: number | string; // your backend sometimes uses uuid string, sometimes number
-  title: string;
-  end_time?: Date | string | null;
-  allDay: boolean;
-  break_time: number | null;
-  created_at: string;
-  description: string | null;
-  is_generated: boolean;
-  is_recurring: boolean;
-  location_place?: string;
-  recurrence_end_date?: string | null;
-  recurrence_pattern?: string | null;
-  recurrence_start_date?: string | null;
-  user_id: string;
-
-  // frontend-only props (for FullCalendar)
-  start_time?: Date | string;
-}
+import { UserEvent } from '@/lib/types';
 
 export default function Home() {
   //imported from the backend user preferences
@@ -62,14 +42,14 @@ export default function Home() {
     { title: 'event 4', id: '4' },
     { title: 'event 5', id: '5' },
   ]);
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
-  const example = {
+  const example : UserEvent = {
     title: '',
     end_time: null,
-    allDay: false,
+    start_time: new Date().toISOString(),
     id: '', // UUIDs are strings
     break_time: null,
     created_at: new Date().toISOString(),
@@ -82,7 +62,7 @@ export default function Home() {
     recurrence_pattern: undefined,
     recurrence_start_date: undefined,
   };
-  const [newEvent, setNewEvent] = useState<Event>({
+  const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
 
@@ -99,12 +79,12 @@ export default function Home() {
         );
         console.log('Fetched raw events:', response.data);
 
-        const extractedEvents = response.data.map((event: Event) => ({
+        const extractedEvents = response.data.map((event: UserEvent) => ({
           id: event.id,
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
-          allDay: event.allDay ?? false, // default to false if undefined
+          // TODO: add all_day to data schema allDay: event.allDay ?? false, // default to false if undefined
           description: event.description,
           // Optional: You could add more fields here if FullCalendar needs
         }));
@@ -144,9 +124,9 @@ export default function Home() {
     setNewEvent({
       ...newEvent,
       //takes everything in newEvent
-      start_time: arg.date,
-      allDay: arg.allDay,
-      id: new Date().getTime(),
+      start_time: arg.date.toISOString(),
+      //allDay: arg.allDay,
+      id: new Date().getTime().toString(),
     });
     setShowModal(true);
   }
@@ -188,13 +168,13 @@ export default function Home() {
     //   id: new Date().getTime(),
     // };
 
-    const event = {
+    const event : UserEvent = {
       ...newEvent,
       user_id: user.uid,
       start_time: data.date.toISOString(),
       title: data.draggedEl.innerText,
-      allDay: data.allDay,
-      id: new Date().getTime(),
+      //allDay: data.allDay,
+      id: new Date().getTime().toString(),
       end_time: data.date.toISOString(),
       created_at: new Date().toISOString(),
       description: null,
