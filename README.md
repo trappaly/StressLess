@@ -6,6 +6,12 @@
 
 # StressLess
 
+[VISIT OUR DEPLOYED PRODUCT](https://stressless-frontend.onrender.com/)
+
+_Please be patient with the deployed version as we use free tier services to deploy and it takes quite a while for things to load. Thank you!_
+
+## Repository
+
 <details>
   <summary>Table of Contents</summary>
   <ol>
