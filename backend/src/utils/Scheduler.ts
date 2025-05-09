@@ -121,7 +121,8 @@ export default class Scheduler {
 
         // Move search forward
         // TODO: end_time might be null
-        currentSearchedTime = new Date(newEvent.end_time!.getTime() + 60000); // +1 min buffer
+        // TODO: not hard coded 10 min buff but use user's break preference and use is_break in event model
+        currentSearchedTime = new Date(newEvent.end_time!.getTime() + 10 * 60000); // +10 min buffer
       }
       // Update unscheduledMinutes in remainder
       remainder.unscheduledMinutes = minutesLeft;

@@ -20,6 +20,9 @@ router.put('/events/id/:id', EventController.putEvent);
 // Delete an event
 router.delete('/events/id/:id', EventController.deleteEvent);
 
+// Delete all generated event
+router.delete('/generated-events/:user_id', EventController.deleteGeneratedEvent);
+
 // Get all deadlines for a particular user
 router.get('/deadlines/by-user/:user_id', DeadlineController.getUserDeadlines);
 

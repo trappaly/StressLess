@@ -1,17 +1,6 @@
 /**
  * followed a YouTube tutorial on how to make calendar view with TypeScript
  * link: https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3
- *
- *
- */
-// Monthly default view
-/**
- * TO DO: fix draggable event color in dark mode (done)
- * make a help button to link to help page
- * make events editable in drag event area
- * add documentation and comments to each function
- * sync event to backend to test out syntax
- * send rest of attributes to backend everytime event in changed
  */
 'use client';
 import FullCalendar from '@fullcalendar/react';
@@ -21,17 +10,24 @@ import interactionPlugin, {
   DropArg,
 } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import { CheckIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
-import { UserEvent } from '@/lib/types';
+import { UserDeadline, UserEvent } from '@/lib/types';
 
 export default function Home() {
-  //imported from the backend user preferences
+  const colorTypes = useMemo(
+    () => ({
+      deadline: '#e11d48',
+      eventGenerated: '#a1cc76',
+      eventByUser: '#6e9adb',
+    }),
+    [] // empty dependency array means this object will remain stable
+  );
   const { user } = useAuth();
   const [events] = useState([
     { title: 'event 1', id: '1' },
@@ -43,7 +39,8 @@ export default function Home() {
   const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
+
   const example: UserEvent = {
     title: '',
     end_time: null,
@@ -60,42 +57,77 @@ export default function Home() {
     recurrence_pattern: null,
     recurrence_start_date: null,
   };
+  const [selectedEvent, setSelectedEvent] = useState<UserEvent>(example);
+
   const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
+  const [isDeadline, setIsDeadline] = useState<boolean>(false);
 
+  // Fetching data from backend
   useEffect(() => {
-    async function fetchEvents() {
+    async function fetchSchedule() {
       try {
         if (!user) {
           console.log('No user found');
           return;
         }
 
-        const response = await axios.get(
+        // fetch deadlines
+        const responseDeadlines = await axios.get(
+          `${backendBaseUrl}/api/calendar/deadlines/by-user/${user.uid}`
+        );
+        console.log('Fetched raw deadlines:', responseDeadlines.data);
+
+        // fetch events
+        const responseEvents = await axios.get(
           `${backendBaseUrl}/api/calendar/events/by-user/${user.uid}`
         );
-        console.log('Fetched raw events:', response.data);
+        console.log('Fetched raw events:', responseEvents.data);
 
-        const extractedEvents = response.data.map((event: UserEvent) => ({
+        // map deadlines
+        const extractedDeadlines = responseDeadlines.data.map(
+          (deadline: UserDeadline) => ({
+            id: deadline.id,
+            title: deadline.title,
+            start: deadline.due_time ? new Date(deadline.due_time) : undefined,
+            description: deadline.description,
+            user_id: deadline.user_id,
+            // Optional: You could add more fields here if FullCalendar needs
+            color: colorTypes.deadline,
+          })
+        );
+
+        // map events
+        const extractedEvents = responseEvents.data.map((event: UserEvent) => ({
           id: event.id,
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
+          description: event.description,
+          user_id: event.user_id,
           // Optional: You could add more fields here if FullCalendar needs
+
+          // color for generated events are different than user input events
+          color: event.is_generated
+            ? colorTypes.eventGenerated
+            : colorTypes.eventByUser,
         }));
 
+        console.log('Mapped deadlines for calendar:', extractedDeadlines);
         console.log('Mapped events for calendar:', extractedEvents);
-        setAllEvents(extractedEvents);
+
+        // setting frontend
+        setAllEvents([...extractedEvents, ...extractedDeadlines]);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     }
 
-    fetchEvents().then(() => {
-      console.log('Fetched events for user: ', user?.displayName);
+    fetchSchedule().then(() => {
+      console.log('Fetched deadlines and events for user: ', user?.displayName);
     });
-  }, [user]);
+  }, [user, colorTypes]);
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
@@ -153,7 +185,7 @@ export default function Home() {
       return;
     }
 
-    const event: UserEvent & { start: Date; end?: Date } = {
+    const event: UserEvent & { start: Date; end?: Date; color?: string } = {
       ...newEvent,
       user_id: user.uid,
       start_time: data.date.toISOString(),
@@ -170,6 +202,7 @@ export default function Home() {
       recurrence_end_date: newEvent.recurrence_end_date,
       recurrence_pattern: newEvent.recurrence_pattern,
       recurrence_start_date: newEvent.recurrence_start_date,
+      color: colorTypes.eventByUser,
     };
     setAllEvents([...allEvents, event]);
 
@@ -184,19 +217,51 @@ export default function Home() {
         console.log(error);
       });
   }
-  //TO DO:
-  function handleDeleteModal(data: { event: { id: string } }) {
+
+  function handleOpenModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
-    setIdToDelete(Number(data.event.id));
+    setIdToDelete(data.event.id);
+    console.log(data.event.id);
+    console.log(allEvents);
+    const selected = allEvents.find((event) => event.id === data.event.id);
+    if (selected) {
+      setSelectedEvent(selected);
+    }
   }
 
-  function handleDelete() {
-    setAllEvents(
-      allEvents.filter((event) => Number(event.id) !== Number(idToDelete))
-    );
-    setShowDeleteModal(false);
-    setIdToDelete(null);
+  async function handleDelete() {
+    console.log('handleDelete called for event: ', idToDelete);
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    if (!idToDelete) {
+      console.log('no idToDelete found');
+      return;
+    }
+
+    //added to test getting event name to the backend
+    axios
+      .delete(backendBaseUrl + `/api/calendar/events/id/${idToDelete}`)
+      .then((response) => {
+        console.log('Successfully delete event: ', idToDelete);
+        console.log(response);
+        // UI local state
+        setAllEvents(allEvents.filter((event) => event.id !== idToDelete));
+      })
+      .catch((error) => {
+        console.log(error);
+        window.alert('Failed to delete event, try again another time :(');
+      })
+      .finally(() => {
+        setShowDeleteModal(false);
+        setIdToDelete(null);
+        setSelectedEvent(example);
+      });
   }
+
   function handleCloseModal() {
     setShowModal(false);
     setNewEvent({
@@ -204,15 +269,8 @@ export default function Home() {
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
+    setSelectedEvent(example);
   }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('handleChange called');
-    setNewEvent({
-      ...newEvent,
-      title: e.target.value,
-    });
-  };
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -220,14 +278,23 @@ export default function Home() {
       console.log('no user found');
       return;
     }
-    const eventWithUser: UserEvent & { start: Date; end?: Date } = {
+
+    if (isDeadline) {
+      addDeadlineFromEvent();
+      return;
+    }
+
+    const eventWithUser: UserEvent & {
+      start: Date;
+      end?: Date;
+      color?: string;
+    } = {
       ...newEvent,
       user_id: user.uid,
       start: new Date(newEvent.start_time), // <-- ensure start is there
       end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
       title: newEvent.title,
-
-      id: newEvent.id, // UUIDs are strings
+      id: newEvent.id, // this is FullCalendar id
       break_time: newEvent.break_time,
       start_time: newEvent.start_time,
       created_at: new Date().toISOString(),
@@ -238,13 +305,18 @@ export default function Home() {
       recurrence_end_date: newEvent.recurrence_end_date,
       recurrence_pattern: newEvent.recurrence_pattern,
       recurrence_start_date: newEvent.recurrence_start_date,
+      color: colorTypes.eventByUser,
     };
-    setAllEvents([...allEvents, eventWithUser]);
 
     axios
       .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
       .then((response) => {
         console.log('Successfully saved event:', response.data);
+        // We want to be consistent and use our backend id
+        const correctId = response.data.id;
+        const { id, ...restEvent } = eventWithUser;
+        console.log(`Replace ${id} with ${correctId}`);
+        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
         console.error('Error saving event:', error);
@@ -256,13 +328,102 @@ export default function Home() {
     });
   }
 
-  function generatePerfectSchedule() {
-    console.log('Generate perfect schedule clicked');
-    // Add your logic to generate the perfect schedule here
-    // For example, you can call an API endpoint or perform some calculations
-    // and then update the state accordingly.
+  // TODO: handle dragging data
+  function addDeadlineFromEvent() {
+    console.log('addDeadlineFromEvent called');
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    // TODO: very ugly but works - show deadline after creating one
+    const deadline: UserDeadline & UserEvent & { start: Date; color?: string } =
+      {
+        ...example,
+        id: newEvent.id,
+        user_id: user.uid,
+        title: newEvent.title,
+        due_time: newEvent.end_time ? newEvent.end_time : newEvent.start_time,
+        description: newEvent.description,
+        priority: null,
+        projected_duration: parseInt(newEvent.location_place || '60'),
+        created_at: newEvent.created_at,
+        start: new Date(newEvent.start_time),
+        color: colorTypes.deadline,
+      };
+
+    //added to test getting deadline name to the backend
+    axios
+      .post(backendBaseUrl + `/api/calendar/deadlines`, deadline)
+      .then((response) => {
+        console.log(
+          'Successfully saved deadline into backend for user id: ',
+          user!.uid
+        );
+        console.log(response);
+        // We want to be consistent and use our backend id
+        const correctId = response.data.id;
+        const { id, ...restEvent } = deadline;
+        console.log(`Replace ${id} with ${correctId}`);
+        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    setShowModal(false);
+    setNewEvent({
+      ...example,
+    });
+    setIsDeadline(false);
   }
 
+  function deletePerfectSchedule() {
+    console.log('deletePerfectSchedule called');
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+    axios
+      .delete(backendBaseUrl + `/api/calendar/generated-events/${user.uid}`)
+      .then((response) => {
+        console.log('Successfully deleted schedule for user: ', user!.uid);
+        console.log(response);
+        if (response.data.count !== 0) {
+          window.location.reload();
+        } else {
+          window.alert('You do not have any generated events to remove!');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function generatePerfectSchedule() {
+    console.log('Generate perfect schedule clicked');
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    axios
+      .post(backendBaseUrl + `/api/user/generate-schedule/${user.uid}`)
+      .then((response) => {
+        console.log('Successfully generated schedule for user: ', user!.uid);
+        console.log(response);
+        if (response.data.length !== 0) {
+          window.location.reload();
+        } else {
+          window.alert('Add some deadlines first!');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => console.log('End posting generate-schedule'));
+  }
 
   return (
     <>
@@ -289,14 +450,16 @@ export default function Home() {
               selectMirror={true}
               dateClick={handleDateClick}
               drop={(data) => addEvent(data)}
-              eventClick={(data) => handleDeleteModal(data)}
+              eventClick={(data) => handleOpenModal(data)}
             />
           </div>
           <div
             id="draggable-el"
             className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50"
           >
-            <h1 className="font-bold text-lg text-center">Frequent Events</h1>
+            <h1 className="font-bold text-lg text-center dark:text-black">
+              Frequent Events
+            </h1>
 
             {events.map((event) => (
               <div
@@ -341,6 +504,63 @@ export default function Home() {
                 >
                   <Dialog.Panel
                     className="relative transform overflow-hidden rounded-lg
+  bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                  >
+                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                      <div className="text-center">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-2xl font-semibold leading-6 text-gray-900 mb-2"
+                        >
+                          {selectedEvent?.title
+                            ? selectedEvent?.title
+                            : 'EVENT/DEADLINE DETAILS'}
+                        </Dialog.Title>
+
+                        {selectedEvent?.description && (
+                          <p
+                            className={`text-lg text-gray-700 ${selectedEvent?.location_place ? 'mb-2' : 'mb-4'}`}
+                          >
+                            <span className="font-medium">Description:</span>{' '}
+                            {selectedEvent.description}
+                          </p>
+                        )}
+                        {selectedEvent?.location_place && (
+                          <p className="text-lg text-gray-700 mb-4">
+                            <span className="font-medium">Location:</span>{' '}
+                            {selectedEvent.location_place}
+                          </p>
+                        )}
+
+                        <p className="text-sm text-gray-500">
+                          Would you like to delete this event? The action is
+                          permanent.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
+      font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                        onClick={handleDelete}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900
+      shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                        onClick={handleCloseModal}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+
+                  {/*<Dialog.Panel
+                    className="relative transform overflow-hidden rounded-lg
                  bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                   >
                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -354,6 +574,11 @@ export default function Home() {
                             aria-hidden="true"
                           />
                         </div>
+                        {selectedEvent?.description && (
+                          <p className="text-sm text-gray-700">
+                            <span className="font-medium text-gray-900">Description:</span> {selectedEvent.description}
+                          </p>
+                        )}
                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                           <Dialog.Title
                             as="h3"
@@ -387,7 +612,7 @@ export default function Home() {
                         Cancel
                       </button>
                     </div>
-                  </Dialog.Panel>
+                  </Dialog.Panel>*/}
                 </Transition.Child>
               </div>
             </div>
@@ -431,10 +656,30 @@ export default function Home() {
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          Add Event
+                          Add Event or Deadline
                         </Dialog.Title>
                         <form action="submit" onSubmit={handleSubmit}>
                           <div className="mt-2">
+                            <label>
+                              <input
+                                type="radio"
+                                name="event_deadline_switcher"
+                                value="event"
+                                checked={!isDeadline} // Explicitly control the checked state
+                                onChange={() => setIsDeadline(false)}
+                              />
+                              Event
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="event_deadline_switcher"
+                                value="deadline"
+                                checked={isDeadline} // Explicitly control the checked state
+                                onChange={() => setIsDeadline(true)}
+                              />
+                              Deadline
+                            </label>
                             <input
                               type="text"
                               name="title"
@@ -444,7 +689,12 @@ export default function Home() {
                           focus:ring-inset focus:ring-violet-600
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
-                              onChange={(e) => handleChange(e)}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  title: e.target.value,
+                                })
+                              }
                               placeholder=" Title"
                             />
 
@@ -481,7 +731,11 @@ export default function Home() {
                                   location_place: e.target.value,
                                 })
                               }
-                              placeholder=" Location"
+                              placeholder={
+                                isDeadline
+                                  ? ' Projected Duration (minutes)'
+                                  : ' Location'
+                              }
                             />
                             <input
                               type="DateTime-local"
@@ -507,52 +761,56 @@ export default function Home() {
                               }
                               placeholder="Start Time"
                             />
-                            <input
-                              type="DateTime-local"
-                              name="end_time"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                          focus:ring-2
-                          focus:ring-inset focus:ring-violet-600"
-                              value={
-                                newEvent.end_time
-                                  ? new Date(newEvent.end_time)
-                                      .toLocaleString('sv-SE')
-                                      .replace(' ', 'T')
-                                  : newEvent.end_time || ''
-                              }
-                              onChange={(e) =>
-                                setNewEvent({
-                                  ...newEvent,
-                                  end_time: new Date(
-                                    e.target.value
-                                  ).toISOString(),
-                                })
-                              }
-                              placeholder=" End Time" // Does not work
-                            />
-                            <input
-                              type="checkbox"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                          focus:ring-2
-                          focus:ring-inset focus:ring-violet-600"
-                              name="is_recurring"
-                              checked={newEvent.is_recurring}
-                              onChange={(e) =>
-                                setNewEvent({
-                                  ...newEvent,
-                                  is_recurring: e.target.checked,
-                                })
-                              }
-                              placeholder=" Recurring"
-                            />
-                            <label
-                              htmlFor="is_recurring"
-                              className="text-sm text-gray-500"
-                            >
-                              Reocurring
-                            </label>
+                            {!isDeadline && (
+                              <>
+                                <input
+                                  type="DateTime-local"
+                                  name="end_time"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                              shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                              focus:ring-2
+                              focus:ring-inset focus:ring-violet-600"
+                                  value={
+                                    newEvent.end_time
+                                      ? new Date(newEvent.end_time)
+                                          .toLocaleString('sv-SE')
+                                          .replace(' ', 'T')
+                                      : newEvent.end_time || ''
+                                  }
+                                  onChange={(e) =>
+                                    setNewEvent({
+                                      ...newEvent,
+                                      end_time: new Date(
+                                        e.target.value
+                                      ).toISOString(),
+                                    })
+                                  }
+                                  placeholder=" End Time" // Does not work
+                                />
+                                <input
+                                  type="checkbox"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                              shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                              focus:ring-2
+                              focus:ring-inset focus:ring-violet-600"
+                                  name="is_recurring"
+                                  checked={newEvent.is_recurring}
+                                  onChange={(e) =>
+                                    setNewEvent({
+                                      ...newEvent,
+                                      is_recurring: e.target.checked,
+                                    })
+                                  }
+                                  placeholder=" Recurring"
+                                />
+                                <label
+                                  htmlFor="is_recurring"
+                                  className="text-sm text-gray-500"
+                                >
+                                  Reocurring
+                                </label>
+                              </>
+                            )}
                             {newEvent.is_recurring && (
                               <input
                                 type="DateTime-local"
@@ -579,7 +837,7 @@ export default function Home() {
                                 placeholder=" Recurrence Start Date"
                               />
                             )}
-                            {newEvent.is_recurring && (
+                            {newEvent.is_recurring && !isDeadline && (
                               <input
                                 type="DateTime-local"
                                 name="recurrence_end_date"
@@ -605,7 +863,7 @@ export default function Home() {
                                 placeholder=" Recurrence End Date"
                               />
                             )}
-                            {newEvent.is_recurring && (
+                            {newEvent.is_recurring && !isDeadline && (
                               <>
                                 <label>
                                   <input
@@ -686,18 +944,20 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition.Root>
-        <div className="fixed bottom-20 right-8 z-50 flex flex-col items-center space-y-2">
-          <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-md shadow-md text-center">
-            <span className="text-sm text-gray-700 dark:text-gray-300 break-words text-center">
-              Generate Your Perfect Schedule
-            </span>
-          </div>
+        <div className="fixed bottom-25 right-8 z-50 flex flex-col items-center space-y-2">
           <button
             onClick={generatePerfectSchedule}
-            className="flex items-center justify-center w-16 h-16 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200"
+            className="flex items-center justify-center w-16 h-26 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200 cursor-pointer"
             aria-label="Generate Your Perfect Schedule"
           >
-            <span className="text-xs text-center">Gen</span>
+            <span className="text-xs text-center">Generate Schedule</span>
+          </button>
+          <button
+            onClick={deletePerfectSchedule}
+            className="flex items-center justify-center w-16 h-26 bg-red-400 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors duration-200 cursor-pointer"
+            aria-label="Remove Events Generated by the App"
+          >
+            <span className="text-xs text-center">Remove Generated Events</span>
           </button>
         </div>
       </main>

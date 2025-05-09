@@ -84,7 +84,7 @@ export default class ScheduleController {
           data: eventDataWithoutId,
         });
       }
-
+      res.json(scheduledEvents);
     } catch (error : any) {
       res
         .status(500)
