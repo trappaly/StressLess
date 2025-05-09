@@ -1,26 +1,42 @@
-
-
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import FakeDataFactory from './FakeDataFactory';
 import Scheduler from '../utils/Scheduler';
 import { faker } from '@faker-js/faker';
 
-// // test: calculateDeadlineRemainders
+
+// test: get events by deadline ID 
+describe ("get events by deadline ID"),() => {
+    let factory: FakeDataFactory;
+    let user_id: string;
+    let deadline_id: string;
+    beforeAll(() => {
+        factory = new FakeDataFactory;
+        user_id = "test-user";
+       deadline_id = "test deadline"
+    })
+    it("returns matching event with valid end_time", () => {
+        const event = {
+          ...factory.randomUserEvent({ userId: user_id }),
+          deadline_id,
+          end_time: new Date(),
+        }
+ });
+}
+
+
+
+// test: calculateDeadlineRemainders
 // describe ("calculate deadline remainders"), () => {
-//       // generate fake data
-//   let factory: FakeDataFactory;
-//   beforeEach(() => {
-//     factory = new FakeDataFactory;
-// });
+// //       // generate fake data
+//     let factory: FakeDataFactory;
+//     let user_id: string;
+//     let event_id: string;
+// beforeAll(() => {
+//    factory = new FakeDataFactory;
+//    user_id = "test-user";
+//    event_id = "test deadline"
+// })
 
-// it("", () => {
-//     const userId = faker.string.uuid();
-//     const events = [factory.randomUserEvent({ userId })];
-//     // const deadlines = [factory.randomUserDeadline({ userId, eventId})]
-
-//    // const result = Scheduler.calculateDeadlineRemainders(events, deadlines);
-
-//   //  expect(result[0].unscheduledMinutes).toBe(60);
 //   });
 // };
 // //});
@@ -43,4 +59,4 @@ import { faker } from '@faker-js/faker';
 // // test: minutestoNextEvent
 // describe("minutes to the next event"), () => {
 
-// };
+// Schedule deadlines calls of the functions and tests it

@@ -263,7 +263,6 @@ export default function Home() {
     // and then update the state accordingly.
   }
 
-
   return (
     <>
       <nav className="flex justify-between mb-12 border-b border-violet-100 p-4">
