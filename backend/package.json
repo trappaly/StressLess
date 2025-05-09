@@ -20,6 +20,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.4",
     "@types/supertest": "^6.0.3",
+    "crypto": "^1.0.1",
     "supertest": "^7.1.0",
     "vitest": "^3.0.9"
   },
