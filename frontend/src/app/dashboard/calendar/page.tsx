@@ -1,17 +1,6 @@
 /**
  * followed a YouTube tutorial on how to make calendar view with TypeScript
  * link: https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3
- *
- *
- */
-// Monthly default view
-/**
- * TO DO: fix draggable event color in dark mode (done)
- * make a help button to link to help page
- * make events editable in drag event area
- * add documentation and comments to each function
- * sync event to backend to test out syntax
- * send rest of attributes to backend everytime event in changed
  */
 'use client';
 import FullCalendar from '@fullcalendar/react';
@@ -31,7 +20,6 @@ import { backendBaseUrl } from '@/lib/utils';
 import { UserDeadline, UserEvent } from '@/lib/types';
 
 export default function Home() {
-  //imported from the backend user preferences
   const { user } = useAuth();
   const [events] = useState([
     { title: 'event 1', id: '1' },
@@ -65,6 +53,7 @@ export default function Home() {
   });
   const [isDeadline, setIsDeadline] = useState<boolean>(false);
 
+  // Fetching data from backend
   useEffect(() => {
     async function fetchSchedule() {
       try {
@@ -94,6 +83,7 @@ export default function Home() {
             description: deadline.description,
             user_id: deadline.user_id,
             // Optional: You could add more fields here if FullCalendar needs
+            color: '#e11d48',
           })
         );
 
@@ -106,6 +96,9 @@ export default function Home() {
           description: event.description,
           user_id: event.user_id,
           // Optional: You could add more fields here if FullCalendar needs
+
+          // color for generated events are different than user input events
+          color: event.is_generated ? '#a1cc76' : '#6e9adb',
         }));
 
         console.log('Mapped deadlines for calendar:', extractedDeadlines);
@@ -211,7 +204,6 @@ export default function Home() {
       });
   }
 
-  //TO DO:
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
     setIdToDelete(Number(data.event.id));
