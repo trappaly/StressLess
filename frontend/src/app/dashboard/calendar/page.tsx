@@ -10,7 +10,7 @@ import interactionPlugin, {
   DropArg,
 } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
@@ -20,11 +20,14 @@ import { backendBaseUrl } from '@/lib/utils';
 import { UserDeadline, UserEvent } from '@/lib/types';
 
 export default function Home() {
-  const colorTypes = {
-    deadline: '#e11d48',
-    eventGenerated: '#a1cc76',
-    eventByUser: '#6e9adb',
-  };
+  const colorTypes = useMemo(
+    () => ({
+      deadline: '#e11d48',
+      eventGenerated: '#a1cc76',
+      eventByUser: '#6e9adb',
+    }),
+    [] // empty dependency array means this object will remain stable
+  );
   const { user } = useAuth();
   const [events] = useState([
     { title: 'event 1', id: '1' },
@@ -115,7 +118,7 @@ export default function Home() {
         console.log('Mapped events for calendar:', extractedEvents);
 
         // setting frontend
-        setAllEvents([...allEvents, ...extractedEvents, ...extractedDeadlines]);
+        setAllEvents([...extractedEvents, ...extractedDeadlines]);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -124,7 +127,7 @@ export default function Home() {
     fetchSchedule().then(() => {
       console.log('Fetched deadlines and events for user: ', user?.displayName);
     });
-  }, [user, colorTypes, allEvents]);
+  }, [user, colorTypes]);
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
