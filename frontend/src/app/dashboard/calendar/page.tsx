@@ -20,6 +20,11 @@ import { backendBaseUrl } from '@/lib/utils';
 import { UserDeadline, UserEvent } from '@/lib/types';
 
 export default function Home() {
+  const colorTypes = {
+    deadline: '#e11d48',
+    eventGenerated: '#a1cc76',
+    eventByUser: '#6e9adb',
+  };
   const { user } = useAuth();
   const [events] = useState([
     { title: 'event 1', id: '1' },
@@ -83,7 +88,7 @@ export default function Home() {
             description: deadline.description,
             user_id: deadline.user_id,
             // Optional: You could add more fields here if FullCalendar needs
-            color: '#e11d48',
+            color: colorTypes.deadline,
           })
         );
 
@@ -98,7 +103,9 @@ export default function Home() {
           // Optional: You could add more fields here if FullCalendar needs
 
           // color for generated events are different than user input events
-          color: event.is_generated ? '#a1cc76' : '#6e9adb',
+          color: event.is_generated
+            ? colorTypes.eventGenerated
+            : colorTypes.eventByUser,
         }));
 
         console.log('Mapped deadlines for calendar:', extractedDeadlines);
@@ -172,7 +179,7 @@ export default function Home() {
       return;
     }
 
-    const event: UserEvent & { start: Date; end?: Date } = {
+    const event: UserEvent & { start: Date; end?: Date; color?: string } = {
       ...newEvent,
       user_id: user.uid,
       start_time: data.date.toISOString(),
@@ -189,6 +196,7 @@ export default function Home() {
       recurrence_end_date: newEvent.recurrence_end_date,
       recurrence_pattern: newEvent.recurrence_pattern,
       recurrence_start_date: newEvent.recurrence_start_date,
+      color: colorTypes.eventByUser,
     };
     setAllEvents([...allEvents, event]);
 
@@ -237,7 +245,11 @@ export default function Home() {
       return;
     }
 
-    const eventWithUser: UserEvent & { start: Date; end?: Date } = {
+    const eventWithUser: UserEvent & {
+      start: Date;
+      end?: Date;
+      color?: string;
+    } = {
       ...newEvent,
       user_id: user.uid,
       start: new Date(newEvent.start_time), // <-- ensure start is there
@@ -254,6 +266,7 @@ export default function Home() {
       recurrence_end_date: newEvent.recurrence_end_date,
       recurrence_pattern: newEvent.recurrence_pattern,
       recurrence_start_date: newEvent.recurrence_start_date,
+      color: colorTypes.eventByUser,
     };
     setAllEvents([...allEvents, eventWithUser]);
 
@@ -282,18 +295,20 @@ export default function Home() {
     }
 
     // TODO: very ugly but works - show deadline after creating one
-    const deadline: UserDeadline & UserEvent & { start: Date } = {
-      ...example,
-      id: new Date().getTime().toString(),
-      user_id: user.uid,
-      title: newEvent.title,
-      due_time: newEvent.end_time ? newEvent.end_time : newEvent.start_time,
-      description: newEvent.description,
-      priority: null,
-      projected_duration: parseInt(newEvent.location_place || '60'),
-      created_at: newEvent.created_at,
-      start: new Date(newEvent.start_time),
-    };
+    const deadline: UserDeadline & UserEvent & { start: Date; color?: string } =
+      {
+        ...example,
+        id: new Date().getTime().toString(),
+        user_id: user.uid,
+        title: newEvent.title,
+        due_time: newEvent.end_time ? newEvent.end_time : newEvent.start_time,
+        description: newEvent.description,
+        priority: null,
+        projected_duration: parseInt(newEvent.location_place || '60'),
+        created_at: newEvent.created_at,
+        start: new Date(newEvent.start_time),
+        color: colorTypes.deadline,
+      };
     setAllEvents([...allEvents, deadline]);
 
     //added to test getting deadline name to the backend
