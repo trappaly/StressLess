@@ -28,6 +28,8 @@ export default [
         HTMLFormElement: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
+        Notification: 'readonly',
+        setTimeout: 'readonly',
       },
     },
     plugins: {
