@@ -321,7 +321,8 @@ export default function Home() {
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
+      .finally(() => console.log('End posting generate-schedule'));
   }
 
   return (
@@ -775,17 +776,12 @@ export default function Home() {
           </Dialog>
         </Transition.Root>
         <div className="fixed bottom-20 right-8 z-50 flex flex-col items-center space-y-2">
-          <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-md shadow-md text-center">
-            <span className="text-sm text-gray-700 dark:text-gray-300 break-words text-center">
-              Generate Your Perfect Schedule
-            </span>
-          </div>
           <button
             onClick={generatePerfectSchedule}
-            className="flex items-center justify-center w-16 h-16 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200"
+            className="flex items-center justify-center w-16 h-16 bg-violet-500 text-white rounded-full shadow-lg hover:bg-violet-600 transition-colors duration-200 cursor-pointer"
             aria-label="Generate Your Perfect Schedule"
           >
-            <span className="text-xs text-center">Gen</span>
+            <span className="text-xs text-center">Generate Schedule</span>
           </button>
         </div>
       </main>
