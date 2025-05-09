@@ -64,6 +64,37 @@ export default function Home() {
   });
   const [isDeadline, setIsDeadline] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (!('Notification' in window)) return;
+
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        const now = new Date();
+        console.log(allEvents);
+        allEvents.forEach((event) => {
+          console.log(event.start_time);
+          const eventTime = new Date(event.start_time);
+          const delay = eventTime.getTime() - now.getTime();
+          console.log(
+            'Event:',
+            event.title,
+            'Time:',
+            event.start_time,
+            'Delay:',
+            delay
+          );
+          if (delay > 0) {
+            setTimeout(() => {
+              new Notification(`Event Reminder: ${event.title}`, {
+                body: `Starts at ${eventTime.toLocaleTimeString()}`,
+              });
+            }, delay);
+          }
+        });
+      }
+    });
+  }, [allEvents]);
+
   // Fetching data from backend
   useEffect(() => {
     async function fetchSchedule() {
@@ -91,6 +122,9 @@ export default function Home() {
             id: deadline.id,
             title: deadline.title,
             start: deadline.due_time ? new Date(deadline.due_time) : undefined,
+            start_time: deadline.due_time
+              ? new Date(deadline.due_time)
+              : undefined,
             description: deadline.description,
             user_id: deadline.user_id,
             // Optional: You could add more fields here if FullCalendar needs
@@ -103,6 +137,7 @@ export default function Home() {
           id: event.id,
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
+          start_time: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
           description: event.description,
           user_id: event.user_id,
