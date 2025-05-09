@@ -66,35 +66,60 @@ export default function Home() {
   const [isDeadline, setIsDeadline] = useState<boolean>(false);
 
   useEffect(() => {
-    async function fetchEvents() {
+    async function fetchSchedule() {
       try {
         if (!user) {
           console.log('No user found');
           return;
         }
 
-        const response = await axios.get(
+        // fetch deadlines
+        const responseDeadlines = await axios.get(
+          `${backendBaseUrl}/api/calendar/deadlines/by-user/${user.uid}`
+        );
+        console.log('Fetched raw deadlines:', responseDeadlines.data);
+
+        // fetch events
+        const responseEvents = await axios.get(
           `${backendBaseUrl}/api/calendar/events/by-user/${user.uid}`
         );
-        console.log('Fetched raw events:', response.data);
+        console.log('Fetched raw events:', responseEvents.data);
 
-        const extractedEvents = response.data.map((event: UserEvent) => ({
+        // map deadlines
+        const extractedDeadlines = responseDeadlines.data.map(
+          (deadline: UserDeadline) => ({
+            id: deadline.id,
+            title: deadline.title,
+            start: deadline.due_time ? new Date(deadline.due_time) : undefined,
+            description: deadline.description,
+            user_id: deadline.user_id,
+            // Optional: You could add more fields here if FullCalendar needs
+          })
+        );
+
+        // map events
+        const extractedEvents = responseEvents.data.map((event: UserEvent) => ({
           id: event.id,
           title: event.title,
           start: event.start_time ? new Date(event.start_time) : undefined,
           end: event.end_time ? new Date(event.end_time) : undefined,
+          description: event.description,
+          user_id: event.user_id,
           // Optional: You could add more fields here if FullCalendar needs
         }));
 
+        console.log('Mapped deadlines for calendar:', extractedDeadlines);
         console.log('Mapped events for calendar:', extractedEvents);
-        setAllEvents(extractedEvents);
+
+        // setting frontend
+        setAllEvents([...allEvents, ...extractedEvents, ...extractedDeadlines]);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     }
 
-    fetchEvents().then(() => {
-      console.log('Fetched events for user: ', user?.displayName);
+    fetchSchedule().then(() => {
+      console.log('Fetched deadlines and events for user: ', user?.displayName);
     });
   }, [user]);
 
@@ -208,14 +233,6 @@ export default function Home() {
     setIdToDelete(null);
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('handleChange called');
-    setNewEvent({
-      ...newEvent,
-      title: e.target.value,
-    });
-  };
-
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!user) {
@@ -234,7 +251,6 @@ export default function Home() {
       start: new Date(newEvent.start_time), // <-- ensure start is there
       end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
       title: newEvent.title,
-
       id: newEvent.id, // UUIDs are strings
       break_time: newEvent.break_time,
       start_time: newEvent.start_time,
@@ -273,22 +289,29 @@ export default function Home() {
       return;
     }
 
-    const deadline: UserDeadline = {
+    // TODO: very ugly but works - show deadline after creating one
+    const deadline: UserDeadline & UserEvent & { start: Date } = {
+      ...example,
       id: new Date().getTime().toString(),
       user_id: user.uid,
       title: newEvent.title,
-      due_time: newEvent.start_time || newEvent.end_time,
+      due_time: newEvent.end_time ? newEvent.end_time : newEvent.start_time,
       description: newEvent.description,
       priority: null,
       projected_duration: parseInt(newEvent.location_place || '60'),
       created_at: newEvent.created_at,
+      start: new Date(newEvent.start_time),
     };
+    setAllEvents([...allEvents, deadline]);
 
     //added to test getting deadline name to the backend
     axios
       .post(backendBaseUrl + `/api/calendar/deadlines`, deadline)
       .then((response) => {
-        console.log('Successfully saved deadline into backend: ', user!.uid);
+        console.log(
+          'Successfully saved deadline into backend for user id: ',
+          user!.uid
+        );
         console.log(response);
       })
       .catch((error) => {
@@ -299,7 +322,6 @@ export default function Home() {
     setNewEvent({
       ...example,
     });
-
     setIsDeadline(false);
   }
 
@@ -525,7 +547,12 @@ export default function Home() {
                           focus:ring-inset focus:ring-violet-600
                           sm:text-sm sm:leading-6"
                               value={newEvent.title}
-                              onChange={(e) => handleChange(e)}
+                              onChange={(e) =>
+                                setNewEvent({
+                                  ...newEvent,
+                                  title: e.target.value,
+                                })
+                              }
                               placeholder=" Title"
                             />
 
