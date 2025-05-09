@@ -12,7 +12,7 @@ import interactionPlugin, {
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import { CheckIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
@@ -37,6 +37,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
+
   const example: UserEvent = {
     title: '',
     end_time: null,
@@ -53,6 +54,8 @@ export default function Home() {
     recurrence_pattern: null,
     recurrence_start_date: null,
   };
+  const [selectedEvent, setSelectedEvent] = useState<UserEvent>(example);
+
   const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
@@ -212,9 +215,15 @@ export default function Home() {
       });
   }
 
-  function handleDeleteModal(data: { event: { id: string } }) {
+  function handleOpenModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
     setIdToDelete(data.event.id);
+    console.log(data.event.id);
+    console.log(allEvents);
+    const selected = allEvents.find((event) => event.id === data.event.id);
+    if (selected) {
+      setSelectedEvent(selected);
+    }
   }
 
   async function handleDelete() {
@@ -246,6 +255,7 @@ export default function Home() {
       .finally(() => {
         setShowDeleteModal(false);
         setIdToDelete(null);
+        setSelectedEvent(example);
       });
   }
 
@@ -256,6 +266,7 @@ export default function Home() {
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
+    setSelectedEvent(example);
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -280,7 +291,7 @@ export default function Home() {
       start: new Date(newEvent.start_time), // <-- ensure start is there
       end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
       title: newEvent.title,
-      id: newEvent.id, // UUIDs are strings
+      id: newEvent.id, // this is FullCalendar id
       break_time: newEvent.break_time,
       start_time: newEvent.start_time,
       created_at: new Date().toISOString(),
@@ -293,12 +304,15 @@ export default function Home() {
       recurrence_start_date: newEvent.recurrence_start_date,
       color: colorTypes.eventByUser,
     };
-    setAllEvents([...allEvents, eventWithUser]);
 
     axios
       .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
       .then((response) => {
         console.log('Successfully saved event:', response.data);
+        // We want to be consistent and use our backend id
+        const correctId = response.data.id;
+        const { id, ...restEvent } = eventWithUser;
+        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
         console.error('Error saving event:', error);
@@ -323,7 +337,7 @@ export default function Home() {
     const deadline: UserDeadline & UserEvent & { start: Date; color?: string } =
       {
         ...example,
-        id: new Date().getTime().toString(),
+        id: newEvent.id,
         user_id: user.uid,
         title: newEvent.title,
         due_time: newEvent.end_time ? newEvent.end_time : newEvent.start_time,
@@ -334,7 +348,6 @@ export default function Home() {
         start: new Date(newEvent.start_time),
         color: colorTypes.deadline,
       };
-    setAllEvents([...allEvents, deadline]);
 
     //added to test getting deadline name to the backend
     axios
@@ -345,6 +358,10 @@ export default function Home() {
           user!.uid
         );
         console.log(response);
+        // We want to be consistent and use our backend id
+        const correctId = response.data.id;
+        const { id, ...restEvent } = deadline;
+        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
         console.log(error);
@@ -391,7 +408,11 @@ export default function Home() {
       .then((response) => {
         console.log('Successfully generated schedule for user: ', user!.uid);
         console.log(response);
-        window.location.reload();
+        if (response.data.length !== 0) {
+          window.location.reload();
+        } else {
+          window.alert('Add some deadlines first!');
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -424,7 +445,7 @@ export default function Home() {
               selectMirror={true}
               dateClick={handleDateClick}
               drop={(data) => addEvent(data)}
-              eventClick={(data) => handleDeleteModal(data)}
+              eventClick={(data) => handleOpenModal(data)}
             />
           </div>
           <div
@@ -478,6 +499,63 @@ export default function Home() {
                 >
                   <Dialog.Panel
                     className="relative transform overflow-hidden rounded-lg
+  bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                  >
+                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                      <div className="text-center">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-2xl font-semibold leading-6 text-gray-900 mb-2"
+                        >
+                          {selectedEvent?.title
+                            ? selectedEvent?.title
+                            : 'EVENT/DEADLINE DETAILS'}
+                        </Dialog.Title>
+
+                        {selectedEvent?.description && (
+                          <p
+                            className={`text-lg text-gray-700 ${selectedEvent?.location_place ? 'mb-2' : 'mb-4'}`}
+                          >
+                            <span className="font-medium">Description:</span>{' '}
+                            {selectedEvent.description}
+                          </p>
+                        )}
+                        {selectedEvent?.location_place && (
+                          <p className="text-lg text-gray-700 mb-4">
+                            <span className="font-medium">Location:</span>{' '}
+                            {selectedEvent.location_place}
+                          </p>
+                        )}
+
+                        <p className="text-sm text-gray-500">
+                          Would you like to delete this event? The action is
+                          permanent.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
+      font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                        onClick={handleDelete}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900
+      shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                        onClick={handleCloseModal}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+
+                  {/*<Dialog.Panel
+                    className="relative transform overflow-hidden rounded-lg
                  bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                   >
                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -491,6 +569,11 @@ export default function Home() {
                             aria-hidden="true"
                           />
                         </div>
+                        {selectedEvent?.description && (
+                          <p className="text-sm text-gray-700">
+                            <span className="font-medium text-gray-900">Description:</span> {selectedEvent.description}
+                          </p>
+                        )}
                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                           <Dialog.Title
                             as="h3"
@@ -524,7 +607,7 @@ export default function Home() {
                         Cancel
                       </button>
                     </div>
-                  </Dialog.Panel>
+                  </Dialog.Panel>*/}
                 </Transition.Child>
               </div>
             </div>
