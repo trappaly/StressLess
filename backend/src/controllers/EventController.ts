@@ -113,6 +113,25 @@ export default class EventController {
   }
 
   /**
+   * Deletes all generated events for a specific user.
+   * @param req.params.user_id ID of the user.
+   */
+  public static async deleteGeneratedEvent(req: Request, res: Response) {
+    try {
+      const user_id = req.params.user_id;
+      const generatedEvents = await prisma.user_events.deleteMany({
+        where: {
+          user_id: user_id,
+          is_generated: true,
+        },
+      });
+      res.json(generatedEvents);
+    } catch (error:any) {
+      res.status(404).json({ error: error });
+    }
+  }
+
+  /**
    * Returns an object containing the values of the user event, excluding the
    * id (created automatically) and the creation date.
    */
