@@ -118,7 +118,6 @@ Some examples of events include
 - Scheduled meetings
 
 ### Deadline 
-### Deadline
 
 A **deadline** has a due date of when it has to get done, but it has no set time the user has to work on it
 
