@@ -97,18 +97,50 @@ export default class EventController {
     }
   }
 
+  // TODO: Once delete deadline is implemented separately in the frontend, remove this nested logic
   /**
    * Deletes a specified event.
    * @param req.params.id ID of the event.
    */
   public static async deleteEvent(req: Request, res: Response) {
     try {
-      const event = await prisma.user_events.delete({
+      const event = await prisma.user_events.deleteMany({
         where: { id: req.params.id }, // Ensure id is uuid
       });
-      res.json(event);
-    } catch {
-      res.status(404).json({ error: 'Not found' });
+      if (event.count === 0) {
+        const deadline = await prisma.user_deadlines.deleteMany({
+            where: { id: req.params.id },
+          });
+        if (deadline.count === 0) {
+          res.status(404).json({ error: 'Did not find event or deadline with such id' });
+        } else {
+          res.json({ message: 'Deleted deadline', count: deadline.count });
+        }
+      } else {
+        res.json({ message: 'Deleted event', count: event.count });
+      }
+    } catch (error:any) {
+      console.error(error);
+      res.status(404).json({ error: error });
+    }
+  }
+
+  /**
+   * Deletes all generated events for a specific user.
+   * @param req.params.user_id ID of the user.
+   */
+  public static async deleteGeneratedEvent(req: Request, res: Response) {
+    try {
+      const user_id = req.params.user_id;
+      const generatedEvents = await prisma.user_events.deleteMany({
+        where: {
+          user_id: user_id,
+          is_generated: true,
+        },
+      });
+      res.json(generatedEvents);
+    } catch (error:any) {
+      res.status(404).json({ error: error });
     }
   }
 
