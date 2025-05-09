@@ -124,7 +124,7 @@ export default function Home() {
     fetchSchedule().then(() => {
       console.log('Fetched deadlines and events for user: ', user?.displayName);
     });
-  }, [user]);
+  }, [user, colorTypes, allEvents]);
 
   useEffect(() => {
     const draggableEl = document.getElementById('draggable-el');
@@ -312,6 +312,7 @@ export default function Home() {
         // We want to be consistent and use our backend id
         const correctId = response.data.id;
         const { id, ...restEvent } = eventWithUser;
+        console.log(`Replace ${id} with ${correctId}`);
         setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
@@ -361,6 +362,7 @@ export default function Home() {
         // We want to be consistent and use our backend id
         const correctId = response.data.id;
         const { id, ...restEvent } = deadline;
+        console.log(`Replace ${id} with ${correctId}`);
         setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
