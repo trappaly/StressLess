@@ -10,7 +10,7 @@ import interactionPlugin, {
   DropArg,
 } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { EventSourceInput } from '@fullcalendar/core/index.js';
@@ -36,7 +36,7 @@ export default function Home() {
   const [allEvents, setAllEvents] = useState<UserEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const example: UserEvent = {
     title: '',
     end_time: null,
@@ -214,16 +214,41 @@ export default function Home() {
 
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
-    setIdToDelete(Number(data.event.id));
+    setIdToDelete(data.event.id);
   }
 
-  function handleDelete() {
-    setAllEvents(
-      allEvents.filter((event) => Number(event.id) !== Number(idToDelete))
-    );
-    setShowDeleteModal(false);
-    setIdToDelete(null);
+  async function handleDelete() {
+    console.log('handleDelete called for event: ', idToDelete);
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    if (!idToDelete) {
+      console.log('no idToDelete found');
+      return;
+    }
+
+    //added to test getting event name to the backend
+    axios
+      .delete(backendBaseUrl + `/api/calendar/events/id/${idToDelete}`)
+      .then((response) => {
+        console.log('Successfully delete event: ', idToDelete);
+        console.log(response);
+        // UI local state
+        setAllEvents(allEvents.filter((event) => event.id !== idToDelete));
+      })
+      .catch((error) => {
+        console.log(error);
+        window.alert('Failed to delete event, try again another time :(');
+      })
+      .finally(() => {
+        setShowDeleteModal(false);
+        setIdToDelete(null);
+      });
   }
+
   function handleCloseModal() {
     setShowModal(false);
     setNewEvent({
@@ -356,9 +381,6 @@ export default function Home() {
 
   function generatePerfectSchedule() {
     console.log('Generate perfect schedule clicked');
-    // Add your logic to generate the perfect schedule here
-    // For example, you can call an API endpoint or perform some calculations
-    // and then update the state accordingly.
     if (!user) {
       console.log('no user found');
       return;
@@ -409,7 +431,9 @@ export default function Home() {
             id="draggable-el"
             className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50"
           >
-            <h1 className="font-bold text-lg text-center">Frequent Events</h1>
+            <h1 className="font-bold text-lg text-center dark:text-black">
+              Frequent Events
+            </h1>
 
             {events.map((event) => (
               <div
