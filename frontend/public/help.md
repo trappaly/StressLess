@@ -17,6 +17,12 @@ Welcome to StressLess! Here's how you get started...
 3. Click the sign in button above the sign up page to sign in
 4. Enter your email and password to sign in 
 
+# What if I'm Already Signed In? 
+1. If you're already signed in, click get started
+2. The button will bring you down the page where it says you are already signed in 
+3. Click on the green go to dashboard button underneath the you already signed in message to access your profile page
+
+
 # How Do I Change Visibility Settings?
 
 1. You can view the app in either dark or light mode 
@@ -69,6 +75,16 @@ You can either edit your preferences in two ways
 
 
 <!-- Section: dashboard/calendar -->
+# Custom Scheduling 
+## How Do I Create My Custom Schedule? 
+1. Make sure all of your user preferences are filed out in the profile page (See *How Do I Edit My Preferences in the Survey* on the user help guide on the profile page)
+2. Add deadlines (See *How Do I Add My Own Custom Deadline* on the user help guide on the calendar page)
+3. Locate the purple generate schedule button in the bottom right corner
+4. Press the purple generate schedule button
+## What if I Don't Like the Schedule the Custom Schedule Created?
+1. Locate the red remove generated events buttons in the bottom right corner underneath the purple generate schedule button 
+2. Press remove generated events to remove the events the schedule generated 
+
 # Calendar
 
 ## How Do I Change Calendar Views?
@@ -89,19 +105,65 @@ You can either edit your preferences in two ways
 1. At the top of the calendar in the left hand corner next to the arrows click on the today button
 2. When you click on the today button, the current day will glow yellow showing you what the current day is
 
+## What is The Difference Between an Event and Deadline? 
+### Event
+An **event** is an activity in the schedule that must happen at a specific time.
+
+Some examples of events include
+- Reoccurring class times
+- Reoccurring work shifts
+- Club meetings
+- Sports practices
+- A social event
+- Scheduled meetings
+
+### Deadline 
+
+A **deadline** has a due date of when it has to get done, but it has no set time the user has to work on it
+
+Some example of deadlines include
+
+- An assignment for class
+- An essay to write
+- A test to study for
+- A presentation to work on
+- A project
+
 ## How Do I Add a Preexisting Event?
 
 1. You can add an event when you are on the calendar page. 
 2. You can drag any of the preexisting events from the right side into the desired day
 
-## How Do I Add My Own Custom Event?
+## How Do I Add My Own Custom Event or Deadline?
 
 1. Don’t use the pre-existing events on the right
-2. Instead, click on a day you want to add the event
-3. Type in the label of your custom event
-4. Click create to add your event
+2. Instead, click on a day you want to add the event or deadline 
+3. When you click on the day, the add event or deadline window should open
+4. At the top of the file, the user can select whether they want it to be an event or deadline (see the user FAQ *What is the Difference Between an Event and Deadline* to determine if it is classified as an event or deadline)
+5. For both events and deadlines, enter in the title in the title box and the description in the description box
 
-## How Do I Change the Day of an Event?
+### Events
+1. Enter in the location in the location box
+2. Enter in the start date and time and end date in time below the location box
+
+**For Reoccurring Events**
+
+1. Enter the start date and time and end date and time again.
+2. Reoccurring events have the options of daily, weekly, and monthly 
+3. Select daily if it reoccurs daily
+4. Select weekly if it reoccurs weekly
+5. Select monthly if it reoccurs monthly
+6. Click on the create button to create the event 
+7. If you don’t want to create the event anymore, press cancel
+
+### Deadlines
+1. Enter in how long you estimate your deadline will take in the projected duration box (it is better to overestimate than underestimate how long it will take)
+2. Under the projected duration box, enter what date and what time your deadline is due
+3. Click on the create button to create the deadline 
+4. If you don’t want to create the deadline anymore, press cancel
+
+
+## How Do I Change the Day of an Event or Deadline?
 
 1. You can be in either weekly or monthly mode 
 2. Change the day by dragging the event to the new desired day 
@@ -129,11 +191,11 @@ You can either edit your preferences in two ways
 5. Increase the number of days for the event by dragging the arrow to the right 
 6. Decrease the number of days for the event by dragging the arrow to the left
 
-## How Do I Delete an Event?
+## How Do I Delete an Event or Deadline?
 
-1. You can delete an event by clicking on the event on the calendar. 
-2. If you click on the event, you can press the read delete button to delete the event
-3. If you don’t want to delete the event, you can press the cancel button
+1. You can delete an event or deadline by clicking on the event on the calendar. 
+2. If you click on the event or deadline, you can press the read delete button to delete the event or deadline
+3. If you don’t want to delete the event or deadline, you can press the cancel button
 
 ## How Do I Sign Out?
 1. Click on the sidebar icon on the upper lefthand corner on either the user profile or calendar page 
