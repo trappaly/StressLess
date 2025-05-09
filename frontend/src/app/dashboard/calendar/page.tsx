@@ -28,7 +28,7 @@ import { EventSourceInput } from '@fullcalendar/core/index.js';
 import { useAuth } from '@/components/context/auth/AuthContext';
 import axios from 'axios';
 import { backendBaseUrl } from '@/lib/utils';
-import { UserEvent } from '@/lib/types';
+import { UserDeadline, UserEvent } from '@/lib/types';
 
 export default function Home() {
   //imported from the backend user preferences
@@ -63,6 +63,7 @@ export default function Home() {
   const [newEvent, setNewEvent] = useState<UserEvent>({
     ...example,
   });
+  const [isDeadline, setIsDeadline] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -184,6 +185,7 @@ export default function Home() {
         console.log(error);
       });
   }
+
   //TO DO:
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
@@ -220,6 +222,12 @@ export default function Home() {
       console.log('no user found');
       return;
     }
+
+    if (isDeadline) {
+      addDeadlineFromEvent()
+      return;
+    }
+
     const eventWithUser: UserEvent & { start: Date; end?: Date } = {
       ...newEvent,
       user_id: user.uid,
@@ -256,11 +264,64 @@ export default function Home() {
     });
   }
 
+  // TODO: handle dragging data
+  function addDeadlineFromEvent() {
+    console.log('addDeadlineFromEvent called');
+
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    const deadline: UserDeadline = {
+      id: new Date().getTime().toString(),
+      user_id: user.uid,
+      title: newEvent.title,
+      due_time: newEvent.start_time || newEvent.end_time,
+      description: newEvent.description,
+      priority: null,
+      projected_duration: parseInt(newEvent.location_place || "60"),
+      created_at: newEvent.created_at,
+    };
+
+    //added to test getting deadline name to the backend
+    axios
+      .post(backendBaseUrl + `/api/calendar/deadlines`, deadline)
+      .then((response) => {
+        console.log('Successfully saved deadline into backend: ', user!.uid);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    
+    setShowModal(false);
+    setNewEvent({
+      ...example,
+    });
+
+    setIsDeadline(false);
+  }
+
   function generatePerfectSchedule() {
     console.log('Generate perfect schedule clicked');
     // Add your logic to generate the perfect schedule here
     // For example, you can call an API endpoint or perform some calculations
     // and then update the state accordingly.
+    if (!user) {
+      console.log('no user found');
+      return;
+    }
+
+    axios
+    .post(backendBaseUrl + `/api/user/generate-schedule/${user.uid}`)
+    .then((response) => {
+      console.log('Successfully generated schedule: ', user!.uid);
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
 
@@ -431,10 +492,38 @@ export default function Home() {
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          Add Event
+                          Add Event or Deadline
                         </Dialog.Title>
                         <form action="submit" onSubmit={handleSubmit}>
                           <div className="mt-2">
+                            <label>
+                              <input
+                                type="radio"
+                                name="event_deadline_switcher"
+                                value="event"
+                                checked={
+                                  !isDeadline
+                                } // Explicitly control the checked state
+                                onChange={() =>
+                                  setIsDeadline(false)
+                                }
+                              />
+                              Event
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="event_deadline_switcher"
+                                value="deadline"
+                                checked={
+                                  isDeadline
+                                } // Explicitly control the checked state
+                                onChange={() =>
+                                  setIsDeadline(true)
+                                }
+                              />
+                              Deadline
+                            </label>
                             <input
                               type="text"
                               name="title"
@@ -481,7 +570,7 @@ export default function Home() {
                                   location_place: e.target.value,
                                 })
                               }
-                              placeholder=" Location"
+                              placeholder={isDeadline ? " Projected Duration (minutes)" : " Location"}
                             />
                             <input
                               type="DateTime-local"
@@ -507,52 +596,56 @@ export default function Home() {
                               }
                               placeholder="Start Time"
                             />
-                            <input
-                              type="DateTime-local"
-                              name="end_time"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                          focus:ring-2
-                          focus:ring-inset focus:ring-violet-600"
-                              value={
-                                newEvent.end_time
-                                  ? new Date(newEvent.end_time)
-                                      .toLocaleString('sv-SE')
-                                      .replace(' ', 'T')
-                                  : newEvent.end_time || ''
-                              }
-                              onChange={(e) =>
-                                setNewEvent({
-                                  ...newEvent,
-                                  end_time: new Date(
-                                    e.target.value
-                                  ).toISOString(),
-                                })
-                              }
-                              placeholder=" End Time" // Does not work
-                            />
-                            <input
-                              type="checkbox"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900
-                          shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                          focus:ring-2
-                          focus:ring-inset focus:ring-violet-600"
-                              name="is_recurring"
-                              checked={newEvent.is_recurring}
-                              onChange={(e) =>
-                                setNewEvent({
-                                  ...newEvent,
-                                  is_recurring: e.target.checked,
-                                })
-                              }
-                              placeholder=" Recurring"
-                            />
-                            <label
-                              htmlFor="is_recurring"
-                              className="text-sm text-gray-500"
-                            >
-                              Reocurring
-                            </label>
+                            {!isDeadline && (
+                              <>
+                                <input
+                                  type="DateTime-local"
+                                  name="end_time"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                              shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                              focus:ring-2
+                              focus:ring-inset focus:ring-violet-600"
+                                  value={
+                                    newEvent.end_time
+                                      ? new Date(newEvent.end_time)
+                                          .toLocaleString('sv-SE')
+                                          .replace(' ', 'T')
+                                      : newEvent.end_time || ''
+                                  }
+                                  onChange={(e) =>
+                                    setNewEvent({
+                                      ...newEvent,
+                                      end_time: new Date(
+                                        e.target.value
+                                      ).toISOString(),
+                                    })
+                                  }
+                                  placeholder=" End Time" // Does not work
+                                />
+                                <input
+                                  type="checkbox"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900
+                              shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                              focus:ring-2
+                              focus:ring-inset focus:ring-violet-600"
+                                  name="is_recurring"
+                                  checked={newEvent.is_recurring}
+                                  onChange={(e) =>
+                                    setNewEvent({
+                                      ...newEvent,
+                                      is_recurring: e.target.checked,
+                                    })
+                                  }
+                                  placeholder=" Recurring"
+                                />
+                                <label
+                                  htmlFor="is_recurring"
+                                  className="text-sm text-gray-500"
+                                >
+                                  Reocurring
+                                </label>
+                              </>
+                            )}
                             {newEvent.is_recurring && (
                               <input
                                 type="DateTime-local"
@@ -579,7 +672,7 @@ export default function Home() {
                                 placeholder=" Recurrence Start Date"
                               />
                             )}
-                            {newEvent.is_recurring && (
+                            {newEvent.is_recurring && !isDeadline && (
                               <input
                                 type="DateTime-local"
                                 name="recurrence_end_date"
@@ -605,7 +698,7 @@ export default function Home() {
                                 placeholder=" Recurrence End Date"
                               />
                             )}
-                            {newEvent.is_recurring && (
+                            {newEvent.is_recurring && !isDeadline && (
                               <>
                                 <label>
                                   <input
