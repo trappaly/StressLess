@@ -224,7 +224,7 @@ export default function Home() {
     }
 
     if (isDeadline) {
-      addDeadlineFromEvent()
+      addDeadlineFromEvent();
       return;
     }
 
@@ -280,7 +280,7 @@ export default function Home() {
       due_time: newEvent.start_time || newEvent.end_time,
       description: newEvent.description,
       priority: null,
-      projected_duration: parseInt(newEvent.location_place || "60"),
+      projected_duration: parseInt(newEvent.location_place || '60'),
       created_at: newEvent.created_at,
     };
 
@@ -294,7 +294,7 @@ export default function Home() {
       .catch((error) => {
         console.log(error);
       });
-    
+
     setShowModal(false);
     setNewEvent({
       ...example,
@@ -314,16 +314,15 @@ export default function Home() {
     }
 
     axios
-    .post(backendBaseUrl + `/api/user/generate-schedule/${user.uid}`)
-    .then((response) => {
-      console.log('Successfully generated schedule: ', user!.uid);
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .post(backendBaseUrl + `/api/user/generate-schedule/${user.uid}`)
+      .then((response) => {
+        console.log('Successfully generated schedule: ', user!.uid);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
-
 
   return (
     <>
@@ -501,12 +500,8 @@ export default function Home() {
                                 type="radio"
                                 name="event_deadline_switcher"
                                 value="event"
-                                checked={
-                                  !isDeadline
-                                } // Explicitly control the checked state
-                                onChange={() =>
-                                  setIsDeadline(false)
-                                }
+                                checked={!isDeadline} // Explicitly control the checked state
+                                onChange={() => setIsDeadline(false)}
                               />
                               Event
                             </label>
@@ -515,12 +510,8 @@ export default function Home() {
                                 type="radio"
                                 name="event_deadline_switcher"
                                 value="deadline"
-                                checked={
-                                  isDeadline
-                                } // Explicitly control the checked state
-                                onChange={() =>
-                                  setIsDeadline(true)
-                                }
+                                checked={isDeadline} // Explicitly control the checked state
+                                onChange={() => setIsDeadline(true)}
                               />
                               Deadline
                             </label>
@@ -570,7 +561,11 @@ export default function Home() {
                                   location_place: e.target.value,
                                 })
                               }
-                              placeholder={isDeadline ? " Projected Duration (minutes)" : " Location"}
+                              placeholder={
+                                isDeadline
+                                  ? ' Projected Duration (minutes)'
+                                  : ' Location'
+                              }
                             />
                             <input
                               type="DateTime-local"
