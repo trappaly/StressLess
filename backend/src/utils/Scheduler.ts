@@ -301,14 +301,15 @@ export default class Scheduler {
     // Filter events that start after given time and before end of work day
     const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
     const dayEnd = userPreferences.endTime;
-    const futureEvents = events
+    const minutesToDayEnd = dayEnd - currentMinutes;
+    const dayEndDate = new Date(time.getTime() + minutesToDayEnd * 60000);
+
+    const futureEventsOnThisDay = events
       .filter(
         (event) =>
           event &&
           event.start_time >= time &&
-          event.start_time < new Date(time.getDate() + 1) &&
-          UserPreferenceUtils.dateToMinuteNumber(event.start_time) <
-            userPreferences.endTime
+          event.start_time < dayEndDate
       )
       .sort(
         (a, b) =>
@@ -316,13 +317,14 @@ export default class Scheduler {
           UserPreferenceUtils.dateToMinuteNumber(b.start_time)
       );
 
-    if (futureEvents.length > 0) {
-      return (
-        UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) -
-        currentMinutes
+    if (futureEventsOnThisDay.length > 0) {
+      const returned = Math.max(
+        UserPreferenceUtils.dateToMinuteNumber(futureEventsOnThisDay[0].start_time) - currentMinutes - 1,
+        1
       );
+      return returned;
     }
 
-    return dayEnd - currentMinutes;
+    return minutesToDayEnd;
   }
 }
