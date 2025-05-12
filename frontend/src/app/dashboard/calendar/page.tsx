@@ -346,12 +346,32 @@ export default function Home() {
     axios
       .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
       .then((response) => {
-        console.log('Successfully saved event:', response.data);
+        // controller may save multiple events now.
+        console.log('Successfully saved events:', response);
+        console.log('event series', response.data.eventSeries);
+        const eventsToAdd: (typeof eventWithUser)[] = [];
+
+        // const { id, start_time, end_time, ...restEvent } = eventWithUser;
+
+        for (const newEvent of response.data.eventSeries) {
+          // Notice that the keys might not be in the correct order
+          eventsToAdd.push({
+            ...eventWithUser,
+            id: newEvent.id,
+            start_time: new Date(newEvent.start_time).toISOString(),
+            end_time: newEvent.endTime,
+            start: new Date(newEvent.start_time),
+            end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
+          });
+        }
+
+        setAllEvents([...allEvents, ...eventsToAdd]);
+
         // We want to be consistent and use our backend id
-        const correctId = response.data.id;
-        const { id, ...restEvent } = eventWithUser;
-        console.log(`Replace ${id} with ${correctId}`);
-        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
+        // const correctId = response.data.id;
+        // const { id, ...restEvent } = eventWithUser;
+        // console.log(`Replace ${id} with ${correctId}`);
+        // setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
         console.error('Error saving event:', error);
