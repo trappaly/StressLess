@@ -63,16 +63,22 @@ export default class EventController {
   }
 
   /**
-   * Adds a new event to database using values in the request.
+   * Adds a new event and its recurrences to database using values in the request.
+   * Response will be an object containing an array.
+   * 
    * @param req.body - Fields have the same names of the columns in the
    *  `user_events` table. `id` will be ignored since an UUID will be generated.
    */
   public static async postEvent(req: Request, res: Response) {
     const values = EventController.getUserEventValues(req);
-    const result = await prisma.user_events.create({
-      data: { ...values },
+    const eventSeries = EventController.createEventSeriesFromEvent({ ...values });
+    // const eventSeries = [{ ...values }];
+    const result = await prisma.user_events.createManyAndReturn({
+      data: eventSeries,
     });
-    res.json(result);
+    res.json({
+      eventSeries: result,
+    });
   }
 
   /**
@@ -180,4 +186,128 @@ export default class EventController {
       deadline_id,
     };
   }
+
+  /**
+   * Creates an event series from a single event in request if the event is recurring.
+   * 
+   * Note that we create recurring events in the following way:
+   * - Create the first event, regardless of whether it is in the recurrence period.
+   * - Repeatedly check same time previous (day/week/month) to see if it falls
+   * in recurrence period
+   *   - If time is not in recurrence period but after start of recurrence period,
+   *   do not create an event.
+   *   - If time is in recurrence period, create an event
+   *   - If time if before start of recurrence period, stop searching
+   * - Repeatedly check same time next (day/week/month) to see if it falls
+   * in recurrence period
+   *   - Similar logic, but we are moving towards the end of recurrence period
+   *     and stopping search there.
+   * - Note that if any newly created events due to recurrence (but not the
+   * event given as the parameter) would fall partially within the recurrence
+   * period, we do not create this new event. For recurrences to be created,
+   * they must fall completely within the recurrence period.
+   * - Note that this also prevents mishandling of recurrence starting after
+   * its end.
+   * 
+   * For example: If we want to create an weekly recurring event on May 5, 2025,
+   * at 00:00-01:00, with the recurrence period between May 12 at 00:30 and
+   * May 27 at 00:00, then the output would be three events on:
+   * - May 5, 2025,
+   * - May 19, 2025,
+   * - May 26, 2025.
+   * 
+   * @param event The initial event that we want to create recurrences for.
+   * This event will always be returned.
+   * 
+   * @returns An array with `event` and its recurring instances.
+   */
+  private static createEventSeriesFromEvent(event: any) {
+    const returned = [event];
+
+    // If event is not recurring or invalid, return single event array
+    if (
+      !event.is_recurring ||
+      !event.recurrence_pattern ||
+      !event.recurrence_start_date ||
+      !event.recurrence_end_date
+    ) {
+      return returned;
+    }
+
+    // Define some helper functions
+
+    const getNextRecurrence = (
+      current: Date | null, pattern: string, forward: boolean
+    ): Date | null => {
+      if (!current) return null;
+
+      const nextDate = new Date(current.getTime());
+      if (pattern === 'daily') {
+        nextDate.setDate(current.getDate() + (forward ? 1 : -1));
+      } else if (pattern === 'weekly') {
+        nextDate.setDate(current.getDate() + (forward ? 7 : -7));
+      } else if (pattern === 'monthly') {
+        nextDate.setMonth(current.getMonth() + (forward ? 1 : -1));
+      } else {
+        return null;
+      }
+
+      return nextDate;
+    };
+
+    const eventInRecurrencePeriod = (
+      eventToCheck: any, recurrenceStart: Date, recurrenceEnd: Date
+    ): boolean => {
+      return (
+        new Date(eventToCheck.start_time) >= recurrenceStart && (
+          !eventToCheck.end_time ||
+          new Date(eventToCheck.end_time) < recurrenceEnd
+        )
+      );
+    };
+
+    const addEventIfInRecurrencePeriod = (
+      originalEvent: any, startTime: Date, eventDuration: number, returnedArray: any[]
+    ) => {
+      const newEvent = {
+        ...originalEvent,
+        start_time: startTime,
+        end_time: eventDuration > 0 ? new Date(startTime.getTime() + eventDuration) : undefined,
+      };
+      if (eventInRecurrencePeriod(
+        newEvent,
+        new Date(event.recurrence_start_date),
+        new Date(event.recurrence_end_date)
+      )) {
+        returnedArray.push(newEvent);
+      }
+    };
+
+    // Calculate event duration
+    const eventDuration = event.end_time ?
+      new Date(event.end_time).getTime() - new Date(event.start_time).getTime() :
+      -1;
+    
+    // 1. Add days after event:
+    for (
+      let d = getNextRecurrence(new Date(event.start_time), event.recurrence_pattern, true);
+      d && d < new Date(event.recurrence_end_date);
+      d = getNextRecurrence(d, event.recurrence_pattern, true)
+    ) {
+      addEventIfInRecurrencePeriod(event, d, eventDuration, returned);
+    }
+
+    // 2. Add days before event:
+    for (
+      let d = getNextRecurrence(new Date(event.start_time), event.recurrence_pattern, false);
+      d && d > new Date(event.recurrence_start_date);
+      d = getNextRecurrence(d, event.recurrence_pattern, false)
+    ) {
+      addEventIfInRecurrencePeriod(event, d, eventDuration, returned);
+    }
+
+    return returned;
+  }
+  
+
 }

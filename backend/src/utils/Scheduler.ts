@@ -65,7 +65,7 @@ export default class Scheduler {
 
           // when free block not found, find next day
           if (!freeBlock) {
-            // move current time to start of next time block
+            // move current time to start of next day
             const workTimeStart = UserPreferenceUtils.minuteNumberToHourAndMinute(userPreferences.startTime);
             currentSearchedTime.setDate(currentSearchedTime.getDate() + 1);
             currentSearchedTime.setHours(workTimeStart[0]);
@@ -216,7 +216,6 @@ export default class Scheduler {
    * @param userPreferences The user preferences.
    * @param startSearchTime The start time for searching the next free time block.
    * @returns an object containing the time and date for the next free time block;
-   *  Returns
    */
   static nextFreeTimeBlock(
     events: UserEvent[],
@@ -227,12 +226,14 @@ export default class Scheduler {
     const dayEnd = userPreferences.endTime;
     const minIncrement = 5;
 
+    // Start at startSearchTime and continue search until end of day.
+    // Increment time by minIncrement minutes if time is not free.
     for (
       let checkTime = new Date(startSearchTime);
       UserPreferenceUtils.dateToMinuteNumber(checkTime) <= dayEnd;
       checkTime = new Date(checkTime.getTime() + minIncrement * 60000)
     ) {
-      if (this.timeIsFree(events, userPreferences, startSearchTime)) {
+      if (this.timeIsFree(events, userPreferences, checkTime)) {
         const availableMinutes = this.minutesToNextEvent(
           events,
           userPreferences,
@@ -266,7 +267,8 @@ export default class Scheduler {
     if (!isWithinWorkHours) return false;
 
     // checks whether any events overlap at the current time
-    const hasConflict = this.eventsAtTime(events, time).length > 0;
+    const conflictingEvents = this.eventsAtTime(events, time);
+    const hasConflict = conflictingEvents.length > 0;
 
     // Current time is free when there's no event at this time
     return !hasConflict;
@@ -282,7 +284,7 @@ export default class Scheduler {
     return events.filter(
       (event) =>
         event &&
-        (event.start_time != undefined && event.end_time != undefined) &&
+        (event.start_time && event.end_time) &&
         (event.start_time <= time && event.end_time > time)
     );
   }
@@ -299,14 +301,15 @@ export default class Scheduler {
     // Filter events that start after given time and before end of work day
     const currentMinutes = UserPreferenceUtils.dateToMinuteNumber(time);
     const dayEnd = userPreferences.endTime;
-    const futureEvents = events
+    const minutesToDayEnd = dayEnd - currentMinutes;
+    const dayEndDate = new Date(time.getTime() + minutesToDayEnd * 60000);
+
+    const futureEventsOnThisDay = events
       .filter(
         (event) =>
           event &&
           event.start_time >= time &&
-          event.start_time < new Date(time.getDate() + 1) &&
-          UserPreferenceUtils.dateToMinuteNumber(event.start_time) <
-            userPreferences.endTime
+          event.start_time < dayEndDate
       )
       .sort(
         (a, b) =>
@@ -314,13 +317,14 @@ export default class Scheduler {
           UserPreferenceUtils.dateToMinuteNumber(b.start_time)
       );
 
-    if (futureEvents.length > 0) {
-      return (
-        UserPreferenceUtils.dateToMinuteNumber(futureEvents[0].start_time) -
-        currentMinutes
+    if (futureEventsOnThisDay.length > 0) {
+      const returned = Math.max(
+        UserPreferenceUtils.dateToMinuteNumber(futureEventsOnThisDay[0].start_time) - currentMinutes - 1,
+        1
       );
+      return returned;
     }
 
-    return dayEnd - currentMinutes;
+    return minutesToDayEnd;
   }
 }
