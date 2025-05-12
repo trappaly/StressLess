@@ -41,8 +41,11 @@ export default class Scheduler {
     userPreferences: UserPreferences
   ): SchedulerOutput {
     const scheduledEvents: UserEvent[] = [];
-    const deadlineRemainders = this.calculateDeadlineRemainders(events, deadlines);
-    // TODO: sort deadlines by priority
+    let deadlineRemainders = this.calculateDeadlineRemainders(events, deadlines);
+
+    // Sort deadlines by due date
+    deadlineRemainders = deadlineRemainders.sort((a, b) =>
+      (a.deadline.due_time?.getTime() || -1) - (b.deadline.due_time?.getTime() || -1));
 
     for (const remainder of deadlineRemainders) {
       const {deadline, unscheduledMinutes} = remainder;
@@ -63,7 +66,7 @@ export default class Scheduler {
           // Get the next time block
           freeBlock = this.nextFreeTimeBlock([...events, ...scheduledEvents], userPreferences, currentSearchedTime);
 
-          // when free block not found, find next day
+          // A. when free block not found, find next day
           if (!freeBlock) {
             // move current time to start of next day
             const workTimeStart = UserPreferenceUtils.minuteNumberToHourAndMinute(userPreferences.startTime);
@@ -78,7 +81,7 @@ export default class Scheduler {
             }
           }
 
-          // if free block ends after deadline
+          // B. if free block ends after deadline
           if (
             freeBlock &&
             deadline.due_time != null &&
@@ -92,6 +95,41 @@ export default class Scheduler {
               // adjust length of free block so it ends before deadline.
               freeBlock.minutes = Math.floor((deadline.due_time.getTime() - freeBlock.time.getTime()) / 60000);
             }
+          }
+
+          const minSeparationMinutes = Math.min(10, userPreferences.workDuration);
+          const minSeparationMs = minSeparationMinutes * 60000;
+
+          // C. if free block is too short, check later.
+          if (
+            freeBlock &&
+            freeBlock.minutes < minSeparationMinutes
+          ) {
+            currentSearchedTime = new Date(freeBlock.time.getTime() + minSeparationMs);
+            freeBlock = null; // This free block is invalid
+            continue;
+          }
+
+          // D. If scheduled event is too close to one that just ended, check later
+          const justEndedEvents = [...events, ...scheduledEvents].filter(event =>
+            freeBlock && event.end_time &&
+              freeBlock.time.getTime() - event.end_time.getTime() < minSeparationMs &&
+              freeBlock.time.getTime() - event.end_time.getTime() > 0
+          );
+          if (
+            freeBlock &&
+            justEndedEvents.length > 0
+          ) {
+            // Calculate gaps between end of previous event(s) and current searched time
+            const separations = justEndedEvents.map(event =>
+              currentSearchedTime.getTime() - (event.end_time?.getTime() || currentSearchedTime.getTime() - minSeparationMs)
+            );
+            const timeNeededForMinSeparation =
+              minSeparationMs - Math.min(...separations);
+            // Add gap needed to separate events
+            currentSearchedTime = new Date(currentSearchedTime.getTime() + timeNeededForMinSeparation);
+            freeBlock = null; // This free block is invalid
+            continue;
           }
         } while (!freeBlock);
 
@@ -224,7 +262,7 @@ export default class Scheduler {
   ): { time: Date; minutes: number } | null {
 
     const dayEnd = userPreferences.endTime;
-    const minIncrement = 5;
+    const minIncrement = 1;
 
     // Start at startSearchTime and continue search until end of day.
     // Increment time by minIncrement minutes if time is not free.
