@@ -63,7 +63,9 @@ export default class EventController {
   }
 
   /**
-   * Adds a new event to database using values in the request.
+   * Adds a new event and its recurrences to database using values in the request.
+   * Response will be an object containing an array.
+   * 
    * @param req.body - Fields have the same names of the columns in the
    *  `user_events` table. `id` will be ignored since an UUID will be generated.
    */
