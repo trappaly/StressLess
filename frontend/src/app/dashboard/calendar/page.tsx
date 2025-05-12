@@ -239,7 +239,7 @@ export default function Home() {
       recurrence_start_date: newEvent.recurrence_start_date,
       color: colorTypes.eventByUser,
     };
-    setAllEvents([...allEvents, event]);
+    // setAllEvents([...allEvents, event]);
 
     //added to test getting event name to the backend
     axios
@@ -247,6 +247,13 @@ export default function Home() {
       .then((response) => {
         console.log('Successfully saved event into backend: ', user!.uid);
         console.log(response);
+
+        // Noticed we also need to handle the ID change after adding a dragged
+        // event.
+        const correctId = response.data.eventSeries[0].id;
+        const { id, ...restEvent } = event;
+        console.log(`Replace ${id} with ${correctId}`);
+        setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
       })
       .catch((error) => {
         console.log(error);
