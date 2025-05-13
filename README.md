@@ -158,7 +158,7 @@ StressLess/
 1. Clone the repository if you have read/write access:
 
 ```bash
-git clone https://github.com/trappaly/StressLess
+git clone git@github.com:StressLess-Team/StressLess.git
 cd StressLess
 ```
 
