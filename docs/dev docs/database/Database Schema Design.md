@@ -2,7 +2,7 @@
 
 [https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612](https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612) (We do not have PRO account so contact @Khanh Phuong Do to suggest edits)
 
-![StressLess](https://github.com/user-attachments/assets/556ad34b-e19c-418d-b760-1c54152746c5)
+![Schema](https://github.com/user-attachments/assets/c8572796-bc2d-4421-9197-c5c818eb2228)
 
 ## Design Entities
 
@@ -22,8 +22,9 @@
 
 Table users {
   id uuid [primary key]
-  username varchar
+  email varchar
   created_at timestamp
+  updated_at timestamp
 }
 
 Table preference_questions {
@@ -53,6 +54,7 @@ Table user_events {
   is_generated boolean [default: false]
   break_time varchar
   created_at timestamp
+  deadline_id varchar
 }
 
 Table user_deadlines {
@@ -64,7 +66,7 @@ Table user_deadlines {
   description text
   priority varchar(50)
   projected_duration integer
-  is_completed boolean [default: false]
+  is_completed bool [default: false]
   created_at timestamp
 }
 
@@ -83,5 +85,5 @@ Ref: users.id < user_events.user_id // A user can have many events
 Ref: users.id < user_deadlines.user_id // A user can have many deadlines
 
 // Deadlines and Events (if applicable)
-Ref: user_events.id < user_deadlines.event_id // An event can have an associated deadline
+Ref: user_events.deadline_id < user_deadlines.id // An event can have an associated deadline
 ```
