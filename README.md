@@ -368,8 +368,8 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 - [x] Milestone 7 - Release 1 and demo
 - [x] Milestone 8 - Documentation
 - [x] Milestone 9 - Code Review and demo
-- [ ] Milestone 10 - Bug logging
-- [ ] Milestone 11 - Final Presentation
+- [x] Milestone 10 - Bug logging
+- [x] Milestone 11 - Final Presentation
 - [ ] Milestone 12 - Final Release
 
 ## Authors
@@ -384,7 +384,9 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 ## Acknowledgments
 
 We would like to thank Professor Leah Perlmutter and our class mentor Elliot Swaim for their guidance and support throughout this project.
+
 We would like to thank all of our stakeholders who gave us useful feedback to help us improve our app. We want to thank [this YouTube tutorial](https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3) for helping us implement our frontend calendar.
+
 Finally, we would also like to thank all of our amazing teammates for all of their hard work, dedication, and creativity for making this project possible.
 
 <a href="#readme-top">back to top</a>
