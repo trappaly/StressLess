@@ -155,12 +155,14 @@ StressLess/
 
 ### Installation
 
-1. Clone the repository:
+1. Clone the repository if you have read/write access:
 
 ```bash
 git clone https://github.com/trappaly/StressLess
 cd StressLess
 ```
+
+If you do not have read/write access to this repository but you want to contribute to **StressLess**, please see [Contributing Guidelines](docs/dev%20docs/contributing.md) for instructions on forking and making pull requests. You can keep following the steps below to set up your local environment. **In order for your forked repo's GitHub actions to run correctly, you have to enter every environment variables into GitHub secrets in Settings.** You should also get your deploy services secrets and put them into GitHub secrets for the `deploy.yml` action file to run.
 
 ### Setting Environment Variables (Please contact a team member for the three .env files)
 In the `backend` directory, create a `.env` file and add the following variables:
