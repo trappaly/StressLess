@@ -63,6 +63,9 @@ class FakeDataFactory {
     };
   }
 
+  
+
+
   /**
    * Create a random user event for testing purposes.
    * @returns A random user event object.
@@ -109,6 +112,8 @@ class FakeDataFactory {
     };
   }
 
+  
+
   /**
    * Create a random user event for testing purposes. The event is set to be recurring.
    * @returns A random user event object.
@@ -127,19 +132,6 @@ class FakeDataFactory {
   private static addMinutes(date: Date, minutes: number) {
     return new Date(date.getTime() + minutes * 60000);
   }
-
-  /**
-   * Return the specified id, generates an id, or returns undefined
-   */
-  // private generateId(id?: boolean | string): string | undefined {
-  //   if (id === true) {
-  //     return faker.string.uuid();
-  //   } else if (typeof id === 'string') {
-  //     return id;
-  //   } else {
-  //     return undefined;
-  //   }
-  // }
 }
 
 export default FakeDataFactory;
