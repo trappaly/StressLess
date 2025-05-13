@@ -10,13 +10,13 @@ export default class Deadline {
    */
   public static async getUserDeadlines(req: Request, res: Response) {
     try {
-      // Finds all of the possible deadlines for each user
+      // Finds all the possible deadlines for each user
       const userDeadlines = await prisma.user_deadlines.findMany({
         where: {
           user_id: req.params.user_id,
         },
       });
-      // Succuesfully is able to get all of the user's deadlines
+      // Successfully is able to get all the user's deadlines
       res.json(userDeadlines);
     } catch {
       // Unable to found the user's deadlines
@@ -30,7 +30,7 @@ export default class Deadline {
    * 
    * @param req.params.id - ID of the deadline
    */
-  public static async getDeadlinebyId(req: Request, res: Response) {
+  public static async getDeadlineById(req: Request, res: Response) {
     try {
       // Finds the user's one deadline
       const deadline = await prisma.user_deadlines.findUniqueOrThrow({
@@ -38,7 +38,7 @@ export default class Deadline {
           id: req.params.id,
         },
       });
-      // Succuesfully is able to find the user's deadline
+      // Successfully is able to find the user's deadline
       res.json(deadline);
     } catch {
       // Unable to find the user's deadline
@@ -53,7 +53,7 @@ export default class Deadline {
    */
   public static async postDeadline(req: Request, res: Response) {
     try {
-      // Accesses all of the deadline variables in the request
+      // Accesses all the deadline variables in the request
       const values = Deadline.getUserDeadlineValues(req);
       // Creates a new deadline
       const result = await prisma.user_deadlines.create({
@@ -72,7 +72,7 @@ export default class Deadline {
    */
   public static async putDeadline(req: Request, res: Response) {
     try {
-      // Accesses all of the deadline variables in the request
+      // Accesses all the deadline variables in the request
       const values = Deadline.getUserDeadlineValues(req);
       // Edits the current deadline
       const result = await prisma.user_deadlines.update({
@@ -98,7 +98,7 @@ export default class Deadline {
           id: req.params.id,
         },
       });
-      // Succuesfully deletes a deadline
+      // Successfully deletes a deadline
       res.json(deadline);
     } catch {
       // Unable to delete a deadline
@@ -107,7 +107,7 @@ export default class Deadline {
   }
 
   /**
-   * Gets all of the values associated with a deadline from the request body
+   * Gets all the values associated with a deadline from the request body
    * (i.e. excluding id, since database generates id automatically)
    */
   private static getUserDeadlineValues(req: Request) {

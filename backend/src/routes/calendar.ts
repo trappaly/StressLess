@@ -30,7 +30,7 @@ router.get('/deadlines/by-user/:user_id', DeadlineController.getUserDeadlines);
 router.post('/deadlines', DeadlineController.postDeadline);
 
 // Get a deadline by id
-router.get('/deadlines/id/:id', DeadlineController.getDeadlinebyId);
+router.get('/deadlines/id/:id', DeadlineController.getDeadlineById);
 
 // Modify a deadline
 router.put('/deadlines/id/:id', DeadlineController.putDeadline);

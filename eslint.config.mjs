@@ -30,6 +30,7 @@ export default [
         clearInterval: "readonly",
         Notification: 'readonly',
         setTimeout: 'readonly',
+        alert: 'readonly',
       },
     },
     plugins: {

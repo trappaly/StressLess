@@ -7,7 +7,10 @@ const router = express.Router();
 // Sign In route
 router.post('/signin', AuthController.signIn);
 
-// Sign up route
+// Sign Up route
 router.post('/signup', AuthController.signUp);
+
+// Delete Account route
+router.delete('/delete/:user_id', AuthController.deleteAccount);
 
 export default router;
