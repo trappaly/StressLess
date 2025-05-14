@@ -69,7 +69,7 @@ const Home: React.FC = () => {
             <h2 className="text-3xl font-bold mb-4">What is StressLess?</h2>
             <p className="text-lg">
               StressLess is an app that helps you plan out your semester based
-              off your sleep time, blocked class time, study preferences
+              off your sleep time, blocked class time, and study preferences
               instantly.
             </p>
           </div>

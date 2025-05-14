@@ -372,7 +372,7 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 - [x] Milestone 9 - Code Review and demo
 - [x] Milestone 10 - Bug logging
 - [x] Milestone 11 - Final Presentation
-- [ ] Milestone 12 - Final Release
+- [x] Milestone 12 - Final Release
 
 ## Authors
 
