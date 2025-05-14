@@ -1,4 +1,7 @@
 <!-- Section: Home -->
+# Visit our repository:
+[Click here to view our source code.](https://github.com/StressLess-Team/StressLess)
+
 # Getting Started
 Welcome to StressLess! Here's how you get started...
 
@@ -75,6 +78,9 @@ You can either edit your preferences in two ways
 
 
 <!-- Section: dashboard/calendar -->
+# Visit our repository:
+[Click here to view our source code.](https://github.com/StressLess-Team/StressLess)
+
 # Custom Scheduling 
 ## How Do I Create My Custom Schedule? 
 1. Make sure all of your user preferences are filed out in the profile page (See *How Do I Edit My Preferences in the Survey* on the user help guide on the profile page)
@@ -164,11 +170,13 @@ Some example of deadlines include
 
 
 ## How Do I Change the Day of an Event or Deadline?
+*Note: Non-functional feature. Changes are not saved to backend.*
 
 1. You can be in either weekly or monthly mode 
 2. Change the day by dragging the event to the new desired day 
 
 ## How Do I Change The Time of an Event?
+*Note: Non-functional feature. Changes are not saved to backend.*
 
 1. Make sure you are in weekly mode 
 2. If you aren’t in weekly mode, switch to weekly mode by clicking on the week button in the upper right hand corner above the calendar 
@@ -183,6 +191,7 @@ Some example of deadlines include
         2. Drag the arrow down to make the event longer and drag the arrow up to make the event shorter
 
 ## How Do I Lengthen or Shorten How Many Days an Event is?
+*Note: Non-functional feature. Changes are not saved to backend.*
 
 1. Make sure you are in monthly mode
 2. If you aren’t in monthly mode, switch to monthly mode by clicking on the week button in the upper right hand corner above the calendar 
