@@ -44,7 +44,7 @@ export default function ReauthenticateModal({
       } else {
         setError('Failed to delete user data from the backend.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setError('Reauthentication failed. Please check your password.');
     } finally {
