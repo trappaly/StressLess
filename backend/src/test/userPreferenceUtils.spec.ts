@@ -9,7 +9,7 @@ describe('Test the transform method of user preference utils', () => {
     question_id : "pt",
     user_id : user_id,
     id: faker.string.uuid(),
-  };
+};
 
   const wdData : UserPreference = {
     answer : "45",
@@ -135,7 +135,7 @@ describe ("string to minute", () => {
   // Tests for large numbers 
   it ("20 hrs and 20 min -> 1220 min", () => {
     expect (UserPreferenceUtils.timeStringToMinuteNumber("20:20")).toEqual(1220);
-}); 
+  }); 
 });
 
 
