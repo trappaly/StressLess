@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import ReauthenticateModal from './ReauthenticateModal';
 import { UserPreferencesForm, formSchema } from './UserPreferencesForm';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -20,7 +21,8 @@ import { updateProfile } from 'firebase/auth';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 
 export default function ProfilePage() {
-  const { user, deleteAccount, loading } = useAuth();
+  const { user, loading } = useAuth();
+  const [showReauthModal, setShowReauthModal] = useState(false);
   // Using state to hold user preferences
   const [userPreferences, setUserPreferences] = useState<ReturnType<
     typeof getPreferenceExtractData
@@ -34,6 +36,18 @@ export default function ProfilePage() {
   const [displayName, setDisplayName] = useState(
     user?.displayName || 'Studious Student'
   );
+
+  const handleDeleteClick = () => {
+    setShowReauthModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowReauthModal(false);
+  };
+
+  const handleSuccess = () => {
+    alert('Account successfully deleted!');
+  };
 
   // Fetch preferences when user is available
   useEffect(() => {
@@ -113,24 +127,24 @@ export default function ProfilePage() {
       });
   }
 
-  const handleDeleteAccount = async () => {
-    try {
-      if (!user?.uid) return;
-
-      // Delete user data from backend
-      const res = await axios.delete(
-        backendBaseUrl + `/api/auth/delete/${user.uid}`
-      );
-
-      // Delete Firebase auth account
-      if (res.status === 201) {
-        await deleteAccount();
-      }
-    } catch (err) {
-      console.error('Failed to delete account:', err);
-      alert('Failed to delete account. Please try again another time.');
-    }
-  };
+  // const handleDeleteAccount = async () => {
+  //   try {
+  //     if (!user?.uid) return;
+  //
+  //     // Delete user data from backend
+  //     const res = await axios.delete(
+  //       backendBaseUrl + `/api/auth/delete/${user.uid}`
+  //     );
+  //
+  //     // Delete Firebase auth account
+  //     if (res.status === 201) {
+  //       await deleteAccount();
+  //     }
+  //   } catch (err) {
+  //     console.error('Failed to delete account:', err);
+  //     alert('Failed to delete account. Please try again another time.');
+  //   }
+  // };
 
   if (loading || !userPreferences) {
     return <div>Loading...</div>;
@@ -276,14 +290,27 @@ export default function ProfilePage() {
                   your account and remove your data.
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline" onClick={() => setOpenDelete(false)}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={handleDeleteAccount}>
-                  Yes, delete
-                </Button>
-              </div>
+              {!showReauthModal && (
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setOpenDelete(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={handleDeleteClick}>
+                    Yes, delete
+                  </Button>
+                </div>
+              )}
+              {showReauthModal && (
+                <div className="mt-4 border rounded p-4 bg-muted">
+                  <ReauthenticateModal
+                    onSuccessAction={handleSuccess}
+                    onCancelAction={handleCancel}
+                  />
+                </div>
+              )}
             </DialogContent>
           </Dialog>
         </div>
