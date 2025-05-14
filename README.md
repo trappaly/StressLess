@@ -155,12 +155,14 @@ StressLess/
 
 ### Installation
 
-1. Clone the repository:
+1. Clone the repository if you have read/write access:
 
 ```bash
-git clone https://github.com/trappaly/StressLess
+git clone git@github.com:StressLess-Team/StressLess.git
 cd StressLess
 ```
+
+If you do not have read/write access to this repository but you want to contribute to **StressLess**, please see [Contributing Guidelines](docs/dev%20docs/contributing.md) for instructions on forking and making pull requests. You can keep following the steps below to set up your local environment. **In order for your forked repo's GitHub actions to run correctly, you have to enter every environment variables into GitHub secrets in Settings.** You should also get your deploy services secrets and put them into GitHub secrets for the `deploy.yml` action file to run.
 
 ### Setting Environment Variables (Please contact a team member for the three .env files)
 In the `backend` directory, create a `.env` file and add the following variables:
@@ -197,10 +199,21 @@ NEXT_PUBLIC_FIREBASE_APP_ID=<get-from-firebase>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<get-from-firebase>
 ```
 
+**Note:**
+After Spring 2025 grades are released by Grinnell College, the availability of database credentials used for our development cannot be guaranteed.
+The availability of Firebase credentials cannot be guaranteed as well.
+Therefore, after grades are released, team members may be unable to provide `.env` files.
+You may need to provide your own PostgreSQL database and Firebase credentials after this point.
+
 ### Setting Other Secrets
 The file `backend/serviceAccountKey.json` is the Firebase service account key JSON.
 An example is provided. This file is used to authenticate with Firebase services.
 Ask a team member for the content of this file.
+
+**Note:**
+After Spring 2025 grades are released by Grinnell College, the availability of Firebase credentials used for our development cannot be guaranteed.
+Therefore, after grades are released, team members may be unable to provide the `serviceAccountKey.json` file.
+You may need to provide your own Firebase credentials after this point.
 
 ### Installing Dependencies
 
@@ -212,20 +225,63 @@ pnpm install
 
 This will install 3 workspaces, because we have specified so in [pnpm-workspace.yaml](pnpm-workspace.yaml). This will install the dependencies for the backend and frontend. Alternatively, you can go into each directory and run `pnpm install` separately.
 
-### Setting Up the Database
+### Initial Database and Prisma Setup
 
-### Getting Onboard with Neon (Our Database)
-1. Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
-2. Make sure your .env file in the backend is good. 
+How to set up the database will depend on whether the database services used for our development are still available:
+- Before Spring 2025 grades are released, you may ask a team member for credentials.
+  - This way, graders may use the team's credentials for grading purposes.
+- After grades are released, please provide your own PostgreSQL database and Firebase credentials.
 
-### Installing Prisma Client (Tool Used to Access Our Database Neon)
+Please consult the sections [Setting Environment Variables](#setting-environment-variables-please-contact-a-team-member-for-the-three-env-files) and [Setting Other Secrets](#setting-other-secrets) for more details on how to configure database and Firebase credentials.
+
+#### Option A. Before Spring 2025 grades are released (for grading purposes):
+
+##### Getting Onboard with Neon (Our Database)
+1. Optional: Ask Madel to add you to the StressLess Neon database. (Optional: For testing, you can use ThunderClient, which you can easily download on VSCode under Extensions.)
+2. Make sure your `.env` and `.test.env` files in the backend are good. See [Setting Environment Variables](#setting-environment-variables-please-contact-a-team-member-for-the-three-env-files) and [Setting Other Secrets](#setting-other-secrets) for more details. You may contact a team member for the content of these files.
+
+
+##### Installing Prisma Client (Tool Used to Access Our Database Neon)
 
 ```bash
 cd backend
 pnpm exec prisma generate
 ```
 
-For more information on **Prisma**, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
+For more information on how to use **Prisma** after initial setup, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
+
+You may proceed to the section [Development](#development).
+
+#### Option B. After Spring 2025 grades are released:
+
+##### Setting Up A Database
+1. Please provide **two** PostgreSQL databases on your own (one for development and one for automated testing)
+2. Make sure your `.env` and `.test.env` files in the backend are good. See [Setting Environment Variables](#setting-environment-variables-please-contact-a-team-member-for-the-three-env-files) and [Setting Other Secrets](#setting-other-secrets) for more details.
+
+##### Installing Prisma Client (Tool Used to Access Your Database)
+
+```bash
+cd backend
+pnpm exec prisma generate
+```
+
+##### Adding The Schema to Your Database
+Ensure that the two databases are empty.
+Ensure you are in the `backend` directory (which you should be if you completed the previous step).
+
+**To add the schema to the development database:**
+```bash
+pnpm exec prisma migrate dev
+```
+
+**To add the schema to the automated testing database:**
+```bash
+pnpm exec env-cmd -f ./.test.env prisma migrate dev
+```
+
+For more information on how to use **Prisma** after initial setup, check out [Prisma Guide](./docs/dev%20docs/database/Prisma.md)
+
+You may proceed to the section [Development](#development).
 
 ### Development
 
@@ -289,11 +345,11 @@ pnpm lint
 
 ## Docker
 
-## Install Docker Desktop for your OS.
+### Install Docker Desktop for your OS.
 
 https://docs.docker.com/get-started/get-docker/
 
-## Access the application by running
+### Access the application by running
 
 Open Docker Desktop. Then run in the command line at root level:
 
@@ -314,8 +370,8 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 - [x] Milestone 7 - Release 1 and demo
 - [x] Milestone 8 - Documentation
 - [x] Milestone 9 - Code Review and demo
-- [ ] Milestone 10 - Bug logging
-- [ ] Milestone 11 - Final Presentation
+- [x] Milestone 10 - Bug logging
+- [x] Milestone 11 - Final Presentation
 - [ ] Milestone 12 - Final Release
 
 ## Authors
@@ -328,5 +384,11 @@ For more information, see the [Docker Guide](docs/dev%20docs/docker-guide.md).
 - Khanh
 
 ## Acknowledgments
+
+We would like to thank Professor Leah Perlmutter and our class mentor Elliot Swaim for their guidance and support throughout this project.
+
+We would like to thank all of our stakeholders who gave us useful feedback to help us improve our app. We want to thank [this YouTube tutorial](https://youtu.be/VrC5XhjW6W0?si=_ibhdo7doCMXNtB3) for helping us implement our frontend calendar.
+
+Finally, we would also like to thank all of our amazing teammates for all of their hard work, dedication, and creativity for making this project possible.
 
 <a href="#readme-top">back to top</a>

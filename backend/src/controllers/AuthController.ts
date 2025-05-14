@@ -93,4 +93,64 @@ export default class AuthController {
       return res.status(500).json({ error: 'Something went wrong' });
     }
   };
+
+  /**
+   * Delete account should delete all data entry with user_id matched
+   * @param req
+   * @param res
+   * @constructor
+   */
+  public static async deleteAccount(req: Request, res: Response): Promise<any> {
+    try {
+      const user_id = req.params.user_id;
+      const user = await prisma.users.findUniqueOrThrow({
+        where: {
+          id: user_id,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Delete their preferences
+      await prisma.user_preferences.deleteMany({
+        where: {
+          user_id: user_id,
+        },
+      });
+
+      // Delete their events
+      await prisma.user_events.deleteMany({
+        where: {
+          user_id: user_id,
+        },
+      });
+
+      // Delete their deadlines
+      await prisma.user_deadlines.deleteMany({
+        where: {
+          user_id: user_id,
+        },
+      });
+
+      // Delete the user instance
+      await prisma.users.deleteMany({
+        where: {
+          id: user_id,
+        }
+      });
+
+      return res.status(201).json({
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+        message: 'Deleted account successfully',
+      });
+    } catch (error: any) {
+      console.error('Sign-in Error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+  }
 }

@@ -25,6 +25,7 @@ type AuthContextType = {
     displayName: string
   ) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  deleteAccount: () => Promise<(() => void) | undefined>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -91,6 +92,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await sendPasswordResetEmail(firebaseAuth, email);
   };
 
+  const deleteAccount = async () => {
+    if (!user) {
+      return () => {
+        console.log('User not found');
+      };
+    }
+    console.log(
+      'Deleting user: ' + user.displayName + ' with uid: ' + user.uid
+    );
+    await user
+      .delete()
+      .then(() => {
+        console.log('User deleted');
+        setAllToNullAndFalse();
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      });
+  };
+
+  const setAllToNullAndFalse = () => {
+    setUser(null);
+    setLoading(false);
+    setVerified(false);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -102,6 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signOut,
         signUp,
         forgotPassword,
+        deleteAccount,
       }}
     >
       {children}

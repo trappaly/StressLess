@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import ReauthenticateModal from './ReauthenticateModal';
 import { UserPreferencesForm, formSchema } from './UserPreferencesForm';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -17,21 +18,36 @@ import axios from 'axios';
 import { backendBaseUrl, formatTime } from '@/lib/utils';
 import { getPreferenceExtractData } from '@/lib/get-preference-extract-data';
 import { updateProfile } from 'firebase/auth';
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const [showReauthModal, setShowReauthModal] = useState(false);
   // Using state to hold user preferences
   const [userPreferences, setUserPreferences] = useState<ReturnType<
     typeof getPreferenceExtractData
   > | null>(null);
   // Using state to open page
-  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   // Using state to set edit username
   const [editMode, setEditMode] = useState(false);
   // Using state to set display name
   const [displayName, setDisplayName] = useState(
     user?.displayName || 'Studious Student'
   );
+
+  const handleDeleteClick = () => {
+    setShowReauthModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowReauthModal(false);
+  };
+
+  const handleSuccess = () => {
+    alert('Account successfully deleted!');
+  };
 
   // Fetch preferences when user is available
   useEffect(() => {
@@ -78,7 +94,7 @@ export default function ProfilePage() {
 
     if (JSON.stringify(values) === JSON.stringify(userPreferences)) {
       window.alert("You didn't make any changes!");
-      setOpen(false);
+      setOpenEdit(false);
       return;
     }
 
@@ -107,9 +123,28 @@ export default function ProfilePage() {
       })
       .finally(() => {
         // Close the dialog after save
-        setOpen(false);
+        setOpenEdit(false);
       });
   }
+
+  // const handleDeleteAccount = async () => {
+  //   try {
+  //     if (!user?.uid) return;
+  //
+  //     // Delete user data from backend
+  //     const res = await axios.delete(
+  //       backendBaseUrl + `/api/auth/delete/${user.uid}`
+  //     );
+  //
+  //     // Delete Firebase auth account
+  //     if (res.status === 201) {
+  //       await deleteAccount();
+  //     }
+  //   } catch (err) {
+  //     console.error('Failed to delete account:', err);
+  //     alert('Failed to delete account. Please try again another time.');
+  //   }
+  // };
 
   if (loading || !userPreferences) {
     return <div>Loading...</div>;
@@ -197,7 +232,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Edit Button + Dialog */}
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={openEdit} onOpenChange={setOpenEdit}>
             <DialogTrigger asChild>
               <Button className="bg-pink-400 hover:bg-pink-500 text-white">
                 Edit Preferences
@@ -218,13 +253,64 @@ export default function ProfilePage() {
                   productiveTime: userPreferences.productiveTime as [
                     number,
                     number,
-                  ], // Gotta assert that there's 2 digit
+                  ], // Have to assert that there's 2 digit
                   workDuration: userPreferences.workDuration,
                   sleepHours: userPreferences.sleepHours,
                   startTime: userPreferences.startTime,
                   endTime: userPreferences.endTime,
                 }}
               />
+            </DialogContent>
+          </Dialog>
+
+          {/* Delete Account Button */}
+          <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+            <DialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="bg-red-400 hover:bg-red-500 text-white"
+              >
+                Delete Account
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <div
+                  className="mx-auto flex h-12 w-12 flex-shrink-0 items-center
+                    justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
+                >
+                  <ExclamationTriangleIcon
+                    className="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                  />
+                </div>
+                <DialogTitle>Are you sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data.
+                </DialogDescription>
+              </DialogHeader>
+              {!showReauthModal && (
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setOpenDelete(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={handleDeleteClick}>
+                    Yes, delete
+                  </Button>
+                </div>
+              )}
+              {showReauthModal && (
+                <div className="mt-4 border rounded p-4 bg-muted">
+                  <ReauthenticateModal
+                    onSuccessAction={handleSuccess}
+                    onCancelAction={handleCancel}
+                  />
+                </div>
+              )}
             </DialogContent>
           </Dialog>
         </div>
