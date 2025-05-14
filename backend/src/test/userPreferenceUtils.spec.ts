@@ -109,7 +109,7 @@ it ("05:05 -> 305", () => {
   // Checks for future dates
   const result = UserPreferenceUtils.dateToMinuteNumber(new Date('2025-08-20T05:05:00'));
   expect(result).toBe(305);
-});
+  });
 });
 
 /*
@@ -132,6 +132,10 @@ describe ("string to minute", () => {
   it ("5 hrs and 0 min -> 300 min", () => {
       expect (UserPreferenceUtils.timeStringToMinuteNumber("5:0")).toEqual(300);
   }); 
+  // Tests for large numbers 
+  it ("20 hrs and 20 min -> 1220 min", () => {
+    expect (UserPreferenceUtils.timeStringToMinuteNumber("20:20")).toEqual(1220);
+}); 
 });
 
 
