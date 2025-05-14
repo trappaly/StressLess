@@ -22,7 +22,7 @@
     "@types/supertest": "^6.0.3",
     "crypto": "^1.0.1",
     "supertest": "^7.1.0",
-    "vitest": "^3.0.9"
+    "vitest": "^3.1.1"
   },
   "prisma": {
     "schema": "src/db/schema.prisma"
