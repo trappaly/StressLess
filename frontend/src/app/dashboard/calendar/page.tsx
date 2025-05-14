@@ -271,6 +271,7 @@ export default function Home() {
     }
   }
 
+
   async function handleDelete() {
     console.log('handleDelete called for event: ', idToDelete);
 
@@ -325,6 +326,26 @@ export default function Home() {
       addDeadlineFromEvent();
       return;
     }
+
+    if (newEvent.id) {
+      // Editing an existing event
+      axios
+        .put(`${backendBaseUrl}/api/calendar/events/id/${newEvent.id}`, newEvent)
+        .then((response) => {
+          console.log('Successfully updated event:', response.data);
+  
+          // Update the event in the local state
+          setAllEvents(
+            allEvents.map((event) =>
+              event.id === newEvent.id ? { ...event, ...newEvent } : event
+            )
+          );
+        })
+        .catch((error) => {
+          console.error('Error updating event:', error);
+        });
+    } else {
+      // Creating a new event
 
     const eventWithUser: UserEvent & {
       start: Date;
@@ -383,7 +404,7 @@ export default function Home() {
       .catch((error) => {
         console.error('Error saving event:', error);
       });
-
+    }
     setShowModal(false);
     setNewEvent({
       ...example,
@@ -602,6 +623,17 @@ export default function Home() {
                     </div>
 
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button
+    type="button"
+    className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+    onClick={() => {
+      setShowModal(true); // Open the modal for editing
+      setNewEvent(selectedEvent); // Pre-fill the modal with the selected event's details
+      setIsDeadline(selectedEvent.is_recurring); // Set deadline state based on the event
+    }}
+  >
+    Edit
+  </button>
                       <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
