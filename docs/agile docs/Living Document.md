@@ -195,7 +195,7 @@ Our app is different because it automatically creates a schedule to complete tas
 
 **Data Models: Diagram** [https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612](https://dbdiagram.io/d/StressLess-67cb5f29263d6cf9a0a32612)
 
-![StressLessDB](https://github.com/user-attachments/assets/4084ee8d-2f37-490d-8dfd-41ea1dfae0e5)
+![image.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/image%201.png)
 
 ## 5.2 Software Architecture
 
@@ -255,7 +255,7 @@ Our system consists of several key software components that interact to provide 
 
 ### d) Diagram of StressLess system's architecture.
 
-![StressLess Demo.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/StressLess_Demo.png)
+![Screenshot 2025-04-27 at 4.40.06 PM.png](Living%20Document%200cfda53982fb40e0bb52a6b3a1228e37/Screenshot_2025-04-27_at_4.40.06_PM.png)
 
 ### e) Assumptions underpinning our chosen architecture
 
