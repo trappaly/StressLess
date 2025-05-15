@@ -326,64 +326,87 @@ export default function Home() {
       return;
     }
 
-    const eventWithUser: UserEvent & {
-      start: Date;
-      end?: Date;
-      color?: string;
-    } = {
-      ...newEvent,
-      user_id: user.uid,
-      start: new Date(newEvent.start_time), // <-- ensure start is there
-      end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
-      title: newEvent.title,
-      id: newEvent.id, // this is FullCalendar id
-      break_time: newEvent.break_time,
-      start_time: newEvent.start_time,
-      created_at: new Date().toISOString(),
-      description: newEvent.description,
-      is_generated: false,
-      is_recurring: newEvent.is_recurring,
-      location_place: newEvent.location_place,
-      recurrence_end_date: newEvent.recurrence_end_date,
-      recurrence_pattern: newEvent.recurrence_pattern,
-      recurrence_start_date: newEvent.recurrence_start_date,
-      color: colorTypes.eventByUser,
-    };
+    if (newEvent.id) {
+      // Editing an existing event
+      axios
+        .put(
+          `${backendBaseUrl}/api/calendar/events/id/${newEvent.id}`,
+          newEvent
+        )
+        .then((response) => {
+          console.log('Successfully updated event:', response.data);
 
-    axios
-      .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
-      .then((response) => {
-        // controller may save multiple events now.
-        console.log('Successfully saved events:', response);
-        console.log('event series', response.data.eventSeries);
-        const eventsToAdd: (typeof eventWithUser)[] = [];
+          // Update the event in the local state
+          setAllEvents(
+            allEvents.map((event) =>
+              event.id === newEvent.id ? { ...event, ...newEvent } : event
+            )
+          );
+        })
+        .catch((error) => {
+          console.error('Error updating event:', error);
+        });
+    } else {
+      // Creating a new event
 
-        // const { id, start_time, end_time, ...restEvent } = eventWithUser;
+      const eventWithUser: UserEvent & {
+        start: Date;
+        end?: Date;
+        color?: string;
+      } = {
+        ...newEvent,
+        user_id: user.uid,
+        start: new Date(newEvent.start_time), // <-- ensure start is there
+        end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
+        title: newEvent.title,
+        id: newEvent.id, // this is FullCalendar id
+        break_time: newEvent.break_time,
+        start_time: newEvent.start_time,
+        created_at: new Date().toISOString(),
+        description: newEvent.description,
+        is_generated: false,
+        is_recurring: newEvent.is_recurring,
+        location_place: newEvent.location_place,
+        recurrence_end_date: newEvent.recurrence_end_date,
+        recurrence_pattern: newEvent.recurrence_pattern,
+        recurrence_start_date: newEvent.recurrence_start_date,
+        color: colorTypes.eventByUser,
+      };
 
-        for (const newEvent of response.data.eventSeries) {
-          // Notice that the keys might not be in the correct order
-          eventsToAdd.push({
-            ...eventWithUser,
-            id: newEvent.id,
-            start_time: new Date(newEvent.start_time).toISOString(),
-            end_time: newEvent.endTime,
-            start: new Date(newEvent.start_time),
-            end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
-          });
-        }
+      axios
+        .post(backendBaseUrl + `/api/calendar/events`, eventWithUser)
+        .then((response) => {
+          // controller may save multiple events now.
+          console.log('Successfully saved events:', response);
+          console.log('event series', response.data.eventSeries);
+          const eventsToAdd: (typeof eventWithUser)[] = [];
 
-        setAllEvents([...allEvents, ...eventsToAdd]);
+          // const { id, start_time, end_time, ...restEvent } = eventWithUser;
 
-        // We want to be consistent and use our backend id
-        // const correctId = response.data.id;
-        // const { id, ...restEvent } = eventWithUser;
-        // console.log(`Replace ${id} with ${correctId}`);
-        // setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
-      })
-      .catch((error) => {
-        console.error('Error saving event:', error);
-      });
+          for (const newEvent of response.data.eventSeries) {
+            // Notice that the keys might not be in the correct order
+            eventsToAdd.push({
+              ...eventWithUser,
+              id: newEvent.id,
+              start_time: new Date(newEvent.start_time).toISOString(),
+              end_time: newEvent.endTime,
+              start: new Date(newEvent.start_time),
+              end: newEvent.end_time ? new Date(newEvent.end_time) : undefined,
+            });
+          }
 
+          setAllEvents([...allEvents, ...eventsToAdd]);
+
+          // We want to be consistent and use our backend id
+          // const correctId = response.data.id;
+          // const { id, ...restEvent } = eventWithUser;
+          // console.log(`Replace ${id} with ${correctId}`);
+          // setAllEvents([...allEvents, { id: correctId, ...restEvent }]);
+        })
+        .catch((error) => {
+          console.error('Error saving event:', error);
+        });
+    }
     setShowModal(false);
     setNewEvent({
       ...example,
@@ -602,6 +625,17 @@ export default function Home() {
                     </div>
 
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+                        onClick={() => {
+                          setShowModal(true); // Open the modal for editing
+                          setNewEvent(selectedEvent); // Pre-fill the modal with the selected event's details
+                          setIsDeadline(selectedEvent.is_recurring); // Set deadline state based on the event
+                        }}
+                      >
+                        Edit
+                      </button>
                       <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm
